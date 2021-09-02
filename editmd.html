@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>博客列表_hqinglau的博客_Orz linux</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="sogou_site_verification" content="wEcD18BWjC">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+    <meta name="description" content="刘欢庆的博客，分享Linux，操作系统，编程语言的日志。">
+    <meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+    <link href="/css/my.css" rel="stylesheet" />
+    <link href="/css/prism.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/editormd/css/editormd.css" />
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+        Date.prototype.Format = function (fmt) {
+            var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+            };
+            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
+
+        window.onload = function () {
+            document.getElementById("btn_showlogin").onclick = shogMinLogin;
+            document.getElementById("close_minilogin").onclick = closeLogin;
+            document.getElementById("firstLine").onmousedown = moveLogin;
+            /* 显示登录窗口 */
+            function shogMinLogin() {
+                var mini_login = document.getElementsByClassName("mini_login")[0];
+                var cover = document.getElementsByClassName("cover")[0];
+                mini_login.style.display = "block";
+                cover.style.display = "block";
+
+                mini_login.style.left = (document.body.scrollWidth - mini_login.scrollWidth) / 2 + "px";
+                mini_login.style.top = (document.body.scrollHeight - mini_login.scrollHeight - 200) / 2 + "px";
+            }
+
+            /* 关闭登录窗口 */
+            function closeLogin() {
+                var mini_login = document.getElementsByClassName("mini_login")[0];
+                var cover = document.getElementsByClassName("cover")[0];
+                mini_login.style.display = "none";
+                cover.style.display = "none";
+            }
+
+            /* 移动登录窗口 */
+            function moveLogin(event) {
+                var moveable = true;
+
+                //获取事件源
+                event = event ? event : window.event;
+                var clientX = event.clientX;
+                var clientY = event.clientY;
+
+                var mini_login = document.getElementById("mini_login");
+                console.log(mini_login);
+                var top = parseInt(mini_login.style.top);
+                var left = parseInt(mini_login.style.left);//鼠标拖动
+                document.onmousemove = function (event) {
+                    if (moveable) {
+                        event = event ? event : window.event;
+                        var y = top + event.clientY - clientY;
+                        var x = left + event.clientX - clientX;
+                        if (x > 0 && y > 0) {
+                            mini_login.style.top = y + "px";
+                            mini_login.style.left = x + "px";
+                        }
+                    }
+                }
+                //鼠标弹起
+                document.onmouseup = function () {
+                    moveable = false;
+                }
+            }
+        };
+    </script>
+    <style>
+        .link_button {
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+            border: solid 1px #999;
+            /* text-shadow: 0 -1px 0 rgb(0 0 0 / 40%); */
+            -webkit-box-shadow: inset 0 1px 0 rgb(255 255 255 / 40%), 0 1px 1px rgb(0 0 0 / 20%);
+            -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 1px 0 rgb(255 255 255 / 40%), 0 1px 1px rgb(0 0 0 / 20%);
+            background: #eee;
+            color: #555;
+            padding: 2px 5px;
+            text-decoration: none;
+        }
+        /* 弹出 样式 */
+        .mini_login {
+            display: none;
+            position: absolute;
+            z-index: 999;
+            background: white;
+        }
+
+        .mini_login .item {
+            width: 320px;
+            margin: 0 auto;
+            height: 48px;
+            line-height: 48px;
+            padding: 0 20px;
+        }
+
+        input {
+            outline-style: none;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 5px 7px;
+            /* width: 620px; */
+            /* font-size: 24px; */
+        }
+
+        .btn {
+            color: #999;
+            background: transparent;
+            border: 2px solid #999;
+            border-radius: 6px;
+            /* border: none; */
+            /* color: white; */
+            /* padding: 16px 32px; */
+            text-align: center;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            -webkit-transition-duration: 0.4s;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* 登录窗第一行*/
+        .mini_login .firstLine {
+            color: #666;
+            /* background: #f7f7f7; */
+            font-size: 18px;
+            font-weight: bold;
+            cursor: move;
+        }
+
+        .mini_login .item .login_close {
+            display: inline-block;
+            float: right;
+            cursor: pointer;
+        }
+
+        .mini_login .item label {
+            font-size: 14px;
+            margin-right: 15px;
+        }
+
+        .mini_login .item input {
+            display: inline-block;
+            height: 60%;
+            width: 70%;
+        }
+
+        /* 登录按钮 */
+        .mini_login .item a.btn_login {
+            display: block;
+            margin: 10px 10% 0;
+            height: 30px;
+            line-height: 30px;
+            width: 80%;
+            background: #4490F7;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* 遮罩层样式 */
+        .cover {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 998;
+            background-color: #000;
+            opacity: 0.3;
+        }
+    </style>
+    <style>
+        .layui-side {
+            position: fixed;
+            top: 0;
+            background-color: #fff;
+            width: 240px;
+            margin-left: 10px;
+            margin-right: 10px;
+            bottom: 0;
+        }
+
+        .layui-main {
+            margin-top: 40px;
+            bottom: 0;
+        }
+
+        .header {
+            height: 40px;
+            width: 100%;
+            background-color: #fff;
+        }
+
+        .fix-header {
+            position: fixed;
+            top: 0
+        }
+
+        @media screen and (max-device-width:730px) {
+            #mySidenav {
+                display: none;
+            }
+        }
+
+        .line {
+            width: 100%;
+            height: 2px;
+            margin: 10px 0;
+            overflow: hidden;
+            background-color: #eee;
+            font-size: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript">
+        var ua = navigator.userAgent.toLowerCase();
+        var isWeixin = ua.indexOf('micromessenger') != -1;
+        if (isWeixin) {
+            document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+        }
+    </script>
+    <script type="text/javascript">
+        function openNav() {
+            // document.getElementById("mySidenav").style.display = "block";
+
+            // var windowWidth = document.body.clientWidth;
+            // if (windowWidth > 700) {
+            //     document.getElementById("mymain").style.marginLeft = "260px";
+            //     document.getElementById("topheader").style.left = "260px";
+            // }
+            // else {
+            //     document.getElementById("mymain").style.marginLeft = "0";
+            // }
+            // document.getElementById("sidebarbtn").onclick = function () {
+            //     closeNav();
+            // }
+            closeNav();
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.display = "none";
+            document.getElementById("mymain").style.marginLeft = "0";
+            document.getElementById("topheader").style.left = "0";
+            document.getElementById("sidebarbtn").onclick = function () {
+                openNav();
+            }
+
+        }
+    </script>
+
+    <div>
+        <div class="layui-side" id="mySidenav">
+            <div class="aside_content" id="aside_content">
+                <div class="card-content">
+                    <div class="card-info-avatar is-center">
+                        <a href="/">
+                            <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg"
+                                alt="avatar">
+                        </a>
+                        <div class="author-info__name">hqinglau的网络日志</div>
+                        <div class="author-info__description">
+                            <p>记录Linux, 编程, 操作系统...</p>
+                        </div>
+                    </div>
+                    </br>
+                </div>
+                <div class="line dk hidden-folded"></div>
+
+
+
+                </br>
+                <div style="padding-left:50px;">
+
+                    <a href="https://orzlinux.cn"
+                        style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+                        <span class="fa-stack">
+                            <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+                        </span>
+                        Home
+                    </a>
+                    </br>
+                    <a href="https://github.com/hqinglau"
+                        style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+                        <span class="fa-stack">
+                            <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+                        </span>
+                        github
+                    </a>
+                    </br>
+
+                    <a href="https://orzlinux.cn/blog/yadihttpd.html"
+                        style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+                        <span class="fa-stack">
+                            <i class="fa  fa-lg  fa-server fa-stack-1x"></i>
+                        </span>
+                        File Server
+                    </a>
+                    </br>
+                    <a href="/uploadBlog.html"
+                        style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+                        <span class="fa-stack">
+                            <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+                        </span>
+                        Upload
+                    </a>
+                    </br>
+                </div>
+
+
+
+
+            </div>
+        </div>
+        <div class="layui-main" id="mymain">
+            <div class="header fix-header" id="topheader" style="display:none;">
+                <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer"
+                    onclick="openNav()">&#9776; </span>
+                <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+                        style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a>
+                </span>
+            </div>
+
+
+
+            <div class="header fix-header" id="topheader" style="display: block;width:50px; right: 20px;">
+                <span style="font-size:20px;cursor:pointer;"><a href="javascript:void(0)" class="link_button"
+                        style="text-decoration:none; font-size:18px;cursor:pointer;" id="btn_showlogin">
+                        上传</a>
+                </span>
+            </div>
+            <script type="text/javascript">
+                var lastW = 0;
+                var resizeTimer = null;
+                //定义变量获取屏幕视口宽度
+                function mywinresize() {
+
+                    var windowWidth = document.body.clientWidth;
+                    if (Math.abs(lastW - windowWidth) < 50) {
+                        return windowWidth;
+                    }
+                    console.log(windowWidth);
+                    if (windowWidth > 700) {
+                        openNav();
+                    }
+                    else {
+                        closeNav();
+                    }
+                    return windowWidth;
+                }
+                lastW = mywinresize();
+                document.getElementById("topheader").style.display = "block";
+                window.addEventListener('resize', function () {
+                    if (resizeTimer) clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(function () {
+                        lastW = mywinresize();
+                    }, 500);
+                });
+            </script>
+
+
+
+
+
+            <article id="page">
+                <div class="article-container">
+
+                    <div id="editor">
+                        <!-- Server-side output Markdown text -->
+                        <textarea style="display:none;">### Hello world!</textarea>
+                    </div>
+
+
+                </div>
+                <br>
+                <div id="banquan-yadi" style="display:none">
+                    <blockquote style="line-height:1.2;padding-bottom:10px;">
+                        <p>本文地址:
+                            <a href="https://orzlinux.cn" id="blogaddr-a"
+                                style="text-decoration:none; color:black;cursor:pointer;"> hqinglau的博客</a>
+                        </p>
+                        <p>作者:
+                            <a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+                                hqinglau
+                            </a>
+                        </p>
+                        <p>博客地址:
+                            <a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+                                https://orzlinux.cn
+                            </a>
+                        </p>
+
+                        <p>版权说明: 如无注明，本文皆由
+                            <a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+                                hqinglau
+                            </a>原创，转载请保留文章出处
+                        </p>
+                    </blockquote>
+                </div>
+            </article>
+        </div>
+        <div id="footer-wrap">
+            <div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;"
+                    href="https://github.com/hqinglau/yadihttpd">yadihttpd</a></div>
+            <div class="copyright">Copyright © 2021 hqinglau</div>
+            <div style="width:300px;margin:0 auto; padding:5px 0;">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+                    style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+                        src="https://orzlinux.cn/img/beian.png" style="float:left;">
+                    <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+                        41022102001049号</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 看板娘 -->
+
+    <script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/editormd/editormd.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/editormd/lib/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/editormd/lib/prettify.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var windowHeight = document.body.clientHeight;
+            var editor = editormd("editor", {
+                // width   : "90%",
+                height: windowHeight - 180,
+                //         syncScrolling : "single",
+                path: "https://cdn.jsdelivr.net/gh/hqinglau/CDN/editormd/lib/"  // Autoload modules mode, codemirror, marked... dependents libs path
+            });
+        });
+    </script>
+    <!-- 弹出登录小窗口 -->
+    <div class="mini_login" id="mini_login">
+        <div style="text-align: center;">
+            <div class="up-header center-block">
+                <div class="item firstLine" id="firstLine">
+                    <span class="login_title" id="fileup">文件上传</span>
+                    <span class="login_close" id="close_minilogin">x</span>
+                </div>
+
+                <div class="input-group" style="width:400px;margin-bottom:15px;">
+                    <input type="text" id="title" class="form-control" autocomplete="off" placeholder="输入文件标题">
+                    <button id="uploadMd" class="btn btn-primary">上传文件</button>
+                </div>
+
+                <div class="input-group" style="width:400px;;margin-bottom:30px;">
+                    <input type="text" id="passwd" class="form-control" placeholder="输入上传密码">
+                    <button type="button" class="btn btn-primary">文件密码</button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <!-- 遮罩层 -->
+    <div class="cover"></div>
+    <script type="text/javascript">
+        var fileObj;
+        var curTime = "/";
+        function UpladFile() {
+            var titl = document.getElementById('title');
+
+            var pass = document.getElementById('passwd');
+            var str = titl.value.replace(/(^\s*)|(\s*$)/g, '');//去除空格;
+            var str2 = pass.value.replace(/(^\s*)|(\s*$)/g, '');//去除空格;
+            if (str == '' || str == undefined || str == null) {
+                alert("标题为空");
+                return false;
+            }
+            if (str2 == '' || str2 == undefined || str2 == null) {
+                alert("密码为空");
+                return false;
+            }
+            var fileLineList = document.getElementsByTagName('textarea')[0].innerText;
+            var blob = new Blob([fileLineList], {type: 'text/plain'}); 
+            curTime = new Date().Format("yyyyMMddHHmmss");  
+            fileObj = new File([blob],curTime+".md");
+            document.getElementById("uploadMd").disabled = true;
+            var url = "/blogUpload"; // 接收上传文件的后台地址
+
+            var form = new FormData(); // FormData 对象
+            form.append("file", fileObj); // 文件对象
+            form.append("passwd", str2); // 
+            form.append("lname", str); //标题
+
+            let xhr = new XMLHttpRequest();  // XMLHttpRequest 对象
+            xhr.open("post", url, true); //post方式，url为服务器请求地址，true 该参数规定请求是否异步处理。
+
+            xhr.send(form); //开始上传，发送form数据
+            document.getElementById('fileup').innerHTML = "文件上传中...";
+            curTime = `/blog/${curTime}.html`
+            setTimeout(function () {
+                relocate();
+            }, 5000);
+        }
+        function relocate() {
+            window.location.href = curTime;
+        }
+       
+        document.getElementById("uploadMd").addEventListener('click', function () {
+            UpladFile();
+        }, false);
+    </script>
+</body>
+
+</html>

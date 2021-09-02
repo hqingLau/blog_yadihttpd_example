@@ -1,0 +1,362 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>我的博客后台yadihttpd_v0.1总结
+_hqinglau的博客_Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="刘欢庆的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="https://orzlinux.cn/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-server fa-stack-1x"></i>
+            </span>
+            File Server
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div><h1>我的博客后台yadihttpd_v0.1总结</h1><hr>
+<p>总结一下这个博客的后台<code>yadihttpd</code>。这个版本号我定为v0.1，它是一个基本稳定的版本，所以它的版本号从0.04跳到了0.1，使用方法如下:</p>
+<pre><code class="language-shell">pi@centos:~/yadihttpd$ ./yadihttpd 
+usage: ./yadihttpd &lt;port&gt; &lt;websit root&gt; &lt;log dir&gt;
+要实现创建好文件夹和响应静态文件
+如：./yadihttpd 80 /home/pi/www /home/pi/yadihttpdlog
+
+pi@centos:~/yadihttpd$ sudo ./yadihttpd 80 /home/pi/www /home/pi/yadihttpdlog
+
+# 写一个脚本定期执行,防止因未知原因服务挂掉
+# 而自己不知道
+# 目前yadihttpd已经基本可以稳定运行
+hqinglau@centos:~$ sudo vim yadiCheck.sh 
+hqinglau@centos:~$ cat !$
+cat yadiCheck.sh
+#!/bin/bash
+
+nline=$(ps aux | grep yadihttpd | wc -l)
+if [ $nline -lt 2 ];then
+ /home/pi/yadihttpd/yadihttpd 80 /home/pi/www /home/pi/yadihttpdlog
+fi
+
+# 设置10min检查一次，挂了就启动    
+hqinglau@centos:~$ crontab -l
+*/10 * * * * /home/hqinglau/yadiCheck.sh
+</code></pre>
+<p>github地址：<a href="https://github.com/hqinglau/yadihttpd">yadihttpd</a></p>
+<p>示例博客项目：<a href="https://github.com/hqingLau/blog_yadihttpd_example">博客文件树</a></p>
+<p><a href="https://www.orzlinux.cn">【博客主页】</a></p>
+<p>📚 大致效果</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210819154944.png" alt="image-20210819154942545"></p>
+<p>进入具体条目：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210819155130.png" alt="image-20210819155129701"></p>
+<p>这样看起来还可以。</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20210804184835.png" alt="image-20210804184834030" height="100" />
+
+<p>完成的功能:</p>
+<p>✅ 打印日志，读取消息头，日志文件名根据时间生成</p>
+<p>✅ epoll版本并返回相应文件</p>
+<p>✅ 日志队列，自动切换，写日志单独线程</p>
+<p>✅ 大文件支持</p>
+<p>✅ 简易博客</p>
+<h3 id="日志">日志</h3>
+<p>显示具体行号，函数，文件名</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210730142145.png" alt="image-20210730142145686"></p>
+<p>查看日志线程：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210803150552.png" alt="image-20210803150550856"></p>
+<p>日志线程一般睡眠状态（队列空，代表不忙，释放锁，阻塞一秒）。</p>
+<p>🔴 访问链接前日志：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210803150901.png" alt="image-20210803150859354"></p>
+<p>🟢 访问链接后日志：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210803150935.png" alt="image-20210803150932453"></p>
+<p>🟢 日志记录一定条数时（如5000），自动切换文件。</p>
+<h3 id="网页">网页</h3>
+<p>📚 图片读取</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210819155620.png" alt="image-20210819155618366"></p>
+<p>📚 大文件支持 （may be some bugs)</p>
+<p>epollout处理缓冲区、设置非阻塞fd, 服务器可以同时处理多个请求。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210802174123.png" alt="image-20210802174121489"></p>
+<p>📚 服务器文件根目录布局</p>
+<pre><code class="language-shell">pi@raspberrypi:~/www $ tree
+.
+├── blog   # marked转换之后的博客
+│   ├── linux_notes.html
+│   └── test.html
+├── css   
+│   ├── my.css
+│   └── prism.css # 代码高亮等等
+├── img
+│   ├── 1.jpg
+│   ├── eg_tulip.jpg
+│   ├── lake.jpg
+│   └── log.jpg
+├── index.html 
+├── js   
+│   └── prism.js  # 代码高亮等等
+└── md  # 初始markdown形式
+    ├── linux_notes.md
+    ├── md2html.sh  #批量转换脚本 md-&gt;html
+    ├── test.md
+    └── tmp.mdfile
+</code></pre>
+<p>所用到库：</p>
+<p><a href="https://github.com/markedjs/marked">marked</a>：markdown -&gt; html</p>
+<p><a href="https://prismjs.com/">prismjs</a>: 代码高亮等布局</p>
+<h3 id="bug排查记录">bug排查记录</h3>
+<p>🔍 fd泄露排查</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210806225826.png" alt="image-20210806225824541"></p>
+<p>是有地方忘了close了。测试了一会，如下图，貌似没有fd泄露的问题了，但是还有个偶尔段错误还没查出来。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210806225742.png" alt="image-20210806225741355"></p>
+<p>🔍 段错误排查</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210809105500.png" alt="image-20210809105458451"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210809105521.png" alt="image-20210809105519757"></p>
+<p>🔍 url过长：感谢大晚上测试我网站的恶意程序</p>
+<p>🔍 url直接访问目录错误修复，同上。</p>
+<h3 id="性能测试">性能测试</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210807123009.png" alt="image-20210807123007436"></p>
+<p>用webbench测试了一下，不考虑网速的情况下，一秒能处理1600条请求，写入5000条数据。暂且这样，远超我云服务器网速所能处理的上限了，后续再改进。</p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;"
+			href="https://github.com/hqinglau/yadihttpd">yadihttpd</a></div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript">
+    document.getElementById("banquan-yadi").style.display ="";
+  document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"yadihttpdv0_1summary.html";
+  document.getElementById("blogaddr-a").innerHTML="我的博客后台yadihttpd_v0.1总结";
+</script></body></html> 

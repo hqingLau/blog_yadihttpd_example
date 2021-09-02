@@ -1,0 +1,433 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>条件变量、信号量和事件并发
+_hqinglau的博客_Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="刘欢庆的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="https://orzlinux.cn/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-server fa-stack-1x"></i>
+            </span>
+            File Server
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div><h1>条件变量、信号量和事件并发</h1><hr>
+<p>来自Dijkstra的凝视：</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20210825160112.png" alt="image-20210825160112821" style="width:200px; display:block;margin:0 auto;" />
+
+<h2 id="条件变量">条件变量</h2>
+<p>condition variable. 是一个显式队列，执行状态不满足条件时，线程可以把自己加入队列，等待条件。另外一个线程改变了这个状态时，就可以唤醒一个或者多个等待线程。</p>
+<p>两个操作<code>wait()</code>和<code>signal()</code>。</p>
+<pre><code class="language-c">int pthread_cond_wait(pthread_cond_t *restrict cond, pthread_mutex_t *restrict mutex);
+int pthread_cond_broadcast(pthread_cond_t *cond);
+int pthread_cond_signal(pthread_cond_t *cond);
+</code></pre>
+<p><code>wait()</code>的一个参数是已经上锁的互斥量，<code>wait()</code>会释放锁，并让线程休眠，等到被唤醒时，重新获取锁，返回调用者。</p>
+<pre><code class="language-c">// 一般用法
+// thread A
+pthread_mutex_lock(&amp;mutex);
+while (false == ready) {             //1         
+    pthread_cond_wait(&amp;cond, &amp;mutex); //2
+    // 2相当于:
+    // 释放锁并休眠等待signal
+    // 等待中...
+    // 接收到signal，获取锁，继续循环
+}
+pthread_mutex_unlock(&amp;mutex);
+
+// thread B 写法一
+pthread_mutex_lock(&amp;mutex);
+ready = true;
+pthread_mutex_unlock(&amp;mutex);  // 3
+pthread_cond_signal(&amp;cond);    // 4
+</code></pre>
+<blockquote>
+<p>互斥锁是为了保护<code>ready</code>变量，因为1语句和2语句可能被其他线程中断，如果不加锁，刚判断<code>ready</code>是false，<code>ready</code>就被线程B设置为了true，然后调用了<code>signal</code>，问题在于这个时候thread A还没准备好，还没<code>wait</code>。参数mtx的解锁和等待参数cond的动作是原子性的，所以thread B修改<code>ready</code>的时候，<code>wait</code>已经准备好了。</p>
+</blockquote>
+<p>为什么需要循环？因为3和4之间有间隙，可能被中断，假设此时2正在等待<code>signal</code>，<code>ready</code>没被thread A锁住，也没被thread B锁住，这时过来一个其它的线程，一顿操作<code>ready</code>变成false了，然后thread B给<code>wait</code>发了个信号说准备好了，其实已经被偷家了，要用while。而且有的线程库的实现，有可能出现一个信号唤醒两个线程的情况（spurious wakeup）。</p>
+<pre><code class="language-c">// thread B 写法二
+pthread_mutex_lock(&amp;mutex);
+ready = true;
+pthread_cond_signal(&amp;cond);    // 4
+pthread_mutex_unlock(&amp;mutex);  // 3
+</code></pre>
+<p>交换一下3和4，不就没上面的问题了吗？<strong>理论版本（看看就行）</strong>：这个是性能的考虑。4之后，<code>wait</code>被唤醒，切换到thread A，A想要获取锁，锁还在thread B这呢，thread A等待，切换到B，B解锁，此时A在等锁，切换上下文到A，A继续。切换上下文比较耗时。</p>
+<blockquote>
+<p>理论情况是上面这样，但是实现，如pthread很多都对这部分有优化，直接把条件变量的队列给锁的队列，只有解锁时才切换到A。所以很多实现上写法二并不会性能差，而且锁和信号之间的间隙没有了，所以一般要持有锁，也就是采用写法二。</p>
+</blockquote>
+<p>还有一个问题，为什么要判断<code>ready</code>，我就单纯想等待一个信号呢？原因是线程运行的不确定性，可能信号来了另一个线程还没开始<code>wait</code>，所以有个标志<code>ready</code>判断成立之后在这种情况就能直接返回。</p>
+<p>生产者/消费者（有界缓冲区）：生产者满了之后<code>wait</code>，发信号给消费者满了，消费者收到信号，发送<code>empty</code>信号。比单纯的锁减少了上下文切换，单纯的锁如果消费者比较慢，生产者满了，可能需要释放锁wait一段时间重试，这里可以直接条件变量。</p>
+<p>最后一个问题还需要知道唤醒哪个线程。例如分配内存但是内存没了，thread A申请100KB，thread B申请10KB，等待一阵之后，thread C释放了50KB，怎么唤醒合适的线程？</p>
+<p>一个方法是<code>broadcast</code>，唤醒所有线程。这种条件变量称为<strong>覆盖条件</strong>：能唤醒所有该被唤醒的，代价是不该唤醒的也唤醒了。</p>
+<h2 id="信号量">信号量</h2>
+<p>一个有整数值得对象，可以用<code>sem_wait()</code>和<code>sem_post()</code>操作它。</p>
+<p><code>sem_wait()</code>：信号值大于等于1，立刻返回，否则挂起等待post。</p>
+<p>信号内都是原子的。</p>
+<h3 id="二值信号量（锁）">二值信号量（锁）</h3>
+<pre><code class="language-c">// 设置为1，表示wait（等&gt;0）可以直接返回
+sem_init(&amp;m,0,1);
+
+sem_wait(&amp;m); // 返回，进入临界区 -&gt;0
+// critical section
+sem_post(&amp;m); // post,信号量-&gt;1 ,其它线程的wait可以返回了
+</code></pre>
+<h3 id="信号量作为条件变量">信号量作为条件变量</h3>
+<p>信号量也可以用于等待某些条件发生变化，即作为条件变量。</p>
+<h3 id="读写锁">读写锁</h3>
+<p>两点，读不需要加锁，写需要加锁。基本原理如下：</p>
+<pre><code class="language-c">#include &lt;semaphore.h&gt;
+typedef struct
+{
+    sem_t lock;      // 保护这个结构的锁
+    sem_t writelock; // 写锁
+    int readers;     // 记录正在读取的数目，无读锁
+} rwlock_t;
+
+void rwlock_init(rwlock_t *rw)
+{
+    rw-&gt;readers = 0;
+    sem_init(&amp;rw-&gt;lock, 0, 1);
+    sem_init(&amp;rw-&gt;writelock, 0, 1);
+}
+
+void rwlock_acquire_readlock(rwlock_t *rw)
+{
+    sem_wait(&amp;rw-&gt;lock); // 保护rw结构
+    rw-&gt;readers++;
+    if (rw-&gt;readers == 1)
+        sem_wait(&amp;rw-&gt;writelock); // 因为有读的了肯定不能现在改了
+    sem_post(&amp;rw-&gt;lock);
+}
+
+void rwlock_release_readlock(rwlock_t *rw)
+{
+    sem_wait(&amp;rw-&gt;lock); // 保护rw结构
+    rw-&gt;readers--;
+    if (rw-&gt;readers == 0)
+        sem_post(&amp;rw-&gt;writelock); // 没人读了，表示，想写的可以写了
+    sem_post(&amp;rw-&gt;lock);
+}
+
+void rwlock_acquire_writelock(rwlock_t *rw)
+{
+    sem_wait(&amp;rw-&gt;writelock); // 等写锁，也就是没人读了
+}
+void rwlock_release_writelock(rwlock_t *rw)
+{
+    sem_post(&amp;rw-&gt;writelock);
+}
+</code></pre>
+<p>这个读写锁比较简略，要是一直有人想读，写会被饿死，好一些的策略应该是有人想写了，就不再接受新的读请求。</p>
+<h3 id="哲学家就餐问题">哲学家就餐问题</h3>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20210826163212.png" alt="image-20210826142303592" style="zoom:80%; display:block;margin:0 auto;" />
+
+<p>P是哲学家，f是叉子，每个人左右各有一把叉子，怎么吃？</p>
+<p>一个思路是每把叉子一个锁，哲学家分别先拿起左边叉子，锁住，再拿起右边叉子，锁住，被其他哲学家把叉子拿走了就等待信号。这种思路的问题是死锁，每个人都拿起了左边的叉子，就没人能够得到右边的叉子，等待信号就等不到，造成死锁。</p>
+<p>一个最简单的方法就是破除依赖，让其中一个哲学家先拿起右叉子，想一下就想通了。</p>
+<h2 id="常见并发问题">常见并发问题</h2>
+<h3 id="非死锁缺陷">非死锁缺陷</h3>
+<ul>
+<li><p>违反原子性缺陷</p>
+<p>例如<code>if</code>判断条件以后刚要执行操作，另一个线程把条件改了，现在<code>if</code>里面的操作执行就可能导致程序崩溃（如访问一个被置为<code>NULL</code>的结构体）。</p>
+<p>正式表达就是：我想要它是原子的（多次访问内存），但是实现并没有实现原子性。</p>
+</li>
+<li><p>违反顺序缺陷</p>
+<p>线程的执行顺序是不确定的，默认一个线程先执行就可能造成程序崩溃。</p>
+</li>
+</ul>
+<h3 id="死锁">死锁</h3>
+<p>如上面的哲学家问题。常见原因是复杂的依赖，还有就是封装，如<code>a.add(b)</code>先加锁A，加锁B之前被另一线程中断，另一线程调用了<code>b.add(a)</code>，先加锁B，想要加锁A，但是被占用了，就等待，两个线程就死锁了。而且由于封装问题，你还不知道这个地方锁的顺序有问题了。</p>
+<p>死锁条件：互斥、持有锁并等待、非抢占、循环等待（哲学家问题）。</p>
+<p>针对具体死锁条件的预防措施：</p>
+<ul>
+<li><p>循环等待</p>
+<p>加锁的顺序全部一致或者约定部分锁的顺序固定。例如上面的<code>a.add(b)</code>问题如何避免？可以根据锁的地址作为获取锁的顺序。如a的地址较大，<code>a.add(b)</code>先加锁A，<code>b.add(a)</code>还是先加锁A，就避免了死锁的问题。</p>
+</li>
+<li><p>持有并等待</p>
+<p>加个锁，把加锁的过程保护起来。</p>
+</li>
+<li><p>非抢占</p>
+<p><code>trylock()</code>，尝试获取锁，获取不到就不干了，把之前获取的锁也释放了。</p>
+<p>活锁：两个线程都重复这一个过程，但是没有死锁，又没有进展，称为活锁。解决方法：不干了之后随即等待一段时间。还有的问题就是封装问题，函数里面你不知道干了什么，你释放了自己的锁，但是封装函数里面干了什么你并不清楚。</p>
+</li>
+<li><p>互斥</p>
+<p>不用锁了，用之前的硬件指令。如用比较并交换指令插入链表头：</p>
+<pre><code class="language-c">void insert(int value)
+{
+    node_t *n = malloc(sizeof(node_t));
+    assert(n!=NULL);
+    n-&gt;value = value;
+    do {
+        n-&gt;next = head;
+    } while(CompareAndSwap(&amp;head,n-&gt;next,n));
+}
+</code></pre>
+</li>
+</ul>
+<p>通过调度避免死锁：就是用到很多相同锁的线程，OS调度把他们的时间片分开，不同时运行就没死锁了。</p>
+<p>还有的死锁避免花费的代价很大，影响又很小，那能fix最好，不能fix也过得去。</p>
+<h3 id="事件并发">事件并发</h3>
+<p><code>select()</code>、<code>poll()</code>、<code>epoll()</code>那些。</p>
+<p>阻塞系统调用如IO请求，会阻塞线程。解决方案异步IO，程序发出IO请求之后，交给系统处理，处理好IO之后再返回给调用者控制权。</p>
+<p>Linux上比较好的异步IO是近两年出的io_uring，内核版本需要5.x以上，看了看我的版本，留下了不学无术的泪水。</p>
+<pre><code class="language-c">Linux centos 3.10.0-1160.11.1.el7.x86_64 #1 SMP Fri Dec 18 16:34:56 UTC 2020 x86_64
+</code></pre>
+<p>异步IO还是个大块，之前也没怎么了解。有空用虚拟机学习一下。</p>
+<h2 id="参考">参考</h2>
+<ol>
+<li><p>OSTEP</p>
+</li>
+<li><p><a href="https://zhuanlan.zhihu.com/p/55123862">条件变量 之 稀里糊涂的锁</a></p>
+</li>
+</ol>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;"
+			href="https://github.com/hqinglau/yadihttpd">yadihttpd</a></div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript">
+    document.getElementById("banquan-yadi").style.display ="";
+  document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"threadsemconevent.html";
+  document.getElementById("blogaddr-a").innerHTML="条件变量、信号量和事件并发";
+</script></body></html> 

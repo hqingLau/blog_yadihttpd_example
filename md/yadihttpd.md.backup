@@ -1,0 +1,34 @@
+---
+
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20210823110717.png" alt="image-20210823110717276" style="zoom:80%; display:block; margin: 0 auto;" />
+
+---
+
+yadihttpd是一个文件服务器，可以用来作为个人静态博客后台，本博客以yadihttpd为后台。yadihttpd每秒能处理1600条请求，写入5000条日志。使用方法：
+
+```shell
+./yadihttpd <port> <website root> <log dir>
+```
+
+yadihttpd以我女朋友的名字yadi命名。正如yadihttpd支撑着我的博客，yadi也一直在我身边陪伴着我，时而调皮，时而乖巧。yadi和yadihttpd都将陪着我一起成长。
+
+yadihttpd功能:
+
+✅ 打印日志，读取消息头，日志文件名根据时间生成
+
+✅ epoll版本并返回相应文件
+
+✅ 日志队列，自动切换，写日志单独线程
+
+✅ 大文件支持
+
+✅ 作为静态博客后台
+
+
+
+详细介绍：[yadihttpd介绍](https://orzlinux.cn/blog/yadihttpdv0_1summary.html)
+
+github: [hqinglau/yadihttpd](https://github.com/hqingLau/yadihttpd)
+
+博客主页：[hqinglau的博客](https://orzlinux.cn/)
+

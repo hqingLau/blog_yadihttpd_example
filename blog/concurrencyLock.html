@@ -1,0 +1,549 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>锁的实现和并发数据结构
+_hqinglau的博客_Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="刘欢庆的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="https://orzlinux.cn/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-server fa-stack-1x"></i>
+            </span>
+            File Server
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div><h1>锁的实现和并发数据结构</h1><hr>
+<p>锁：放在临界区周围，保证临界区像单条原子指令一样执行。锁让原本由OS调度的混乱状态变得可控。</p>
+<h2 id="锁的实现">锁的实现</h2>
+<p>讨论实现之前应设定目标，那么如何评价一个锁实现的效果？第一是基本任务：锁住，提供互斥，阻止多个线程进入临界区。第二是公平性：尽量保证每一个竞争锁的线程有同样的机会。第三是性能，分为没有竞争和有竞争的情况。</p>
+<h3 id="控制中断">控制中断</h3>
+<p>在临界区关闭中断（为单处理器开发的）。</p>
+<p>简单，缺点也很多：恶意程序从头lock到尾不unlock，中断关了，操作系统没法得到控制器，只能重启；不适用于多处理器，一个CPU中断关了其他CPU还是可能访问临界区；中断丢失，自损八百；开关中断效率低。</p>
+<p>内核自己某些情况可以用这个方法。</p>
+<h3 id="硬件支持">硬件支持</h3>
+<p>以下硬件支持都是原子的。</p>
+<p>原子交换：硬件支持，最简单的是测试并设置指令，即原子交换。测试并设置指令做的是：对于一个变量，获取old value，设置new value，然后返回old value。</p>
+<p>比较并交换：如名。</p>
+<p>链接的加载（load linked）和条件式存储（store-conditional）指令：只有上一次加载的地址在期间没有更新时才会成功。</p>
+<p>获取并增加（fetch and add）：获取值，并在原地址+1。</p>
+<h3 id="锁的实现-1">锁的实现</h3>
+<p>自旋锁大致原理如下：</p>
+<pre><code class="language-c">typedef struct lock_t
+{
+    int flag;
+} lock_t;
+
+void init(lock_t *mutex)
+{
+    // 0 -&gt; lock is available, 1 -&gt; held
+    mutex-&gt;flag = 0;
+}
+
+void lock(lock_t *mutex)
+{
+    while (mutex-&gt;flag == 1) // TEST the flag
+        ;                    // spin-wait (do nothing)
+    mutex-&gt;flag = 1;         // now SET it!
+}
+
+void unlock(lock_t *mutex)
+{
+    mutex-&gt;flag = 0;
+}
+</code></pre>
+<blockquote>
+<p>问题也很明显，软件不够用，判别语句和接下来要执行的语句可能被另一个线程打断，需要硬件支持。</p>
+</blockquote>
+<p>基于原子交换指令就可以修改之前的lock：</p>
+<pre><code class="language-c">void lock(lock_t *lock)
+{
+    // 1: 被其他线程锁住了，循环
+    // 0: 设置为1，返回0，lock返回
+    while(TestAndSet(&amp;lock-&gt;flag,1)==1)
+        ;
+}
+</code></pre>
+<p>单处理器需要时钟中断自旋的线程运行其他线程。自旋线程永远不会放弃CPU。</p>
+<p>评价自旋锁：正确性有了，公平性完全没谈，性能单CPU开销非常大，需要自旋时间片等操作系统时钟中断运行另一个线程释放锁再回到自旋的线程，多CPU性能不错，因为临界区一般很短，很快就能使用。</p>
+<p>链接的加载和条件式存储实现自旋锁如下：</p>
+<pre><code class="language-c">void lock(lock_t *lock)
+{
+    while (1) 
+    {
+        while (LoadLinked(&amp;lock-&gt;flag) == 1)
+            ;
+        if(StoreConditional(&amp;lock-&gt;flag,1)==1)
+            return;  // 设置锁成功return，失败loop，条件存储只有一个能成功
+    }
+}
+</code></pre>
+<p>同样，通过获取并加一也可以实现锁。</p>
+<pre><code class="language-c">// 仅为实现逻辑，应为硬件提供支持
+int FetchAndAdd(int *ptr)
+{
+    int old = *ptr;
+    *ptr = old + 1;
+    return old;
+}
+typedef struct lock_t
+{
+    int ticket;
+    int turn;
+} lock_t;
+
+void lock_init(lock_t *lock)
+{
+    lock-&gt;ticket = 0;
+    lock-&gt;turn = 0;
+}
+
+void lock(lock_t *lock)
+{
+    // 想加锁，取个票排个号
+    int myturn = FetchAndAdd(&amp;lock-&gt;ticket);
+    while (lock-&gt;turn != myturn)
+        ; // spin
+}
+
+void unlock(lock_t *lock)
+{
+    // 解锁，叫下一个号
+    FetchAndAdd(&amp;lock-&gt;turn);
+}
+</code></pre>
+<p>fetch and add 能保证所有线程都能抢到锁。总会排到号的。</p>
+<p>自旋的问题：自旋是消耗CPU的，单处理器下还是整个时间片，因为它不会让出CPU。</p>
+<p>第一种解决办法是主动放弃CPU。原代码为：</p>
+<pre><code class="language-c">while (mutex-&gt;flag == 1) // TEST the flag
+    ;                    // spin-wait (do nothing)
+</code></pre>
+<p>修改为：</p>
+<pre><code class="language-c">while (mutex-&gt;flag == 1) // TEST the flag
+    yield();             // 放弃CPU
+</code></pre>
+<p><code>yield()</code>是操作系统原语，主动放弃CPU，让running变为ready态（线程三种状态：运行，就绪和阻塞，有的分的更细致）。</p>
+<p>两个线程<code>yield()</code>不错，很多线程抢一个锁的问题在于ready态可能下一个还是运行它，就会跳来跳去，而上下文切换成本很高。</p>
+<p>对应的一种解决办法是不跳到ready态，而是blocked。</p>
+<p>上面的锁就可以改进为一个队列，一个<code>park()</code>让线程休眠，一个<code>unpark()</code>唤醒线程。</p>
+<p>两阶段锁：先自旋一段时间，没有获取到再睡眠。</p>
+<h2 id="基于锁的并发数据结构">基于锁的并发数据结构</h2>
+<h3 id="并发计数器">并发计数器</h3>
+<p>通常做法：</p>
+<pre><code class="language-c">typedef struct {
+    int value;
+    pthread_mutex_t lock;
+}counter;
+
+void init(counter *c)
+{
+    pthread_mutex_init(&amp;c-&gt;lock,NULL);
+    c-&gt;value = 0;
+}
+
+void inc(counter *c,int n)
+{
+    /pthread_mutex_lock(&amp;c-&gt;lock);
+    c-&gt;value += n;
+    pthread_mutex_unlock(&amp;c-&gt;lock);   
+}
+
+int get(counter *c,int n)
+{
+    pthread_mutex_lock(&amp;c-&gt;lock);
+    int ret = c-&gt;value;
+    pthread_mutex_unlock(&amp;c-&gt;lock);  
+    return ret; 
+}
+</code></pre>
+<p>测试代码如下：</p>
+<pre><code class="language-c">void *inc10000000(void *p)
+{
+    counter *c = (counter *)p;
+    for(int i=0;i&lt;10000000;i++)
+        inc(c,1);
+}
+
+int main()
+{
+    counter c;
+    init(&amp;c);
+    pthread_t pid1;
+    pthread_t pid2;
+    pthread_create(&amp;pid1,NULL,inc10000000,(void *)&amp;c);
+    pthread_create(&amp;pid2,NULL,inc10000000,(void *)&amp;c);
+    pthread_join(pid1,NULL);
+    pthread_join(pid2,NULL);
+    printf(&quot;done, c-&gt;value: %d\n&quot;,c.value);
+    return 0;
+}
+</code></pre>
+<p>结果对比：</p>
+<pre><code class="language-shell"># 不加锁
+l@vm:~/ostep$ time ./a.out 
+done, c-&gt;value: 10804806  # 不加锁结果混乱
+
+real    0m0.105s    
+user    0m0.199s
+sys    0m0.004s
+
+# 加锁
+l@vm:~/ostep$ time ./a.out 
+done, c-&gt;value: 20000000
+
+real    0m0.301s  # 加锁速度变慢
+user    0m0.295s
+sys    0m0.008s
+</code></pre>
+<p>一种改良机制：局部锁，懒惰方法，局部加到一定值才请求全局锁。</p>
+<pre><code class="language-c">#define NCPU 4
+
+typedef struct {
+    int value;
+    pthread_mutex_t lock;
+
+    int localv[NCPU];
+    pthread_mutex_t locallock[NCPU];
+}counter;
+
+typedef struct {
+    counter *c;
+    int who;
+}counterinfo;
+
+void init(counter *c)
+{
+    pthread_mutex_init(&amp;c-&gt;lock,NULL);
+    c-&gt;value = 0;
+    for(int i=0;i&lt;NCPU;i++)
+    {
+        c-&gt;localv[i] = 0;
+        pthread_mutex_init(&amp;c-&gt;locallock[i],NULL);
+    }
+}
+
+void inc(counter *c,int n)
+{
+    pthread_mutex_lock(&amp;c-&gt;lock);
+    c-&gt;value += n;
+    pthread_mutex_unlock(&amp;c-&gt;lock); 
+}
+
+void inc2(counter *c,int n,int who)
+{
+    pthread_mutex_lock(&amp;c-&gt;locallock[who]);
+    c-&gt;localv[who] += n;
+    if(c-&gt;localv[who]&gt;50)
+    {
+        inc(c,c-&gt;localv[who]);
+        c-&gt;localv[who] = 0;
+    }
+    pthread_mutex_unlock(&amp;c-&gt;locallock[who]);  
+}
+</code></pre>
+<p>测试代码：</p>
+<pre><code class="language-c">void *inc10000000(void *p)
+{
+    counterinfo *c1 = (counterinfo *)p;
+    counter *c = c1-&gt;c;
+    int who = c1-&gt;who;
+    for(int i=0;i&lt;10000000;i++)
+        inc2(c,1,who);
+    inc(c,c-&gt;localv[who]);
+}
+
+int main()
+{
+    counter c;
+    init(&amp;c);
+    pthread_t pids[NCPU];
+    counterinfo cinfo[NCPU];
+    for(int i=0;i&lt;NCPU;i++)
+    {
+        cinfo[i].c = &amp;c;
+        cinfo[i].who = i;
+        pthread_create(&amp;pids[i],NULL,inc10000000,(void *)&amp;cinfo[i]);
+    }
+    for(int i=0;i&lt;NCPU;i++)
+        pthread_join(pids[i],NULL);
+    printf(&quot;done, c-&gt;value: %d\n&quot;,c.value);
+    return 0;
+}
+</code></pre>
+<p>在树莓派上测试的，arm 4核。</p>
+<pre><code class="language-shell"># 局部变量加锁
+pi@raspberrypi:~/ostep $ time ./a.out 
+done, c-&gt;value: 40000000
+
+real    0m5.126s
+user    0m16.283s
+sys    0m0.001s
+
+# 局部变量不加锁
+pi@raspberrypi:~/ostep $ time ./a.out 
+done, c-&gt;value: 40000000
+
+real    0m0.264s
+user    0m0.837s
+sys    0m0.031s
+</code></pre>
+<blockquote>
+<p>在限定条件下，如此例，局部不加锁应该也是可以的。这里的懒惰方法按我的测试其实是效果变差了的，这个例子应该是临界区太短，加锁解锁的开销甚至比等待全局锁的时间还大。然后我将inc任务加了个延迟，懒惰方法的优势就比较明显了。</p>
+</blockquote>
+<h3 id="并发链表">并发链表</h3>
+<p>全局锁没啥说的。</p>
+<p>过手锁：hand over hand locking，也叫锁耦合，lock coupling。每个节点都有一个锁，但是缺陷也和之前的一样，加锁和解锁开销巨大，反而比单锁的还慢。</p>
+<h3 id="并发队列">并发队列</h3>
+<p>同样可以用全局锁。</p>
+<p>这个根据队列的性质，只能处理开头和结尾的节点，所以入队列和出队列可以两把锁并发执行。</p>
+<h2 id="参考">参考</h2>
+<p>Operating Systems: Three Easy Pieces</p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;"
+			href="https://github.com/hqinglau/yadihttpd">yadihttpd</a></div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript">
+    document.getElementById("banquan-yadi").style.display ="";
+  document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"concurrencyLock.html";
+  document.getElementById("blogaddr-a").innerHTML="锁的实现和并发数据结构";
+</script></body></html> 

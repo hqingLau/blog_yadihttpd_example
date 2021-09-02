@@ -1,0 +1,1617 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>linux程序设计笔记
+_hqinglau的博客_Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="刘欢庆的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="https://orzlinux.cn/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-server fa-stack-1x"></i>
+            </span>
+            File Server
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div><h1>linux程序设计笔记</h1><hr>
+<h1 id="linux-program">Linux Program</h1>
+<h2 id="shell">shell</h2>
+<h3 id="here文档">here文档</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210407162907.png" alt=""></p>
+<h3 id="vimdiff查看不同文件">vimdiff查看不同文件</h3>
+<pre><code class="language-shell">[hqinglau@centos markdown]$ vimdiff linux程序设计笔记.md linux程序设计笔记.md.0
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210418021503.png" alt="image-20210418021500926"></p>
+<h2 id="第三章-文件操作">第三章 文件操作</h2>
+<h3 id="32-系统调用函数">3.2 系统调用函数</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210407170136.png" alt="image-20210407170136462"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210407190100.png" alt="image-20210407190100884"></p>
+<ul>
+<li>系统调用</li>
+</ul>
+<pre><code class="language-cpp">int fd = open(&quot;./makefile&quot;,O_RDONLY);
+char firstTwo[3] = {0};
+read(fd,firstTwo,2);
+printf(&quot;%s\n&quot;,firstTwo);
+lseek(fd,5,SEEK_CUR);
+read(fd,firstTwo,2);
+printf(&quot;%s\n&quot;,firstTwo);
+
+struct stat st;
+fstat(fd,&amp;st); //获取文件属性
+time_t t = st.st_ctim.tv_sec;
+printf(&quot;%s\n&quot;,asctime(localtime(&amp;t))); //转化为字符串时间
+printf(&quot;link: %d\n&quot;,st.st_nlink);  // 硬链接个数
+</code></pre>
+<ul>
+<li>IO库函数</li>
+</ul>
+<pre><code class="language-cpp">FILE *fd = fopen(&quot;./makefile&quot;,&quot;rb&quot;);
+char chrs[11];
+int readn;
+//readn = fread(chrs,1,10,fd);
+//output: 10: a.out: tes
+readn = fread(chrs,5,2,fd);
+//output: 2: a.out: tes
+if(readn&gt;0)
+{
+chrs[readn*5] = &#39;\0&#39;;
+printf(&quot;%d: %s\n&quot;,readn,chrs);
+
+}
+fclose(fd);
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210408195119.png" alt="image-20210408195119811"></p>
+<h3 id="36-输入和输出">3.6 输入和输出</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210408200945.png" alt="image-20210408200945286"></p>
+<p>%*s表示忽略</p>
+<pre><code class="language-cpp">scanf(&quot;hi %s %*s %d haha&quot;,chrs,&amp;num);
+//星号（*）开头的控制符表示对应位置上的输入数据将被忽略。
+//这意味着，这个数据不会被保存，因此不需要使用一个变量来接收它。
+printf(&quot;output: %s %d\n&quot;,chrs,num);
+</code></pre>
+<h3 id="37-文件和目录的维护">3.7 文件和目录的维护</h3>
+<pre><code class="language-cpp">printf(&quot;%d\n&quot;,chmod(&quot;./1m.file&quot;,S_IWUSR|S_IROTH|S_IRGRP));
+// 没有权限输出-1，正常输出0
+</code></pre>
+<p>一些系统调用</p>
+<pre><code class="language-cpp">char cwd[256];
+mkdir(&quot;newdir&quot;,S_IRUSR|S_IWUSR|S_IXUSR);
+chdir(&quot;newdir&quot;);
+getcwd(cwd,255);
+printf(&quot;%s\n&quot;,cwd);
+chdir(&quot;../&quot;);
+rmdir(&quot;newdir&quot;);
+</code></pre>
+<p><code>[hqinglau@VM-centos vscodeFile]$ ./a.out </code>
+<code>/home/hqinglau/vscodeFile/newdir</code></p>
+<h3 id="38-扫描目录">3.8 扫描目录</h3>
+<pre><code class="language-cpp">void printdir(char *dir,int depth)
+{
+    DIR *dp = opendir(dir);
+    struct dirent *entry;
+    struct  stat statbuf;
+    
+    chdir(dir);
+
+    while((entry=readdir(dp))!=NULL)
+    {
+        lstat(entry-&gt;d_name,&amp;statbuf);
+        if(S_ISDIR(statbuf.st_mode))
+        {
+            if(strcmp(&quot;.&quot;,entry-&gt;d_name)==0||
+                strcmp(&quot;..&quot;,entry-&gt;d_name)==0)
+                continue;
+
+            //*代表缩进
+            printf(&quot;%*s%s/\n&quot;,depth,&quot;&quot;,entry-&gt;d_name);
+            printdir(entry-&gt;d_name,depth+4);
+        }
+        else printf(&quot;%*s%s\n&quot;,depth,&quot;&quot;,entry-&gt;d_name);
+    }
+    chdir(&quot;..&quot;);
+    closedir(dp);
+}
+
+int main()
+{
+    printdir(&quot;./&quot;,0);
+    printf(&quot;done.\n&quot;);
+    return 0;
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210409125028.png" alt="image-20210409125028279"></p>
+<h3 id="39-错误处理">3.9 错误处理</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210408211924.png" alt="image-20210408211924548"></p>
+<h2 id="第四章-linux环境">第四章 Linux环境</h2>
+<h3 id="42-环境变量">4.2 环境变量</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210409151427.png" alt="image-20210409151427093"></p>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+extern char ** environ;
+int main()
+{
+    char **env = environ;
+    while(*env) {
+        printf(&quot;%s\n&quot;,*env);
+        env++;
+    }
+    return 0;
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210409151504.png" alt="image-20210409151504005"></p>
+<h3 id="43-时间日期">4.3 时间日期</h3>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;time.h&gt;
+#include &lt;unistd.h&gt;
+int main()
+{
+    time_t cur_time,next_time;
+    // 如果tloc不是一个空指针，time函数还会把返回值写入tloc指针指向的位置。
+    cur_time = time((time_t *)0);
+    printf(&quot;cur time is %ld\n&quot;,cur_time);
+    sleep(2);
+    next_time = time((time_t *)0);
+    printf(&quot;nxt time is %ld\n&quot;,next_time);
+    // 该函数用来计算两个time_t值之间的秒数并以double类型返回它。
+    double diff = difftime(next_time,cur_time);
+    printf(&quot;diff time is %f\n&quot;,diff);
+    return 0;
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210409153944.png" alt="image-20210409153944099"></p>
+<p>tm结构</p>
+<pre><code class="language-cpp"> struct tm{
+     int tm_sec;            //取值[0,59]，非正常情况下可到达61
+     int tm_min;            //取值同上
+     int tm_hour;            //取值[0,23]
+     int tm_mday;            //取值[1,31]
+     int tm_mon;            //取值[0,11]
+     int tm_year;            //1900年起距今的年数
+     int tm_wday;            //取值[0,6]
+     int tm_yday;            //取值[0，366]
+     int tm_isdst;            //夏令时标志
+ };
+</code></pre>
+<p>要把已分解出来的tm结构再转换为原始的time_t时间值，你可以使用mktime函数。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210409154618.png" alt="image-20210409154618054"></p>
+<p>strftime格式化</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210409155121.png" alt="image-20210409155121139"></p>
+<pre><code class="language-cpp">time_t cur_time,next_tim;
+cur_time = time((time_t *)0);
+printf(&quot;cur time is %ld\n&quot;,cur_time);
+char *stime = asctime(localtime(&amp;cur_time));
+printf(&quot;local time: %s&quot;,stime);
+printf(&quot;ctime local time: %s&quot;,ctime(&amp;cur_time));
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210409161229.png" alt="image-20210409161229939"></p>
+<h3 id="44-用户信息">4.4 用户信息</h3>
+<h4 id="suid">SUID</h4>
+<blockquote>
+<p>Linux运行的每个程序实际上都是以某个用户的名义在运行，因此都有一个关联的UID。</p>
+<p>你可以对程序进行设置，让它们的运行看上去好像是由另一个用户启动的。当一个程序的SUID位被置位时，它的运行就好像是由该可执行文件的属主启动的。当su命令被执行时，程序的运行就好像它是由超级用户启动的，它随后验证用户的访问权限，将UID改为目标账户的UID值并执行该账户的登录shell。采用这种方式还可以允许一个程序的运行就好像是由另一个用户启动的，它经常被系统管理员用来执行一些维护任务。</p>
+</blockquote>
+<pre><code class="language-cpp">uid_t id = getuid();
+char *name = getlogin();
+printf(&quot;%d: %s\n&quot;,id,name); // 1000: hqinglau
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210409161957.png" alt="image-20210409161957874"></p>
+<p>uid变了，name没变。</p>
+<p>获取详细信息</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210409161737.png" alt="image-20210409161737201"></p>
+<pre><code class="language-cpp">getuid(); // 当前uid
+geteuid(); // 刚进入程序的uid
+</code></pre>
+<h2 id="第七章-数据管理">第七章 数据管理</h2>
+<blockquote>
+<p>const会放到text段</p>
+<p>全局-&gt; data 段</p>
+</blockquote>
+<h3 id="72-锁文件">7.2 锁文件</h3>
+<p>那这个就是锁的原理了吧（好像并不是，只是个锁文件）。</p>
+<pre><code class="language-cpp">int fd = open(&quot;/tmp/LCK&quot;,O_RDWR|O_CREAT|O_EXCL,0444);
+if(fd==-1)
+{
+    printf(&quot;%d: \n&quot;,errno);
+    perror(&quot;error: &quot;);
+}
+else
+{
+    printf(&quot;success\n&quot;);
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210412200604.png" alt="image-20210412200557566"></p>
+<p>锁例子</p>
+<pre><code class="language-cpp">const char *lock_file = &quot;/tmp/LCK.test&quot;;
+int main()
+{
+    int fd;
+    int tries = 10;
+    while(tries--)
+    {
+        fd = open(lock_file,O_CREAT|O_RDWR|O_EXCL,0444);
+        if(fd==-1)
+        {
+            printf(&quot;%d - lock already present\n&quot;,getpid());
+            sleep(3);
+        }
+        else
+        {
+            printf(&quot;%d - access\n&quot;,getpid());
+            sleep(1);
+            close(fd);
+            unlink(lock_file);
+            sleep(2);
+        }
+    }
+    return 0;
+}
+</code></pre>
+<p>区域锁定</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210414203329.png" alt="image-20210414203321970"></p>
+<pre><code class="language-cpp">/**
+ * @file test.cc
+ * @author hqinglau
+ * @brief 区域锁测试1
+ * @version 0.1
+ * @date 2021-04-14
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;time.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;unistd.h&gt;
+
+const char *test_file = &quot;/tmp/LCK.test&quot;;
+int main()
+{
+    int file_desc;
+    int byte_count;
+    char *byte_to_write = &quot;A&quot;;
+    struct flock region_1;
+    struct flock region_2;
+    int res;
+
+    file_desc = open(test_file,O_RDWR|O_CREAT,0666);
+    if(!file_desc) {
+        fprintf(stderr,&quot;unable to open %s for r/w\n&quot;,test_file);
+        exit(EXIT_FAILURE);
+    }
+    for(byte_count=0;byte_count&lt;100;byte_count++) {
+        write(file_desc,byte_to_write,1);
+    }
+    region_1.l_type = F_RDLCK;
+    region_1.l_whence = SEEK_SET;
+    region_1.l_start = 10;
+    region_1.l_len=20;
+
+    region_2.l_type = F_WRLCK;
+    region_2.l_whence = SEEK_SET;
+    region_2.l_start = 40;
+    region_2.l_len=10;
+
+    printf(&quot;Process %d locking file\n&quot;,getpid());
+    res = fcntl(file_desc,F_SETLK,&amp;region_1);
+    if(res==-1) fprintf(stderr,&quot;Fail lk region1\n&quot;);
+    res = fcntl(file_desc,F_SETLK,&amp;region_2);
+    if(res==-1) fprintf(stderr,&quot;Fail lk region2\n&quot;);
+
+    sleep(60);
+    printf(&quot;Process %d closing file\n&quot;,getpid());
+    close(file_desc);
+    exit(EXIT_SUCCESS);
+}
+</code></pre>
+<pre><code class="language-cpp">/**
+ * @file lock.cc
+ * @author hqinglau
+ * @brief 区域锁测试2
+ * @version 0.1
+ * @date 2021-04-14
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;time.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;unistd.h&gt;
+
+const char *test_file = &quot;/tmp/LCK.test&quot;;
+const int SIZE_TO_TRY = 5;
+
+void show_lock_info(struct flock*to_show) {
+    printf(&quot;\tl_type %d, &quot;,to_show-&gt;l_type);
+    printf(&quot;l_whence %d, &quot;,to_show-&gt;l_whence);
+    printf(&quot;l_start %d, &quot;,to_show-&gt;l_start);
+    printf(&quot;l_len %d, &quot;,to_show-&gt;l_len);
+    printf(&quot;l_pid %d\n&quot;,to_show-&gt;l_pid);
+}
+
+int main()
+{
+    int file_desc;
+    int start_byte;
+    struct flock region_1;
+    struct flock region_2;
+    int res;
+
+    file_desc = open(test_file,O_RDWR|O_CREAT,0666);
+    if(!file_desc) {
+        fprintf(stderr,&quot;unable to open %s for r/w\n&quot;,test_file);
+        exit(EXIT_FAILURE);
+    }
+    for(start_byte=0;start_byte&lt;100;start_byte+=SIZE_TO_TRY) {
+        region_1.l_type = F_WRLCK;
+        region_1.l_whence = SEEK_SET;
+        region_1.l_start = start_byte;
+        region_1.l_len=SIZE_TO_TRY;
+        region_1.l_pid=-1;
+        printf(&quot;testing f_wrlck on region from %d to %d&quot;,start_byte,start_byte+SIZE_TO_TRY);
+        res = fcntl(file_desc,F_GETLK,&amp;region_1);
+        if(res==-1) {
+            fprintf(stderr,&quot;Fail getlk region1\n&quot;);
+            exit(EXIT_SUCCESS);
+        }
+        // 只有当没办法获取锁时才会！=-1,但是不锁，只获取状态
+        if(region_1.l_pid!=-1) {
+            printf(&quot;lock would fail\n&quot;);
+            show_lock_info(&amp;region_1);
+        }
+        else {
+            printf(&quot;lock would succeed\n&quot;);
+        }
+    }
+    
+
+    close(file_desc);
+    exit(EXIT_SUCCESS);
+}
+</code></pre>
+<h1 id="游双">游双</h1>
+<h2 id="第六章-高级io">第六章 高级io</h2>
+<h3 id="61-pipe">6.1 pipe</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210422215250.png" alt="image-20210422215250796"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210422215333.png" alt="image-20210422215333422"></p>
+<h3 id="62-dup">6.2 dup</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210415223932.png" alt="image-20210415223932696"></p>
+<h3 id="telnet不上是防火墙问题">telnet不上是防火墙问题</h3>
+<pre><code class="language-shell">[hqinglau@centos ~]$ sudo firewall-cmd --permanent --add-rich-rule=&quot;rule family=ipv4 source address=202.107.195.199 accept&quot;
+[sudo] password for hqinglau: 
+success
+[hqinglau@centos ~]$ sudo firewall-cmd --reload
+success
+</code></pre>
+<p>得到回复：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210416145427.png" alt="image-20210416145420404"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210422195036.png" alt="image-20210422195036010"></p>
+<p>安装完成后，将xinetd服务加入开机自启动:</p>
+<blockquote>
+<p>systemctl enable xinetd.service</p>
+<p>将telnet服务加入开机自启动：</p>
+<p>systemctl enable telnet.socket</p>
+<p>最后，启动以上两个服务即可：</p>
+<p>systemctl start telnet.socket</p>
+<p> systemctl start xinetd（或service xinetd start）</p>
+</blockquote>
+<h3 id="64-sendfile">6.4 sendfile</h3>
+<p>完全在内核中操作，避免内核缓冲区和用户缓冲区数据拷贝，效率很高，称为零拷贝。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210416162621.png" alt="image-20210416162621634"></p>
+<p>in必须指向真实文件。out必须是一个socket。<strong>几乎是专门为网络传输文件设计的。</strong></p>
+<h3 id="数据拷贝">数据拷贝</h3>
+<pre><code class="language-c">while((n = read(diskfd, buf, BUF_SIZE)) &gt; 0)
+    write(sockfd, buf , n);
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210416150933.png" alt="image-20210416150933892"></p>
+<p>mmap 内核态和用户态缓冲区共享</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210416160352.png" alt="image-20210416160352798"></p>
+<p>sendfile 无用户态操作</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210416160432.png" alt="image-20210416160432310"></p>
+<h3 id="66-splice函数">6.6 splice函数</h3>
+<p>零拷贝。至少有一个是管道文件描述符。</p>
+<pre><code class="language-cpp">int pipefd[2];
+ret = pipe(pipefd);
+ret = splice(connfd,NULL,pipefd[1],NULL,32768,SPLICE_F_MORE|SPLICE_F_MOVE);
+ret = splice(pipefd[0],NULL,connfd,NULL,32768,SPLICE_F_MORE|SPLICE_F_MOVE);
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210416164129.png" alt="image-20210416164129658"></p>
+<h3 id="67-tee函数">6.7 tee函数</h3>
+<p>零拷贝。都是管道文件。不消耗数据，源文件描述符可用于后序操作。</p>
+<pre><code class="language-cpp">// 管道 文件
+splice(STDIN_FILENO,NULL,pipefd_stdout[1],NULL,32768,SPLICE_F_MOVE|SPLICE_F_MORE);
+tee(pipefd_stdout[0],pipefd_file[1],32768,SPLICE_F_MORE|SPLICE_F_MOVE);
+splice(pipefd_file[0],NULL,filefd,NULL,32768,SPLICE_F_MOVE|SPLICE_F_MORE);
+splice(pipefd_stdout[0],NULL,STDOUT_FILENO,NULL,32768,SPLICE_F_MORE|SPLICE_F_MOVE);
+</code></pre>
+<p>我的测试是：O_TRUNC和O_APPEND同时出现会清空文件，啥也写不进去。</p>
+<h3 id="防火墙策略修改">防火墙策略修改</h3>
+<pre><code class="language-shell">sudo firewall-cmd --permanent --add-rich-rule=&quot;rule family=ipv4 source address=10.66.101.224 accept&quot;
+sudo firewall-cmd --reload
+</code></pre>
+<h2 id="第七章-服务器程序规范">第七章 服务器程序规范</h2>
+<h3 id="71-日志">7.1 日志</h3>
+<p>syslog服务器的配置文件为/etc/rsyslog.conf，syslog( )函数把想记录的日志信息都发送给日志服务器，但此日志最终是否记录到文件或发送给远程服务器，则是由此配置文件来决定的，该配置文件就是告诉日志服务器要记录那些类型和级别的日志，如何记录等信息。</p>
+<pre><code class="language-cpp">#include &lt;syslog.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc,char *argv[])
+{
+    openlog(argv[0],LOG_CONS|LOG_PID,LOG_USER);
+    syslog(LOG_DEBUG,&quot;test: %s&quot;,&quot;string&quot;);
+    setlogmask(LOG_UPTO(LOG_ERR));
+    //syslog(LOG_INFO,&quot;test: %s&quot;,&quot;string2&quot;);
+    //info不会显示
+    syslog(LOG_CRIT,&quot;crit: %s&quot;,&quot;string2&quot;);
+    closelog();
+    return 0;
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210416224144.png" alt="image-20210416224140983"></p>
+<p>在/etc/rsyslog.conf作配置</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210416224246.png" alt="image-20210416224243326"></p>
+<h3 id="73-进程间关系">7.3 进程间关系</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210417235409.png" alt="image-20210417235406688"></p>
+<p>作业</p>
+<p>作业与进程组的区别：如果作业中的某个进程又创建了子进程，则子进程不属于作业。一旦作业运行结束，Shell就把自己提到前台，如果原来的前台进程还存在（如果这个子进程还没终止），它自动变为后台进程组。</p>
+<pre><code class="language-cpp">#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(int argc,char *argv[])
+{
+    pid_t id = fork();
+    assert(id&gt;=0);
+    if(id==0) // new process
+    {
+        while(1)
+        {
+            printf(&quot;child\n&quot;);
+            sleep(1);
+        }
+    }
+    else
+    {
+        int count = 0;
+        while(count&lt;5)
+        {
+            printf(&quot;father\n&quot;);
+            ++count;
+            sleep(1);
+        }
+        exit(EXIT_SUCCESS);
+    }
+    return 0;
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210418001124.png" alt="image-20210418001121237"></p>
+<pre><code class="language-shell">[hqinglau@centos server]$ for name in $(ls); do if [[ $name =~ ^[0-9][^0-9]+.*\.cc$ ]];then mv $name 0$name; fi; done
+</code></pre>
+<p>给单号文件前面加个零。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210418010031.png" alt="image-20210418010030418"></p>
+<h3 id="getpgid">getpgid()</h3>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;assert.h&gt;
+
+int main()
+{
+    pid_t id = fork();
+    pid_t pid = getpid();
+    pid_t gid = getpgid(pid);
+    assert(id&gt;=0);
+    if(id==0) //child
+    {
+        // 默认继承父进程的gid（应该）
+        //setpgid(0,gid);
+        while(1)
+        {
+            printf(&quot;child\n&quot;);
+            sleep(1);
+        }
+    }
+    else
+    {
+        int count = 0;
+        while(count&lt;5)
+        {
+            printf(&quot;father\n&quot;);
+            ++count;
+            sleep(1);
+        }
+        sleep(10);
+        exit(EXIT_SUCCESS);
+    }
+    return 0;
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210418011058.png" alt="image-20210418011056844"></p>
+<h3 id="系统资源限制">系统资源限制</h3>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;sys/resource.h&gt;
+
+int main()
+{
+    rlimit rli;
+    getrlimit(RLIMIT_NPROC,&amp;rli);
+    printf(&quot;proc -- cur: %d, max: %d\n&quot;,rli.rlim_cur,rli.rlim_max);
+    getrlimit(RLIMIT_NOFILE,&amp;rli);
+    printf(&quot;fd -- cur: %d, max: %d\n&quot;,rli.rlim_cur,rli.rlim_max);
+    getrlimit(RLIMIT_STACK,&amp;rli);
+    printf(&quot;stack -- cur: %d, max: %d\n&quot;,rli.rlim_cur,rli.rlim_max);
+    getrlimit(RLIMIT_DATA,&amp;rli);
+    printf(&quot;data -- cur: %d, max: %d\n&quot;,rli.rlim_cur,rli.rlim_max);
+    // [hqinglau@centos server]$ ./a.out 
+    // proc -- cur: 7093, max: 7093
+    // fd -- cur: 100002, max: 100002
+    // stack -- cur: 8388608, max: -1
+    // data -- cur: -1, max: -1
+    return 0;
+}
+</code></pre>
+<h3 id="dir">dir</h3>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;sys/resource.h&gt;
+
+int main()
+{
+    char curdir[64];
+    getcwd(curdir,64);
+    printf(&quot;curdir: %s\n&quot;,curdir);
+    
+    int ret = chdir(&quot;/home/&quot;);
+    if(ret==-1)
+        perror(&quot;chdir false: &quot;);
+    getcwd(curdir,64);
+    printf(&quot;curdir: %s\n&quot;,curdir);
+    // [hqinglau@centos server]$ ./a.out 
+    // curdir: /home/hqinglau/vscodeFile/server
+    // curdir: /home
+    return 0;
+}
+</code></pre>
+<h3 id="deamonsize">deamonsize</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210418020954.png" alt="image-20210418020951653"></p>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;sys/resource.h&gt;
+#include &lt;sys/fcntl.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/types.h&gt;
+
+int main()
+{
+    pid_t pid = fork();
+    assert(pid&gt;=0);
+    if(pid&gt;0) exit(0);
+    umask(0);
+    pid_t sid = setsid();
+    assert(sid&gt;=0);
+    chdir(&quot;/&quot;);
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
+
+    open(&quot;/dev/null&quot;,O_RDONLY);
+    open(&quot;/dev/null&quot;,O_RDWR);
+    open(&quot;/dev/null&quot;,O_RDWR);
+    return 0;
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210418020840.png" alt="image-20210418020836890"></p>
+<h2 id="第八章-服务器框架">第八章 服务器框架</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210418215258.png" alt="image-20210418214658243"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210418215632.png" alt="image-20210418215630580"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210418215731.png" alt="image-20210418215729032"></p>
+<p>阻塞和非阻塞的概念能应用于所有文件描述符。</p>
+<p>IO复用本身阻塞，提高效率在于同事监听多个IO能力。</p>
+<h3 id="84-事件处理模式">8.4 事件处理模式</h3>
+<p>同步-Reactor：只负责监听是否有事发生</p>
+<p>异步-Proactor：所有IO操作都交给主线程和内核</p>
+<p>同步I/O模拟Proactor</p>
+<h3 id="85-并发模式">8.5 并发模式</h3>
+<p>半同步/半异步：(这里的同步异步指的是按代码序列执行还是由系统事件驱动)</p>
+<p>同步线程处理客户逻辑，异步线程处理IO事件。</p>
+<h2 id="第九章-io复用">第九章 IO复用</h2>
+<h3 id="文件描述符就绪条件">文件描述符就绪条件</h3>
+<p>socket中，socket可读情况：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210420162231.png" alt="image-20210420162231698"></p>
+<p>可写情况：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210420162218.png" alt="image-20210420162218785"></p>
+<h3 id="带外数据">带外数据</h3>
+<p>许多的传输层都具有带外数据（也称为 经加速数据 ）的概念，想法就是连接的某段发生了重要的事情，希望迅速的通知给对端。这里的迅速是指这种通知应该在已经排队了的带内数据之前发送。也就是说，带外数据拥有更高的优先级。带外数据不要求再启动一个连接进行传输，而是使用已有的连接进行传输。</p>
+<p>其中，UDP没有实现带外数据（是个极端哦～）</p>
+<p>TCP中telnet,rlogin,ftp等应用（除了这样的远程非活跃应用之外，几乎很少有使用到带外数据的地方）</p>
+<p><strong>但是TCP是和正常数据一起发的</strong></p>
+<p>TCP的带外数据：</p>
+<p>头部标志： URG位，紧急指针。</p>
+<p>数据包中：一个紧急指针只指向<strong>一个字节</strong>的带外数据的后已字节位置。紧急数据时插在正常数据流中进行传输。紧急指针用于指出带外数据字节在正常字节流中的位置。</p>
+<pre><code class="language-cpp">#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;string.h&gt;
+
+// vscode代码对齐快捷键：
+// 选中文本；
+// Shift  +  Alt  + F     实现代码的对齐；
+
+int main(int argc, char *argv[])
+{
+    if (argc &lt;= 2)
+    {
+        printf(&quot;usage: %s ip_address port_number\n&quot;, basename(argv[0]));
+        return EXIT_FAILURE;
+    }
+
+    const char *ip = argv[1];
+    int port = atoi(argv[2]);
+
+    struct sockaddr_in address;
+    bzero(&amp;address,sizeof(address));
+    address.sin_family = AF_INET;
+    inet_pton(AF_INET,ip,&amp;address.sin_addr);
+    address.sin_port = htons(port);
+    int sock = socket(AF_INET,SOCK_STREAM,0);
+    assert(sock&gt;=0);
+    int ret = bind(sock,(struct sockaddr *)&amp;address,sizeof(address));
+    if(ret==-1)
+    {
+        perror(&quot;bind error: &quot;);
+        return EXIT_FAILURE;
+    }
+    ret = listen(sock,5);
+    assert(ret!=-1);
+
+    struct sockaddr_in client;
+    socklen_t client_addrlen = sizeof(client);
+    int connfd = accept(sock,(struct sockaddr*)&amp;client,&amp;client_addrlen);
+    if(connfd&lt;0)
+    {
+        perror(&quot;accept error: &quot;);
+        close(sock);
+        return EXIT_FAILURE;
+    }
+
+    char buf[1024];
+    fd_set read_fds;
+    fd_set exception_fds;
+    FD_ZERO(&amp;read_fds);
+    FD_ZERO(&amp;exception_fds);
+    while(1)
+    {
+        memset(buf,&#39;\0&#39;,sizeof(buf));
+        // 每次select之后要重新设置文件描述符（文件描述符集合会被内核修改）
+        FD_SET(connfd,&amp;read_fds);
+        FD_SET(connfd,&amp;exception_fds);
+        ret = select(connfd+1,&amp;read_fds,NULL,&amp;exception_fds,NULL);
+        if(ret&lt;0)
+        {
+            printf(&quot;Select failure\n&quot;);
+            break;
+        }
+        if(FD_ISSET(connfd,&amp;read_fds))
+        {
+            ret = recv(connfd,buf,sizeof(buf)-1,0);
+            if(ret==0)
+            {
+                printf(&quot;he left.\n&quot;);
+                break;
+            }
+            if(ret&lt;0)
+            {
+                break;
+            }
+            printf(&quot;get %d bytes of normal data:%s\n&quot;,ret,buf);
+        }
+        else if (FD_ISSET(connfd,&amp;exception_fds))
+        {
+            ret = recv(connfd,buf,sizeof(buf)-1,MSG_OOB);
+            if(ret==0)
+            {
+                printf(&quot;except he left.\n&quot;);
+                break;
+            }
+            if(ret&lt;0)
+            {
+                break;
+            }
+            printf(&quot;get %d bytes of oob data:%s\n&quot;,ret,buf);
+        }
+    }
+
+    close(connfd);
+    close(sock);
+
+    return EXIT_SUCCESS;
+}
+</code></pre>
+<h3 id="poll">POLL</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210420194650.png" alt="image-20210420194650053"></p>
+<h3 id="epoll">epoll</h3>
+<p>比较重要，整张复制</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210420204554.png" alt="image-20210420204554200"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210420204607.png" alt="image-20210420204606922"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210420204622.png" alt="image-20210420204622205"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210420204650.png" alt="image-20210420204650517"></p>
+<pre><code class="language-cpp">#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/epoll.h&gt;
+// vscode代码对齐快捷键：
+// 选中文本；
+// Shift  +  Alt  + F     实现代码的对齐；
+
+const int MAX_EVENT_NUMBER = 1024;
+const int BUFFFER_SIZE = 10;
+
+void addfd2epoll(int epollfd,int fd,bool enable_et)
+{
+    epoll_event event;
+    event.data.fd = fd;
+    event.events = EPOLLIN;
+    if(enable_et)
+    {
+        event.events|=EPOLLET;
+    }
+    epoll_ctl(epollfd,EPOLL_CTL_ADD,fd,&amp;event);
+}
+
+void lt(epoll_event *events,int number,int epollfd,int listenfd)
+{
+    char buf[BUFFFER_SIZE];
+    for(int i=0;i&lt;number;i++)
+    {
+        int sockfd = events[i].data.fd;
+        if(sockfd==listenfd)
+        {
+            struct sockaddr_in client;
+            socklen_t client_addrlen = sizeof(client);
+            int connfd = accept(listenfd, (struct sockaddr *)&amp;client, &amp;client_addrlen);
+            addfd2epoll(epollfd,connfd,false);
+        }
+        else if(sockfd&amp;EPOLLIN)
+        {
+            printf(&quot;event trigger once\n&quot;);
+            memset(buf,&#39;\0&#39;,BUFFFER_SIZE);
+            int ret = recv(sockfd,buf,BUFFFER_SIZE,0);
+            if(ret&lt;=0)
+            {
+                close(sockfd);
+                continue;
+            }
+            printf(&quot;get %d bytes of normal data:%s\n&quot;,ret,buf);
+        }
+        else{
+            printf(&quot;sth else happend.\n&quot;);
+        }
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    if (argc &lt;= 2)
+    {
+        printf(&quot;usage: %s ip_address port_number\n&quot;, basename(argv[0]));
+        return EXIT_FAILURE;
+    }
+
+    const char *ip = argv[1];
+    int port = atoi(argv[2]);
+
+    struct sockaddr_in address;
+    bzero(&amp;address, sizeof(address));
+    address.sin_family = AF_INET;
+    inet_pton(AF_INET, ip, &amp;address.sin_addr);
+    address.sin_port = htons(port);
+    int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+    assert(listenfd &gt;= 0);
+    int ret = bind(listenfd, (struct sockaddr *)&amp;address, sizeof(address));
+    if (ret == -1)
+    {
+        perror(&quot;bind error: &quot;);
+        return EXIT_FAILURE;
+    }
+    ret = listen(listenfd, 5);
+    assert(ret != -1);
+    /**
+     * ==============to do==================== 1
+     */
+
+    epoll_event events[MAX_EVENT_NUMBER];
+    int epollfd = epoll_create(5);
+    assert(epollfd!=-1);
+    addfd2epoll(epollfd,listenfd,true);
+    for(;;)
+    {
+        ret = epoll_wait(epollfd,events,MAX_EVENT_NUMBER,-1); // -1阻塞
+        if(ret&lt;0)
+        {
+            printf(&quot;epoll failure.\n&quot;);
+            break;
+        }
+
+        lt(events,ret,epollfd,listenfd);
+    }
+
+
+    /**
+     * ============== end ==================== 1
+     */
+
+    close(listenfd);
+
+    return EXIT_SUCCESS;
+}
+</code></pre>
+<p>输入大于<code>BUFFER_SIZE</code>时，如：123456789012</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210420211635.png" alt="image-20210420211634969"></p>
+<p>如果是ET的话，就要循环队读，读完为止才可以。但是可以减少触发次数。</p>
+<h3 id="epolloneshot">EPOLLONESHOT</h3>
+<pre><code class="language-cpp">#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/epoll.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;sys/fcntl.h&gt;
+
+const int MAX_EVENT_NUMBER = 1024;
+const int BUFFFER_SIZE = 10;
+
+struct fds
+{
+    int epollfd;
+    int sockfd;
+};
+
+
+void addfd2epoll(int epollfd,int fd,bool oneshot)
+{
+    epoll_event event;
+    event.data.fd = fd;
+    event.events = EPOLLIN;
+    if(oneshot)
+    {
+        event.events|=EPOLLONESHOT;
+    }
+    epoll_ctl(epollfd,EPOLL_CTL_ADD,fd,&amp;event);
+    int old_option = fcntl(fd,F_GETFL);
+    int new_option = old_option|O_NONBLOCK;
+    fcntl(fd,F_SETFL,new_option);
+}
+
+
+void reset_oneshot(int epollfd,int fd)
+{
+    epoll_event event;
+    event.data.fd = fd;
+    event.events = EPOLLIN|EPOLLET|EPOLLONESHOT;
+    epoll_ctl(epollfd,EPOLL_CTL_MOD,fd,&amp;event);
+}
+
+void *worker(void *arg)
+{
+    int sockfd = ((fds*)arg)-&gt;sockfd;
+    int epollfd = ((fds*)arg)-&gt;epollfd;
+    char buf[BUFFFER_SIZE];
+    memset(buf,&#39;\0&#39;,BUFFFER_SIZE);
+    while(1)
+    {
+        int ret = recv(sockfd,buf,BUFFFER_SIZE-1,0);
+        if(ret==0)
+        {
+            close(sockfd);
+            printf(&quot;foreiner closed the connection\n&quot;);
+            break;
+        }
+        else if(ret&lt;0)
+        {
+            if(errno==EAGAIN)
+            {
+                // 非阻塞，到这说明已经5s没有响应了
+                reset_oneshot(epollfd,sockfd);
+                printf(&quot;read later\n&quot;);
+                break;
+            }
+        }
+        else{
+            printf(&quot;get content: %s\n&quot;,buf);
+            sleep(5);
+        }
+    }
+    printf(&quot;end thread receiving data on fd: %d\n&quot;,sockfd);
+}
+
+void lt(epoll_event *events,int number,int epollfd,int listenfd)
+{
+    for(int i=0;i&lt;number;i++)
+    {
+        int sockfd = events[i].data.fd;
+        if(sockfd==listenfd)
+        {
+            struct sockaddr_in client;
+            socklen_t client_addrlen = sizeof(client);
+            int connfd = accept(listenfd, (struct sockaddr *)&amp;client, &amp;client_addrlen);
+            printf(&quot;new connection\n&quot;);
+            addfd2epoll(epollfd,connfd,true);
+        }
+        else if(events[i].events&amp;EPOLLIN)
+        {
+            pthread_t thread;
+            fds fds_for_new_worker;
+            fds_for_new_worker.epollfd = epollfd;
+            fds_for_new_worker.sockfd = sockfd;
+            pthread_create(&amp;thread,NULL,worker,(void *)&amp;fds_for_new_worker);
+        }
+        else{
+            printf(&quot;sth else happend.\n&quot;);
+        }
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    if (argc &lt;= 2)
+    {
+        printf(&quot;usage: %s ip_address port_number\n&quot;, basename(argv[0]));
+        return EXIT_FAILURE;
+    }
+
+    const char *ip = argv[1];
+    int port = atoi(argv[2]);
+
+    struct sockaddr_in address;
+    bzero(&amp;address, sizeof(address));
+    address.sin_family = AF_INET;
+    inet_pton(AF_INET, ip, &amp;address.sin_addr);
+    address.sin_port = htons(port);
+    int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+    assert(listenfd &gt;= 0);
+    int ret = bind(listenfd, (struct sockaddr *)&amp;address, sizeof(address));
+    if (ret == -1)
+    {
+        perror(&quot;bind error: &quot;);
+        return EXIT_FAILURE;
+    }
+    ret = listen(listenfd, 5);
+    assert(ret != -1);
+
+    // struct sockaddr_in client;
+    // socklen_t client_addrlen = sizeof(client);
+    // int connfd = accept(sock, (struct sockaddr *)&amp;client, &amp;client_addrlen);
+    // if (connfd &lt; 0)
+    // {
+    //     perror(&quot;accept error: &quot;);
+    //     close(sock);
+    //     return EXIT_FAILURE;
+    // }
+    /**
+     * ==============to do==================== 1
+     */
+
+    epoll_event events[MAX_EVENT_NUMBER];
+    int epollfd = epoll_create(5);
+    assert(epollfd!=-1);
+    addfd2epoll(epollfd,listenfd,false);
+    for(;;)
+    {
+        ret = epoll_wait(epollfd,events,MAX_EVENT_NUMBER,-1); // -1阻塞
+        if(ret&lt;0)
+        {
+            printf(&quot;epoll failure.\n&quot;);
+            break;
+        }
+
+        lt(events,ret,epollfd,listenfd);
+    }
+
+
+    /**
+     * ============== end ==================== 1
+     */
+
+    close(listenfd);
+
+    return EXIT_SUCCESS;
+}
+</code></pre>
+<h3 id="非阻塞connect">非阻塞connect</h3>
+<p>非阻塞的socket调用connect，而连接没有建立时，返回EINPROGRESS，可以调用select，poll等函数来监听连接失败的socket的可写事件，返回后用getsockopt读取错误码并清除socket的错误，如果错误码是0，表示连接建立成功，否则失败。</p>
+<h2 id="第十章-信号">第十章 信号</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210422211119.png" alt="image-20210422211119702"></p>
+<h3 id="104-统一事件源">10.4 统一事件源</h3>
+<p><strong>信号处理函数中不写逻辑，只是把“信号”通过管道传给主函数，让主函数处理。</strong></p>
+<p>因为：为了避免静态条件，信号处理期间，系统不会再次出发，所以信号处理函数要尽可能快执行完毕。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210422215359.png" alt="image-20210422215359845"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210422215418.png" alt="image-20210422215418314"></p>
+<p>用法：</p>
+<pre><code class="language-cpp">int number = epoll_wait(epollfd,events,MAX_EVENT_NUMBER,-1);
+if((number&lt;0)&amp;&amp;(errno!=EINTR))
+{
+    printf(&quot;epoll failure\n&quot;);
+    break;
+}
+for(int i=0;i&lt;number;i++)
+{
+    int sockfd = events[i].data.fd;
+    if(sockfd==listenfd)
+    {
+        struct sockaddr_in client_address;
+        socklen_t client_addrlength = sizeof(client_address);
+        int connfd = accept(listenfd,(struct sockaddr*) &amp;client_address, &amp;client_addrlength);
+        if(connfd&lt;0)
+        {
+            perror(&quot;error: &quot;);
+            continue;
+        }
+        else{
+            addfd(epollfd,connfd);
+        }
+    }
+    else if((sockfd==pipefd[0])&amp;&amp;(events[i].events&amp;EPOLLIN))
+    {
+        int sig;
+        char signals[1024];
+        ret = recv(pipefd[0],signals,sizeof(signals),0);
+        if(ret==-1) continue;
+        else if(ret==0) continue;
+        else
+        {
+            for(int i=0;i&lt;ret;++i)
+            {
+                switch (signals[i])
+                {
+                    case SIGCHLD:
+                    case SIGHUP:
+                        {
+                            continue;
+                        }
+                    case SIGTERM:
+                    case SIGINT:
+                        {
+                            printf(&quot;hqing got signal.\n&quot;);
+                            stop_server=true;
+                        }
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="105-网络编程相关信号">10.5 网络编程相关信号</h3>
+<p>进程挂起原因：</p>
+<p><strong>（1） 终端用户的请求。当终端用户在自己的程序运行期间发现有可疑问题时，希望暂停使自己的程序静止下来。亦即，使正在执行的进程暂停执行；若此时用户进程正处于就绪状态而未执行，则该进程暂不接受调度，以便用户研究其执行情况或对程序进行修改。我们把这种静止状态成为“挂起状态”。</strong></p>
+<p>（2）父进程的请求。有时父进程希望挂起自己的某个子进程，以便考察和修改子进程，或者协调各子进程间的活动。</p>
+<p>（3）负荷调节的需要。当实时系统中的工作负荷较重，已可能影响到对实时任务的控制时，可由系统把一些不重要的进程挂起，以保证系统能正常运行。</p>
+<p>（4）操作系统的需要。操作系统有时希望挂起某些进程，以便检查运行中的资源使用情况或进行记账。</p>
+<p>（5）对换的需要。为了缓和内存紧张的情况，将内存中处于阻塞状态的进程换至外存上。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210424204156.png" alt="image-20210424204153837"></p>
+<p>ECHO stream 端口</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210424204230.png" alt="image-20210424204227962"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210424204333.png" alt="image-20210424204331413"></p>
+<h2 id="第十一章-定时器">第十一章 定时器</h2>
+<h3 id="111-socket选项">11.1 socket选项</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210424223625.png" alt="image-20210424223623059"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210424222432.png" alt="image-20210424222429604"></p>
+<pre><code class="language-cpp">int timeout_connect(const char *ip, int port, int time)
+{
+  int ret = 0;
+  struct sockaddr_in address;
+  bzero(&amp;address, sizeof(address));
+  address.sin_family = AF_INET;
+  address.sin_port = htons(port);
+  inet_pton(AF_INET, ip, &amp;address.sin_addr);
+
+  int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  assert(sockfd &gt;= 0);
+  struct timeval timeout;
+  timeout.tv_sec = time;
+  timeout.tv_usec = 0;
+  socklen_t len = sizeof(timeout);
+  ret = setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO, &amp;timeout, len);
+  assert(ret != -1);
+  ret = connect(sockfd, (struct sockaddr *)&amp;address, sizeof(address));
+  if (ret == -1)
+  {
+    /* 超时对应的错误号是EINPROGRESS */
+    if(errno==EINPROGRESS)
+    {
+      printf(&quot;connecting timeout, process timeout logic \n&quot;);
+      return -1;
+    }
+    printf(&quot;error occur when connectiong to server\n&quot;);
+    return -1;
+  }
+  return sockfd;
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210424223350.png" alt="image-20210424223348698"></p>
+<h2 id="第十二章-libevent">第十二章 libevent</h2>
+<pre><code class="language-cpp">#include &lt;sys/signal.h&gt;
+#include &lt;event.h&gt;
+
+void signal_cb(int fd, short event, void *argc)
+{
+    struct event_base *base = (event_base *)argc;
+    struct timeval delay = {2, 0};
+    printf(&quot;Caught an interrupt signal; exiting cleanly in two seconds... \n&quot;);
+    event_base_loopexit(base, &amp;delay);
+}
+
+void timeout_cb(int fd, short event, void *argc)
+{
+    printf(&quot;timeout\n&quot;);
+}
+
+int main()
+{
+    // 一个event_base相当于一个Reactor实例
+    struct event_base *base = event_init();
+    // 信号事件处理器
+    struct event *signal_event = evsignal_new(base, SIGINT, signal_cb, base);
+    event_add(signal_event, NULL);
+    // 定时事件处理器
+    timeval tv = {1,0};
+    struct event *timeout_event = evtimer_new(base,timeout_cb,NULL);
+    event_add(timeout_event,&amp;tv);
+
+    // 执行事件循环
+    event_base_dispatch(base);
+
+    // 释放系统资源
+    event_free(timeout_event);
+    event_free(signal_event);
+    event_base_free(base);
+}
+</code></pre>
+<h2 id="第十三章-多进程多线程">第十三章 多进程多线程</h2>
+<p>僵尸进程：待父进程读取子进程的退出信息；父进程挂了。</p>
+<p>如果父进程没有正确处理子进程的返回信息，子进程都将停留在僵尸态，占据内核资源。所以有<code>waitpid</code>等待子进程。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210503224323.png" alt="image-20210503224323643"></p>
+<h3 id="-lpthread和-pthread的区别">-lpthread和-pthread的区别</h3>
+<p>编译程序包括 预编译， 编译，汇编，链接，包含头文件了，仅能说明有了线程函数的声明， 但是还没有实现， 加上-lpthread是在链接阶段，链接这个库。pthread是动态库，需要用-lpthread，所有的动态库都需要用-lxxx来引用用gcc编译使用了POSIX thread的程序时通常需要加额外的选项，以便使用thread-safe的库及头文件，一些老的书里说直接增加链接选项 -lpthread 就可以了而gcc手册里则指出应该在编译和链接时都增加 -pthread 选项。编译选项中指定 <strong>-pthread 会附加一个宏定义 -D_REENTRANT，该宏会导致 libc 头文件选择那些thread-safe的实现</strong>；链接选项中指定 -pthread 则同 -lpthread 一样，只表示链接 POSIX thread 库。由于 libc 用于适应 thread-safe 的宏定义可能变化，因此在编译和链接时都使用 -pthread 选项而不是传统的 -lpthread 能够保持向后兼容，并提高命令行的一致性。目前gcc 4.5.2中已经没有了关于 -lpthread的介绍了。所以以后的多线程编译应该用-pthread，而不是-lpthread。</p>
+<h3 id="do-while0">do while(0)</h3>
+<p>在linux内核中常常会看到do{} while(0)这样的语句，有人疑惑，认为无意义，因为他只执行一次，加不加do{} while(0)小过失完全一样的，那你就错了，没有完全了解do{} while(0)。下面看一个例子：</p>
+<p>定义一个宏：</p>
+<pre><code class="language-cpp">#define SAFE_FREE(p)  do{free(p); p=NULL}  while(0)
+</code></pre>
+<p>假设这里去掉<code>do{....} while(0)</code>，及定义为：</p>
+<pre><code class="language-cpp">#define SAFE_FREE(p)  free(p); p=NULL；
+</code></pre>
+<p>那么以下代码</p>
+<pre><code class="language-cpp">If(NULL!=p)
+   SAFE_FREE(p)
+else
+   .......
+会被展开成：
+If(NULL!=p)
+   free(p); p=NULL；
+else
+   .......
+</code></pre>
+<p>展开存在两个问题：</p>
+<p>因为if分支后面有两个语句，导致else分支没有对应的if，编译失败。
+假设没有else分支，则SAFE_FREE中的第二个语句无论if测试是否通过，都会执行。如何解决以上问题呢？</p>
+<p>有人说给SAFE_FREE的定义加上{}就可以解决上述问题了，即：</p>
+<pre><code class="language-cpp">#define SAFE_FREE(p)  { free(p); p=NULL; }
+</code></pre>
+<p>代码展开如下：</p>
+<pre><code class="language-cpp">If(NULL!=p)
+   { free(p); p=NULL; }
+else
+   .......
+
+// 但是，在C程序中，每个语句后面加分号是一种约定俗成的习惯，那么代码如下：
+If(NULL!=p)
+   { free(p); p=NULL; }；
+else
+   .......
+</code></pre>
+<p>问题又来了，这样else又没有对应的if了，编译还是失败。假设用了do{} while(0)就可以解决上面的一系列问题了，代码如下：</p>
+<pre><code class="language-cpp">If(NULL!=p)
+  do { free(p); p=NULL; } while(0)；
+else
+   .......
+</code></pre>
+<h3 id="sigwait">sigwait</h3>
+<p>在POSIX标准中，当进程收到信号时，如果是多线程的情况，我们是无法确定是哪一个线程处理这个信号。而sigwait是从进程中pending的信号中，取走指定的信号。这样的 话，如果要确保sigwait这个线程收到该信号，那么所有线程含主线程以及这个sigwait线程则必须block住这个信号，因为如果自己不阻塞就没有未决状态(阻塞状态)信号，别的所有线程不阻塞就有可能当信号过来时，被其他的线程处理掉。</p>
+<p>在多线程代码中，总是使用sigwait或者sigwaitinfo或者sigtimedwait等函数来处理信号。</p>
+<p>而不是signal或者sigaction等函数。因为在一个线程中调用signal或者sigaction等函数会改变所以线程中的信号处理函数，而不是仅仅改变调用signal/sigaction的那个线程的信号处理函数。</p>
+<h3 id="epoll-oneshot">epoll oneshot</h3>
+<p>因为et模式需要循环读取，但是在读取过程中，如果有新的事件到达，很可能触发了其他线程来处理这个socket，那就乱了。</p>
+<p>EPOLL_ONESHOT就是用来避免这种情况。注意在一个线程处理完一个socket的数据，也就是触发EAGAIN errno时候，就应该重置EPOLL_ONESHOT的flag，这时候，新到的事件，就可以重新进入触发流程了。</p>
+<p>注：EPOLL_ONESHOT的原理其实是，每次触发事件之后，就将事件注册从fd上清除了，也就不会再被追踪到；下次需要用epoll_ctl的EPOLL_CTL_MOD来手动加上才行。</p>
+<h2 id="stl">STL</h2>
+<p>当(通过如insert或push_back之类的操作)向容器中加入对象时，存入容器的是你所指定的对象的拷贝。当(通过如front或back之类的操作)从容器中取出一个对象时，你所得到的是容器中所保存的对象的拷贝。<strong>进去的是拷贝，出来的也是拷贝(copy in, copy out)。这就是STL的工作方式</strong>。</p>
+<p><strong>剥离</strong>问题意味着<strong>向基类对象的容器中插入派生类对象几乎总是错误的****。</strong>使拷贝动作高效、正确，并防止剥离问题发生的一个简单办法是使容器包含指针而不是对象**。</p>
+<p>STL指针应用智能指针</p>
+<h1 id="附：">附：</h1>
+<h2 id="vscode-ssh">vscode ssh</h2>
+<p>vscode ssh连linux当编辑器还不错，安装个remote ssh，c/c++插件就好了。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210408213040.png" alt="image-20210408213040869"></p>
+<h2 id="爬虫百度图片">爬虫百度图片</h2>
+<pre><code class="language-python">&quot;&quot;&quot;根据搜索词下载百度图片&quot;&quot;&quot;
+import os
+import re
+from typing import List, Tuple
+from urllib.parse import quote
+
+import requests
+&quot;&quot;&quot;爬虫相关配置&quot;&quot;&quot;
+
+# 关键词, 改为你想输入的词即可, 相当于在百度图片里搜索一样
+keyword = &#39;水底&#39;
+
+# 最大下载数量
+max_download_images = 1000
+
+# 精简一下网址，去掉网址中无意义的参数
+url_init_first = &#39;https://image.baidu.com/search/flip?tn=baiduimage&amp;word=&#39;
+
+# 表头
+headers = {
+    &#39;User-Agent&#39;: &#39;Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) &#39;
+                  &#39;Chrome/88.0.4324.192 Safari/537.36&#39;
+}
+
+
+def get_page_urls(page_url: str, headers: dict) -&gt; Tuple[List[str], str]:
+    &quot;&quot;&quot;获取当前翻页的所有图片的链接
+    Args:
+        page_url: 当前翻页的链接
+        headers: 请求表头
+    Returns:
+        当前翻页下的所有图片的链接, 当前翻页的下一翻页的链接
+    &quot;&quot;&quot;
+    if not page_url:
+        return [], &#39;&#39;
+    try:
+        html = requests.get(page_url, headers=headers)
+        html.encoding = &#39;utf-8&#39;
+        html = html.text
+    except IOError as e:
+        print(e)
+        return [], &#39;&#39;
+    pic_urls = re.findall(&#39;&quot;objURL&quot;:&quot;(.*?)&quot;,&#39;, html, re.S)
+    next_page_url = re.findall(re.compile(r&#39;&lt;a href=&quot;(.*)&quot; class=&quot;n&quot;&gt;下一页&lt;/a&gt;&#39;), html, flags=0)
+    next_page_url = &#39;http://image.baidu.com&#39; + next_page_url[0] if next_page_url else &#39;&#39;
+    return pic_urls, next_page_url
+
+
+def down_pic(pic_urls: List[str], max_download_images: int) -&gt; None:
+    &quot;&quot;&quot;给出图片链接列表，下载所有图片
+    Args:
+        pic_urls: 图片链接列表
+        max_download_images: 最大下载数量
+    &quot;&quot;&quot;
+    pic_urls = pic_urls[:max_download_images]
+    for i, pic_url in enumerate(pic_urls):
+        i = i+600
+        try:
+            pic = requests.get(pic_url, timeout=15)
+            image_output_path = &#39;./images/&#39; + str(i + 1) + &#39;.jpg&#39;
+            with open(image_output_path, &#39;wb&#39;) as f:
+                f.write(pic.content)
+                print(&#39;成功下载第%s张图片: %s&#39; % (str(i + 1), str(pic_url)))
+        except IOError as e:
+            print(&#39;下载第%s张图片时失败: %s&#39; % (str(i + 1), str(pic_url)))
+            print(e)
+            continue
+
+
+if __name__ == &#39;__main__&#39;:
+    url_init = url_init_first + quote(keyword, safe=&#39;/&#39;)
+    all_pic_urls = []
+    page_urls, next_page_url = get_page_urls(url_init, headers)
+    all_pic_urls.extend(page_urls)
+
+    page_count = 0  # 累计翻页数
+    if not os.path.exists(&#39;./images&#39;):
+        os.mkdir(&#39;./images&#39;)
+
+    # 获取图片链接
+    while 1:
+        page_urls, next_page_url = get_page_urls(next_page_url, headers)
+        page_count += 1
+        print(&#39;正在获取第%s个翻页的所有图片链接&#39; % str(page_count))
+        if next_page_url == &#39;&#39; and page_urls == []:
+            print(&#39;已到最后一页，共计%s个翻页&#39; % page_count)
+            break
+        all_pic_urls.extend(page_urls)
+        if len(all_pic_urls) &gt;= max_download_images:
+            print(&#39;已达到设置的最大下载数量%s&#39; % max_download_images)
+            break
+
+    down_pic(list(set(all_pic_urls)), max_download_images)
+</code></pre>
+<h2 id="docker文件丢失问题">docker文件丢失问题</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210429141813.png" alt="image-20210429141806170"></p>
+<h2 id="opencv-ld">opencv ld</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210501221633.png" alt="image-20210501221633409"></p>
+<h2 id="via---coco格式不标准">VIA -&gt; coco格式不标准</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210502215537.png" alt="image-20210502215537493"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210502215555.png" alt="image-20210502215555362"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210502215604.png" alt="image-20210502215604460"></p>
+<p>用notepad++正则处理一下。</p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;"
+			href="https://github.com/hqinglau/yadihttpd">yadihttpd</a></div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript">
+    document.getElementById("banquan-yadi").style.display ="";
+  document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"linux_notes.html";
+  document.getElementById("blogaddr-a").innerHTML="linux程序设计笔记";
+</script></body></html> 

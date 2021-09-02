@@ -1,0 +1,301 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>LFS和数据完整性
+_hqinglau的博客_Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="刘欢庆的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="https://orzlinux.cn/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-server fa-stack-1x"></i>
+            </span>
+            File Server
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div><h1>LFS和数据完整性</h1><hr>
+<style type="text/css"> img{display:block;margin:0 auto;}</style>
+
+<h2 id="日志结构文件系统">日志结构文件系统</h2>
+<blockquote>
+<p>内存不断增长，磁盘流量更多由写入组成，读取在缓存中处理。</p>
+<p>随机IO与顺序IO性能差距。</p>
+<p>现有文件系统在很多常见工作负载表现不佳，如 FFS 创建一个文件，却需要写入大量数据：inode，位图，目录，目录 inode。</p>
+<p>文件系统不支持RAID。</p>
+</blockquote>
+<p>LFS（Log-Structured File System)</p>
+<p>写入磁盘时，先将所有更新，包括元数据，缓冲在内存段，内存段满时，顺序传输写入磁盘。不覆写现有数据，始终写入空闲位置。</p>
+<p>如将两组更新缓冲，之后提交到磁盘：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210902124744.png" alt="image-20210902124744859"></p>
+<p>问题：inode 在变，怎么查找？</p>
+<p>inode 映射。在 inode 号和 inode 之间引入了间接层。imap，inode 号对应最新版的磁盘地址。imap 放哪？和数据、inode 放一起。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210902130052.png" alt="image-20210902130052116"></p>
+<p>imap 分散了，怎么找 imap ？磁盘上固定位置，检查点区域（checkpoint region）。包含指向最新 inode 映射片段的地址，定期更新。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210902130551.png" alt="image-20210902130551445"></p>
+<p>接下来考虑目录，目录也要访问更新。如在目录中创建文件 foo。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210902131802.png" alt="image-20210902131802738"></p>
+<blockquote>
+<p>递归更新问题：更新 inode 时，它在磁盘上位置发生变化，导致对文件目录的更新，进一步更新目录的父目录。inode 映射避免了这个问题，inode 变化，更改并非反映在目录，而是 imap。</p>
+</blockquote>
+<p>不断写入新位置，旧数据称为垃圾。</p>
+<p>LFS 清理程序：定期读入 M 段，确定哪些块活着，活着的打包成 N 段，M 段释放，N 段写入新位置。</p>
+<p>LFS 每个段段头部记录一个段摘要块，记录数据块的 inode 号及偏移量。对于一个块，查找段摘要块的 inode 号 N 和偏移量 T 。然后查 imap 找到 N 的位置，读取 N。利用 T 查数据块的真实位置，和我们要判断的数据块一样就是活的块。捷径：文件被截断或删除，在 imap 中记录一个版本号，比较磁盘段中的版本号，判断死活。</p>
+<p>CR 更新：两个，交替更新，防止系统崩溃。</p>
+<h2 id="数据完整性和保护">数据完整性和保护</h2>
+<p>常见的两种单块故障：潜在扇区错误 LSE（Latent Sector Erros）、block corruption。</p>
+<p>由于磁头碰撞或宇宙射线，数据位不可读或不准确。LSE。</p>
+<p>block corruption，如写入错误的位置或由于总线有问题，数据有误。</p>
+<p>检测 block corruption：每个块计算校验和，常用循环冗余校验（CRC）。</p>
+<p>错误位置写入检测：在校验和中添加物理标识。</p>
+<p>丢失的写入：报告说写进去了但没有，校验和也是旧的。经典解决方法：写入后验证，I/O 翻倍。或在其他位置添加校验和。</p>
+<p>校验和何时检查？大部分数据很少访问，将保持未检查状态。disk scrubbing，定期读取系统的每个块来检查，如每晚或每周。</p>
+<p>时间开销可能比较明显。</p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;"
+			href="https://github.com/hqinglau/yadihttpd">yadihttpd</a></div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript">
+    document.getElementById("banquan-yadi").style.display ="";
+  document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"filesystem20210902.html";
+  document.getElementById("blogaddr-a").innerHTML="LFS和数据完整性";
+</script></body></html> 

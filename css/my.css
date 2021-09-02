@@ -1,0 +1,19 @@
+p {
+    font-family: "SF Pro Display",Roboto,Noto,Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+/*
+ * 居中的
+ * 太难看了，算了吧
+img {
+	display: block;
+	margin: 0 auto;
+}
+*/
+
+div.code-toolbar > .toolbar {
+    display: none;
+}
+h2 {
+	font-size:1.3em;
+}
+

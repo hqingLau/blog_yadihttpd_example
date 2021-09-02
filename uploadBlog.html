@@ -1,0 +1,436 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>上传博客_Orz linux</title>
+ <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+    <meta name="description" content="刘欢庆的博客，分享Linux，操作系统，编程语言的日志。">
+    <meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+
+    <link href="/css/prism.css" rel="stylesheet" />
+    <link href="/css/my.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <style>
+        .layui-side{
+            position:fixed;
+            top:0;
+            background-color:#fff;
+            width: 240px;
+            margin-left :10px;
+            margin-right :10px;
+            bottom:0;
+        }
+        .author-info__name {
+        font-weight: 500;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        margin-top: 5px;
+    }
+      #fileup {
+      margin: 40px;
+  }
+    body {
+      line-height: 2;
+    }
+		@media screen and (max-device-width:500px){
+			#page {
+			    zoom: 80%;
+			}
+		}
+        .layui-main{
+            margin-top:40px;
+            bottom:0;
+        }
+        .header{
+            height:40px;
+            width:100%;
+            background-color:#fff;
+        }
+        .fix-header{
+           position:fixed;
+            top:0
+        }
+        .mySidenav {
+
+         }
+                  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color:#eee;
+    font-size: 0;}
+	 body,html{
+      margin: 0 auto;
+    }
+    .up-header {
+      text-align: center;
+    }
+    .up-content {
+      min-height: 200px;
+      border: 1px solid #CCCCCC;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #FAFAFA;
+      color: #999;
+      font-size: 20px;
+      text-align: center;
+    }
+    .up-area {
+      border: 2px dashed #ccc;
+      margin: 10px 20px 20px 20px;
+      width: 300px;
+      min-height: 200px;
+      line-height: 100px;
+      background-color: #fff;
+    }
+    .list-group {
+      margin: 0px auto;;
+      width: 200px;
+      min-height: 100px;
+      padding: 10px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .btn {
+
+    }
+    .close {
+      margin-left: 550px;
+      margin-top: -20px;
+    }
+	.container{
+		width: 400px;
+	}
+    </style>
+</head>
+
+<body>
+<script type="text/javascript">
+var ua = navigator.userAgent.toLowerCase();
+var isWeixin = ua.indexOf('micromessenger') != -1;
+if (isWeixin) {
+		document.getElementsByTagName('html')[0].innerHTML="<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+}
+</script>
+<script type="text/javascript">
+    function openNav() {
+    document.getElementById("mySidenav").style.display = "block";
+    
+    var windowWidth = document.body.clientWidth;
+      if(windowWidth > 700){
+          document.getElementById("mymain").style.marginLeft = "260px";
+          document.getElementById("topheader").style.left = "260px";
+      }
+      else
+      {
+        document.getElementById("mymain").style.marginLeft = "0";
+    document.getElementById("header").style.display = "none";
+
+      }
+document.getElementById("sidebarbtn").onclick =function(){
+    closeNav();
+}
+        
+    }
+
+function closeNav() {
+    document.getElementById("mySidenav").style.display = "none";
+    document.getElementById("mymain").style.marginLeft = "0";
+    document.getElementById("topheader").style.left = "0";
+    var dd = document.getElementById("header");
+    if (dd!=null)
+    {
+      dd.style.display = "";
+    }
+    document.getElementById("sidebarbtn").onclick =function(){
+        openNav();
+    }
+    
+}
+</script>
+
+<div>
+<div class="layui-side" id="mySidenav">
+<div class="aside_content" id="aside_content">
+  <div class="card-content">
+                            <div class="card-info-avatar is-center">
+				<a href="/">
+                                <img class="avatar-img"
+                                    src="https://gitee.com/hqinglau/img/raw/master/logo.jpg"
+                                    alt="avatar">
+				</a>
+                                <div class="author-info__name">hqinglau的网络日志</div>
+                                <div class="author-info__description"><p>记录Linux, 编程, 操作系统...</p></div>
+                            </div>
+                           </br>
+                        </div>
+ <div class="line dk hidden-folded"></div>
+    
+    
+
+</br>
+<div style="padding-left:50px;">
+
+<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px"> 
+	<span class="fa-stack">
+  <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+</span>
+	Home
+</a>	
+	</br>
+	<a href="https://github.com/hqinglau" style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px"> 
+
+	<span class="fa-stack">
+  <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+</span>
+	github
+	</a>
+	</br>
+  
+  	<a href="https://orzlinux.cn/blog/yadihttpd.html" style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+	<span class="fa-stack">
+  <i class="fa  fa-lg  fa-server fa-stack-1x"></i>
+</span>
+	File Server
+	</a>
+	</br>
+  <a href="/uploadBlog.html" style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+    <span class="fa-stack">
+    <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+  </span>
+    Upload
+    </a>
+    </br>
+</div>
+
+
+
+    
+</div>
+</div>
+<div  class="layui-main" id="mymain">
+    <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn" style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a>    </span>
+    </div>
+   
+    
+    
+
+    <script type="text/javascript">
+      var lastW =  0;
+      var resizeTimer = null;
+      //定义变量获取屏幕视口宽度
+      function mywinresize() {
+        
+        var windowWidth = document.body.clientWidth;
+        if(Math.abs(lastW-windowWidth)<50)
+        {
+        return windowWidth;}
+        console.log(windowWidth);
+        if(windowWidth > 700){
+                openNav();
+        }
+        else
+        {
+          closeNav();
+        }
+        return windowWidth;
+      }
+    lastW = mywinresize();
+    document.getElementById("topheader").style.display = "block";
+    window.addEventListener('resize',function(){
+      if(resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer=setTimeout(function(){
+          lastW = mywinresize();
+      },500);
+    });
+    </script>
+    
+    
+    
+    
+    <article id="page">
+                    <div class="article-container">
+                        <div>
+                            
+ <header id="header" class="page-header">
+    <!-- 头部显示 -->
+    <div class="container upload ">
+      <div class="up-header center-block">
+        <h2 id="fileup">md 文件上传</h2>
+        <div class="input-group"  style="width:400px; display:flex;margin-bottom:15px;margin-left: -15px;">
+    			<input type="text" id="title" class="form-control" autocomplete="off" placeholder="输入文件标题">
+    			<button id="uploadMd" class="btn btn-primary">上传文件</button>
+		    </div>
+			
+			<div class="input-group"  style="width:400px; display:flex;margin-bottom:30px;margin-left: -15px;">
+			<input type="text" id="passwd" class="form-control" placeholder="输入上传密码">
+			<a href="/editmd.html" style="text-decoration:none;"><button type="button" class="btn btn-primary">在线编辑</button></a>
+		    </div>
+      </div>
+      <div class="row">
+        <!-- 拖拽图片到这来 -->
+        <div class="up-content  dragFile">
+          <p style="margin-top:10px;">拖拽到此处</p>
+          <div class="up-area">
+            <input type="file" style="display:none;" id="fileDrag" name="fileDragselect" multiple>
+            <div class="row">
+              <ul class="list-group clearfix list-drag">
+              </ul>
+            </div>
+          </div>
+
+        </div>
+        
+      </div>
+
+
+    </div>
+  </header>
+</div>
+
+                        
+                    </div>
+		    <br>
+			    <div  id="banquan-yadi" style="display:none">
+			    <blockquote style="line-height:1.2;padding-bottom:10px;">
+		    <p>本文地址:  
+<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;"> hqinglau的博客</a></p>
+		    <p>作者:  
+<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;"> 
+	hqinglau
+</a></p>
+		    <p>博客地址: 
+<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;"> 
+	https://orzlinux.cn
+</a></p>
+
+		    <p>版权说明: 如无注明，本文皆由 
+<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;"> 
+	hqinglau
+</a>原创，转载请保留文章出处 </p>
+		  </blockquote>
+			    </div>
+                </article>
+</div>
+<div id="footer-wrap">
+			<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a></div> 
+			<div class="copyright">Copyright © 2021 hqinglau</div>
+			<div style="width:300px;margin:0 auto; padding:5px 0;">
+				<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="https://orzlinux.cn/img/beian.png" style="float:left;"><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备 41022102001049号</p></a>
+			</div>
+    </div>
+  </div>
+ <script src="/js/prism.js"></script>
+
+
+
+      <!-- 看板娘 -->
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">
+
+     //拖拽上传文件 在页面进行预览 上传form用到ajax
+      const dragbox = document.querySelector('.dragFile');
+      dragbox.addEventListener('dragover', function (e) {
+          e.preventDefault(); // 必须阻止默认事件
+      }, false);
+      dragbox.addEventListener('drop', function (e) {
+          e.preventDefault(); // 阻止默认事件
+            var files = e.dataTransfer.files; //获取文件
+            appendFile(files, '.list-drag')
+          // code
+      }, false);
+	  liStr='';
+	  var fileObj;
+    var filePurename = "/";
+	  function UpladFile() {
+			var titl = document.getElementById('title');
+
+			var pass = document.getElementById('passwd');
+			var str = titl.value.replace(/(^\s*)|(\s*$)/g, '');//去除空格;
+			var str2 = pass.value.replace(/(^\s*)|(\s*$)/g, '');//去除空格;
+			if (str == '' || str == undefined || str == null) {
+				alert("标题为空"); 
+				return false; 
+			} 
+			if (str2 == '' || str2 == undefined || str2 == null) {
+				alert("密码为空"); 
+				return false; 
+			} 
+			if(liStr=='') {
+				alert("未选择文件"); 
+				return false; 
+			} 
+      document.getElementById("uploadMd").disabled=true;
+            var url =  "/blogUpload"; // 接收上传文件的后台地址
+ 
+            var form = new FormData(); // FormData 对象
+            form.append("file", fileObj); // 文件对象
+			form.append("passwd", str2); // 
+			form.append("lname",str); //标题
+ 
+            let xhr = new XMLHttpRequest();  // XMLHttpRequest 对象
+            xhr.open("post", url, true); //post方式，url为服务器请求地址，true 该参数规定请求是否异步处理。
+ 
+            xhr.send(form); //开始上传，发送form数据
+            document.getElementById('fileup').innerHTML="文件上传中...";
+
+			setTimeout(function(){
+				        relocate();
+						    },5000);
+        }
+		function relocate()
+		{
+			window.location.href=filePurename;
+		}
+      function appendFile (files, listName) {
+        for( file of files ) {
+          let url = window.URL.createObjectURL(file);
+		  let filename = file.name;
+		  var suffix = filename.split('.').splice(-1);
+		  if(suffix!="md"){
+				alert("md格式文件"); 
+				return false; 
+			} 
+		  var filesize = Math.floor((file.size)/1024);  
+			if(filesize>1024){ 
+				alert("上传大小不能超过1MB."); 
+				return false; 
+			} 
+          if(liStr=='') {
+			fileObj = file;
+		  liStr = `
+            <li class="list-group-item">
+              <div>
+                <img src="${url}" alt="${filename}" onerror="this.src='https://gitee.com/hqinglau/img/raw/master/img/20210830200447.png'"/>
+              </div>
+            </li>
+			<div style="text-align:center">
+                ${filename} </div>`;
+          $(listName).append(liStr);
+          filePurename = "/blog/"+filename.substr(0,filename.lastIndexOf('.'))+".html";
+		  }
+        }
+      }
+		document.getElementById("uploadMd").addEventListener('click', function(){
+	UpladFile();
+}, false);
+   </script>
+    <script src="https://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+</body>
+</html>
