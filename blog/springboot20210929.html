@@ -1,0 +1,668 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>SpringBoot二、Thymeleaf
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>SpringBoot二、Thymeleaf</h1><hr>
+<h2 id="restful">restful</h2>
+<p>Representational State Transfer</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210929095814.png" alt="image-20210929095807025"></p>
+<pre><code class="language-java">@Controller
+public class CategoryController {
+    @Autowired
+    CategoryMapper categoryMapper;
+
+    @GetMapping(&quot;/categories&quot;)
+    //在参数里接受当前是第几页 start ，以及每页显示多少条数据 size。 默认值分别是0和5。
+    public String listCategory(Model m, @RequestParam(value = &quot;start&quot;, defaultValue = &quot;0&quot;) int start,
+                               @RequestParam(value = &quot;size&quot;, defaultValue = &quot;5&quot;) int size) throws Exception {
+        //根据start,size进行分页，并且设置id 倒排序
+        PageHelper.startPage(start,size,&quot;id desc&quot;);
+        //因为PageHelper的作用，这里就会返回当前分页的集合了
+        List&lt;Category&gt; cs=categoryMapper.findAll();
+        //根据返回的集合，创建PageInfo对象
+        PageInfo&lt;Category&gt; page = new PageInfo&lt;&gt;(cs);
+        m.addAttribute(&quot;page&quot;, page);
+        return &quot;listCategory&quot;;
+    }
+    @DeleteMapping(&quot;/categories/{id}&quot;)
+    public String deleteCategory(Category c) throws Exception {
+        categoryMapper.delete(c.getId());
+        return &quot;redirect:/categories&quot;;
+    }
+}
+</code></pre>
+<p>jsp:</p>
+<pre><code class="language-html">&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+         pageEncoding=&quot;UTF-8&quot;%&gt;
+
+&lt;%@ taglib uri=&quot;http://java.sun.com/jsp/jstl/core&quot; prefix=&quot;c&quot;%&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;js/jquery.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+    /*将post method 改变为delete*/
+    $(function(){
+        $(&quot;.delete&quot;).click(function(){
+            var href=$(this).attr(&quot;href&quot;);
+            $(&quot;#formdelete&quot;).attr(&quot;action&quot;,href).submit();
+            return false;
+        })
+    })
+&lt;/script&gt;
+&lt;div align=&quot;center&quot;&gt;
+
+&lt;/div&gt;
+
+&lt;div style=&quot;width:500px;margin:20px auto;text-align: center&quot;&gt;
+    &lt;table align=&#39;center&#39; border=&#39;1&#39; cellspacing=&#39;0&#39;&gt;
+        &lt;tr&gt;
+            &lt;td&gt;id&lt;/td&gt;
+            &lt;td&gt;name&lt;/td&gt;
+            &lt;td&gt;编辑&lt;/td&gt;
+            &lt;td&gt;删除&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;c:forEach items=&quot;${page.list}&quot; var=&quot;c&quot; varStatus=&quot;st&quot;&gt;
+            &lt;tr&gt;
+                &lt;td&gt;${c.id}&lt;/td&gt;
+                &lt;td&gt;${c.name}&lt;/td&gt;
+                &lt;td&gt;&lt;a href=&quot;categories/${c.id}&quot;&gt;编辑&lt;/a&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;a class=&quot;delete&quot; href=&quot;categories/${c.id}&quot;&gt;删除&lt;/a&gt;&lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/c:forEach&gt;
+
+    &lt;/table&gt;
+    &lt;br&gt;
+    &lt;div&gt;
+        &lt;a href=&quot;?start=1&quot;&gt;[首  页]&lt;/a&gt;
+        &lt;a href=&quot;?start=${page.pageNum-1}&quot;&gt;[上一页]&lt;/a&gt;
+        &lt;a href=&quot;?start=${page.pageNum+1}&quot;&gt;[下一页]&lt;/a&gt;
+        &lt;a href=&quot;?start=${page.pages}&quot;&gt;[末  页]&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;br&gt;
+    &lt;form action=&quot;categories&quot; method=&quot;post&quot;&gt;
+
+        name: &lt;input name=&quot;name&quot;&gt; &lt;br&gt;
+        &lt;button type=&quot;submit&quot;&gt;提交&lt;/button&gt;
+
+    &lt;/form&gt;
+
+    &lt;form id=&quot;formdelete&quot; action=&quot;&quot; method=&quot;POST&quot; &gt;
+        &lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;DELETE&quot;&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+</code></pre>
+<p>发现在表单中添加</p>
+<pre><code class="language-html">&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;delete&quot;/&gt;
+</code></pre>
+<p>后台用<code>@deleteMapping（/xxx/{id}）</code>这种方式会报405（不允许的访问方式）。在 Spring Boot 的 META-INF/ spring-configuration-metadata.json 配置文件中，默认是关闭Spring 的 hiddenmethod 过滤器的</p>
+<p>然后我们需要在springBoot的配置文件中将它手动开启即可；</p>
+<pre><code class="language-shell">spring.mvc.hiddenmethod.filter.enabled=true
+</code></pre>
+<p>效果：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210929105740.png" alt="image-20210929105740838"></p>
+<h2 id="jquery-ajax">jQuery AJAX</h2>
+<pre><code class="language-javascript">// 查找&lt;div id=&quot;abc&quot;&gt;:
+var div = $(&#39;#abc&#39;);
+
+var ps = $(&#39;p&#39;); // 返回所有&lt;p&gt;节点
+
+var a = $(&#39;.red&#39;); // 所有节点包含`class=&quot;red&quot;`都将返回
+// 例如:
+// &lt;div class=&quot;red&quot;&gt;...&lt;/div&gt;
+// &lt;p class=&quot;green red&quot;&gt;...&lt;/p&gt;
+
+// 按属性查找
+var email = $(&#39;[name=email]&#39;); // 找出&lt;??? name=&quot;email&quot;&gt;
+var passwordInput = $(&#39;[type=password]&#39;); // 找出&lt;??? type=&quot;password&quot;&gt;
+var a = $(&#39;[items=&quot;A B&quot;]&#39;); // 找出&lt;??? items=&quot;A B&quot;&gt;
+</code></pre>
+<p>AJAX = 异步 JavaScript 和 XML（Asynchronous JavaScript and XML）。</p>
+<p>简短地说，在不重载整个网页的情况下，AJAX 通过后台加载数据，并在网页上进行显示。</p>
+<p>demo_test.txt</p>
+<pre><code class="language-html">&lt;h2&gt;jQuery AJAX 是个非常棒的功能！&lt;/h2&gt;
+&lt;p id=&quot;p1&quot;&gt;这是段落的一些文本。&lt;/p&gt;
+</code></pre>
+<p>html</p>
+<pre><code class="language-html">&lt;script&gt;
+$(document).ready(function(){
+  $(&quot;button&quot;).click(function(){
+    // 下面的例子会把文件 &quot;demo_test.txt&quot; 的内容加载到指定的 &lt;div&gt; 元素中
+    //$(&quot;#div1&quot;).load(&quot;/try/ajax/demo_test.txt&quot;);
+    // 下面的例子会把文件 &quot;demo_test.txt&quot; id=p1 的内容加载到指定的 &lt;div&gt; 元素中
+    $(&quot;#div1&quot;).load(&quot;/try/ajax/demo_test.txt #p1&quot;);
+  });
+});
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;div id=&quot;div1&quot;&gt;&lt;h2&gt;使用 jQuery AJAX 修改文本&lt;/h2&gt;&lt;/div&gt;
+&lt;button&gt;获取外部文本&lt;/button&gt;
+
+&lt;/body&gt;
+</code></pre>
+<p>可以设置回调函数，参数：</p>
+<ul>
+<li>responseTxt 调用成功的结果内容</li>
+<li>statusTxt 调用的状态</li>
+<li>xhr 包含XMLHttpRequest对象</li>
+</ul>
+<pre><code class="language-javascript">$(document).ready(function(){
+  $(&quot;button&quot;).click(function(){
+    $(&quot;#div1&quot;).load(&quot;/try/ajax/demo_test.txt&quot;,function(responseTxt,statusTxt,xhr){
+      if(statusTxt==&quot;success&quot;)
+        alert(&quot;外部内容加载成功!&quot;);
+      if(statusTxt==&quot;error&quot;)
+        alert(&quot;Error: &quot;+xhr.status+&quot;: &quot;+xhr.statusText);
+    });
+  });
+});
+</code></pre>
+<p><strong>get方法</strong></p>
+<pre><code class="language-javascript">$(&quot;button&quot;).click(function(){
+// &lt;?php
+// echo &#39;这是个从PHP文件中读取的数据。&#39;;
+// ?&gt;
+  $.get(&quot;demo_test.php&quot;,function(data,status){
+    alert(&quot;数据: &quot; + data + &quot;\n状态: &quot; + status);
+  });
+});
+</code></pre>
+<p><strong>post</strong></p>
+<pre><code class="language-javascript">$(&quot;button&quot;).click(function(){
+    $.post(&quot;/try/ajax/demo_test_post.php&quot;,
+    {
+        name:&quot;hqinglau&quot;,
+        url:&quot;https://orzlinux.cn&quot;
+    },
+    function(data,status){
+        alert(&quot;数据: \n&quot; + data + &quot;\n状态: &quot; + status);
+    });
+});
+</code></pre>
+<h2 id="springboot前后端分离">SpringBoot前后端分离</h2>
+<p>html</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;js/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form &gt;
+    id：&lt;input type=&quot;text&quot; id=&quot;id&quot; value=&quot;123&quot; /&gt;&lt;br/&gt;
+    名称：&lt;input type=&quot;text&quot; id=&quot;name&quot; value=&quot;category xxx&quot;/&gt;&lt;br/&gt;
+    &lt;input type=&quot;button&quot; value=&quot;提交&quot; id=&quot;sender&quot;&gt;
+&lt;/form&gt;
+&lt;div id=&quot;messageDiv&quot;&gt;&lt;/div&gt;
+
+&lt;script&gt;
+    $(&#39;#sender&#39;).click(function (){
+        var id = document.getElementById(&#39;id&#39;).value;
+        var name = document.getElementById(&#39;name&#39;).value;
+        var category = {&quot;name&quot;:name,&quot;id&quot;:id};
+        var jsonData = JSON.stringify(category);
+        var page=&quot;category&quot;;
+        $.ajax({
+            type:&quot;put&quot;,
+            url:page,
+            data:jsonData,
+            dataType:&quot;json&quot;,
+            contentType:&quot;application/json;charset=UTF-8&quot;,
+            success:function (result) {
+
+            }
+        });
+        alert(&quot;chenggong&quot;);
+    })
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>controller</p>
+<pre><code class="language-java">@RestController
+public class CategoryController {
+    @Autowired
+    CategoryMapper categoryMapper;
+
+    @GetMapping(&quot;/category&quot;)
+    //在参数里接受当前是第几页 start ，以及每页显示多少条数据 size。 默认值分别是0和5。
+    public List&lt;Category&gt; listCategory(Model m, @RequestParam(value = &quot;start&quot;, defaultValue = &quot;1&quot;) int start,
+                                       @RequestParam(value = &quot;size&quot;, defaultValue = &quot;5&quot;) int size) throws Exception {
+        //根据start,size进行分页
+        PageHelper.startPage(start,size,&quot;id&quot;);
+        //因为PageHelper的作用，这里就会返回当前分页的集合了
+        List&lt;Category&gt; cs=categoryMapper.findAll();
+        //根据返回的集合，创建PageInfo对象
+        PageInfo&lt;Category&gt; page = new PageInfo&lt;&gt;(cs);
+//        m.addAttribute(&quot;page&quot;, page);
+        return page.getList();
+    }
+    @GetMapping(&quot;/category/{id}&quot;)
+    public Category getCategory(@PathVariable(&quot;id&quot;) int id) throws Exception {
+        Category c = categoryMapper.get(id);
+        System.out.println(c);
+        return c;
+    }
+
+    @PutMapping(&quot;/category&quot;)
+    public void addCategory(@RequestBody Category category) throws Exception {
+        System.out.println(&quot;收到数据：&quot;+category);
+    }
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210929131457.png" alt="image-20210929131457438"></p>
+<h2 id="thymeleaf">Thymeleaf</h2>
+<p><strong>/ˈtaɪmˌlɪːf/</strong></p>
+<p>Thymeleaf是用来开发Web和独立环境项目的服务器端的Java模版引擎</p>
+<p>Spring官方支持的服务的渲染模板中，并不包含jsp。而是Thymeleaf和Freemarker等，而Thymeleaf与SpringMVC的视图技术，及SpringBoot的自动化配置集成非常完美，几乎没有任何成本，你只用关注Thymeleaf的语法即可。</p>
+<p><strong>动静结合</strong>：Thymeleaf 在有网络和无网络的环境下皆可运行，即它可以让美工在浏览器查看页面的静态效果，也可以让程序员在服务器查看带数据的动态页面效果。这是由于它支持 html 原型，然后在 html 标签里增加额外的属性来达到模板+数据的展示方式。浏览器解释 html 时会忽略未定义的标签属性，所以 thymeleaf 的模板可以静态地运行；当有数据返回到页面时，Thymeleaf 标签会动态地替换掉静态内容，使页面动态显示。</p>
+<h3 id="示例">示例</h3>
+<p>引入依赖后，添加配置（有默认）：</p>
+<pre><code class="language-shell">spring.thymeleaf.encoding=utf-8
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.suffix=.html
+spring.thymeleaf.cache=false
+</code></pre>
+<p><strong>classpath</strong></p>
+<p><strong>target-&gt;classes即为classpath，任何我们需要在classpath前缀中获取的资源都必须在target-&gt;classes文件夹中找到</strong>。但是在idea项目中只有被标记为<code>Resource Folders</code>的文件夹下的文件才会被添加至target-&gt;classes。</p>
+<p>Tomcat下的Web应用有两个预置的classpath :</p>
+<ul>
+<li><p>WEB-INF/classes</p>
+</li>
+<li><p>WEB-INF/lib</p>
+</li>
+</ul>
+<p>classpath*：不仅包含class路径，还包括jar文件中(class路径)进行查找。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210929134410.png" alt="image-20210929134410886"></p>
+<p>hello1.html放到templates文件夹下：</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot; xmlns:th=&quot;http://www.thymeleaf.org&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1 th:text=&quot;${msg}&quot;&gt;默认数字&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>controller:</p>
+<pre><code class="language-java">@Controller
+public class ThemeleafController {
+    @RequestMapping(&quot;/test&quot;)
+    public String test(Model model) {
+        model.addAttribute(&quot;msg&quot;,&quot;orzlinux.cn&quot;);
+        return &quot;hello1&quot;;
+    }
+}
+</code></pre>
+<p>测试：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210929135311.png" alt="image-20210929135311225"></p>
+<p>也可以是对象：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210929141141.png" alt="image-20210929141141001"></p>
+<p>常用语法</p>
+<p>Thymeleaf的主要作用是把model中的数据渲染到html中，因此其语法主要是如何解析model中的数据。</p>
+<p><code>th:text</code>指令出于安全考虑，会把表达式读取到的值进行处理，防止html的注入。</p>
+<p>例如，<code>&lt;p&gt;你好&lt;/p&gt;</code>将会被格式化输出为<code>$lt;p$gt;你好$lt;/p$lt;</code>。</p>
+<p>如果想要不进行格式化输出，而是要输出原始内容，则使用<code>th:utext</code>来代替.</p>
+<h3 id="方法调用">方法调用</h3>
+<pre><code class="language-html">&lt;div th:object=&quot;${site}&quot;&gt;
+    &lt;!--1. 方法调用--&gt;
+    &lt;!--split()方法接受的是正则表达式，所以传入的”.”就变成了正则表达式的关键字，表示除换行符之外的任意字符。所以，这里需要转义”\.”或”[.]”。--&gt;
+    &lt;!--用&#39;.&#39;会访问报错--&gt;
+    &lt;p&gt; Name: &lt;span th:text=&quot;*{name.split(&#39;\.&#39;)[0]}&quot;&gt;hqinglau&lt;/span&gt;&lt;/p&gt;
+    &lt;p&gt; id: &lt;span th:text=&quot;*{id}&quot;&gt;1&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210929143955.png" alt="image-20210929143955076"></p>
+<h3 id="内置对象">内置对象</h3>
+<p>环境对象</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210929144049.png" alt="image-20210929144049277"></p>
+<p>全局对象</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210929144112.png" alt="image-20210929144112004"></p>
+<pre><code class="language-html">&lt;div&gt;
+    &lt;!--controller：model.addAttribute(&quot;today&quot;,new Date());--&gt;
+    今天是：&lt;span th:text=&quot;${#dates.format(today,&#39;yyyy-MM-dd&#39;)}&quot;&gt;1900-01-01&lt;/span&gt;
+    &lt;!--输出：今天是：2021-09-29--&gt;
+&lt;/div&gt;
+</code></pre>
+<h3 id="thobject">th:object</h3>
+<p>频繁读取对象情况，可以简写：</p>
+<pre><code class="language-html">&lt;h1&gt;
+    &lt;p&gt; Name: &lt;span th:text=&quot;${site.name}&quot;&gt;hqinglau&lt;/span&gt;
+    &lt;p&gt; Name: &lt;span th:text=&quot;${site.id}&quot;&gt;1&lt;/span&gt;&lt;/p&gt;
+&lt;/h1&gt;
+
+&lt;div&gt;======================&lt;/div&gt;
+&lt;h1 th:object=&quot;${site}&quot;&gt;
+    &lt;p&gt; Name: &lt;span th:text=&quot;*{name}&quot;&gt;hqinglau&lt;/span&gt;
+    &lt;p&gt; Name: &lt;span th:text=&quot;*{id}&quot;&gt;1&lt;/span&gt;&lt;/p&gt;
+&lt;/h1&gt;
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210929141738.png" alt="image-20210929141738233"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210929155115.png" alt="image-20210929155115604"></p>
+<h3 id="el-表达式-和-ognl表达式">el 表达式 和 ognl表达式</h3>
+<p>el (expression language)</p>
+<p>用法：</p>
+<pre><code class="language-html">&lt;some:tag value=&quot;${expr}&quot;/&gt;
+&lt;another:tag value=&quot;#{expr}&quot;/&gt;
+</code></pre>
+<p>OGNL是Object Graph Navigation Language的简称</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20210929140416.png" alt="image-20210929140416116" style="zoom:80%;" />
+
+
+
+<h2 id="参考">参考</h2>
+<p> <a href="https://how2j.cn/module/143.html">SPRINGBOOT</a> </p>
+<p><a href="https://blog.csdn.net/qq_33879627/article/details/106554777">SpringBoot@DeleteMapping(/xxx/{id})请求报405解决方案</a></p>
+<p><a href="https://www.liaoxuefeng.com/wiki/1022910821149312/1023023555539648">jQuery选择器</a></p>
+<p><a href="https://www.runoob.com/jquery/jquery-ajax-intro.html">jQuery Ajax</a></p>
+<p><a href="https://www.cnblogs.com/msi-chen/p/10974009.html">Thymeleaf入门到吃灰</a></p>
+<p><a href="https://www.cnblogs.com/caiyao/p/4198667.html">el 表达式 和 ognl表达式</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"springboot20210929.html";
+			document.getElementById("blogaddr-a").innerHTML="SpringBoot二、Thymeleaf";
+			</script></body></html> 

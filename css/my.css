@@ -1,4 +1,4 @@
-p {
+p,li {
     font-family: "SF Pro Display",Roboto,Noto,Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
 }
 /*
@@ -17,3 +17,10 @@ h2 {
 	font-size:1.3em;
 }
 
+.categorybutton{
+	background-color: #eeeeeead;
+	border-radius: 5px;
+	padding: 5px 9px;
+	color: #777777;
+	margin: 5px 5px;
+}

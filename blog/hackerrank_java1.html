@@ -1,0 +1,1122 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>Java练习Hackerrank二十道
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>Java练习Hackerrank二十道</h1><hr>
+<h2 id="第一关：welcome-to-java">第一关：Welcome to Java</h2>
+<p>You must print two lines of output:</p>
+<ol>
+<li>Print <code>Hello, World.</code> on the first line.</li>
+<li>Print <code>Hello, Java.</code> on the second line.</li>
+</ol>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public class Solution {
+    public static void main(String[] args) {
+        System.out.println(&quot;Hello, World.&quot;);
+        System.out.println(&quot;Hello, Java.&quot;);
+    }
+}
+</code></pre>
+<h2 id="第二关：java-stdin-and-stdout-i">第二关：Java Stdin and Stdout I</h2>
+<p>用户输入三个整数，打印出来。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">42
+100
+125
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">42
+100
+125
+</code></pre>
+<p><strong>解决方案</strong>：</p>
+<pre><code class="language-java">public class Solution {
+
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        int a = scan.nextInt();
+        int b = scan.nextInt();
+        int c = scan.nextInt();
+        scanner.close();
+        System.out.println(a);
+        System.out.println(b);
+        System.out.println(c);
+    }
+}
+</code></pre>
+<h2 id="第三关：if-else">第三关：If-Else</h2>
+<p><strong>任务</strong>：</p>
+<p>输入一个整数n，如果是奇数，输出<code>Weird</code>；如果是[2,5]的偶数，输出<code>Not Weird</code>，[6,20]的偶数，输出<code>Weird</code>，大于20的偶数，输出<code>Not Weird</code></p>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public class Solution {
+    private static final Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) {
+        int N = scanner.nextInt();
+        scanner.skip(&quot;(\r\n|[\n\r\u2028\u2029\u0085])?&quot;);
+        if(N%2==1) {
+            System.out.println(&quot;Weird&quot;);
+        } else {
+            if((N&gt;=2 &amp;&amp; N&lt;=5) || (N&gt;20)) {
+                System.out.println(&quot;Not Weird&quot;);
+            } else {
+                System.out.println(&quot;Weird&quot;);
+            }
+        }
+        scanner.close();
+    }
+}
+</code></pre>
+<p>里面有句：</p>
+<pre><code class="language-java">scanner.skip(&quot;(\r\n|[\n\r\u2028\u2029\u0085])?&quot;);
+</code></pre>
+<blockquote>
+<p>以下解释来自<a href="https://stackoverflow.com/questions/52111077/explain-this-line-written-in-java">stackoverflow</a>：</p>
+<ul>
+<li>? 匹配0或1个前面的字符</li>
+<li>| 选择</li>
+<li>[] 匹配其中的单个字符</li>
+<li>\u2028 行分隔符</li>
+<li>\u2029 段分隔符</li>
+<li>\u0085 下一行</li>
+</ul>
+<p>总结一下就是跳过<code>\r\n</code>(Windows 行结束)或<code>\n\r\u2028\u2029\u0085</code>的其中一个。</p>
+<p><strong>举例</strong>：对于代码</p>
+<pre><code class="language-java">int a  =scanner.nextInt();
+String s = scanner.nextLine();
+</code></pre>
+<p>用户输入：</p>
+<pre><code class="language-shell">4
+This is next line
+</code></pre>
+<p><strong>s的结果是空串。</strong></p>
+<p>用户输入：</p>
+<p><code>4 This is next line</code></p>
+<p>s的结果是<code>This is next line</code>。所以通过skip跳过这些换行之类的操作，nextline的字符串就正确了。</p>
+</blockquote>
+<h2 id="第四关：java-stdin-and-stdout-ii">第四关：Java Stdin and Stdout II</h2>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">42
+3.1415
+Welcome to HackerRank&#39;s Java tutorials!
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">String: Welcome to HackerRank&#39;s Java tutorials!
+Double: 3.1415
+Int: 42
+</code></pre>
+<p>基本就是上面的如何跳过<code>nextLine</code>之前的换行。</p>
+<pre><code class="language-java">public static void main(String[] args) {
+    Scanner scan = new Scanner(System.in);
+    int i = scan.nextInt();
+    double d = scan.nextDouble();
+    scan.skip(&quot;(\r\n|[\n\r\u2028\u2029\u0085])?&quot;);
+    String s = scan.nextLine();
+
+    System.out.println(&quot;String: &quot; + s);
+    System.out.println(&quot;Double: &quot; + d);
+    System.out.println(&quot;Int: &quot; + i);
+}
+</code></pre>
+<h2 id="第五关：java-output-formatting">第五关：Java Output Formatting</h2>
+<p>输出排版，数字是第15个字符，不足三位补0</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">java 100
+cpp 65
+python 50
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">================================
+java           100 
+cpp            065 
+python         050 
+================================
+</code></pre>
+<p><strong>解决方案</strong>：</p>
+<pre><code class="language-java">import java.util.Scanner;
+import java.util.Formatter;
+
+public class Solution {
+    static Formatter formatter = new Formatter(System.out);
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        System.out.println(&quot;================================&quot;);
+        for(int i=0;i&lt;3;i++)
+        {
+            String s1=sc.next();
+            int x=sc.nextInt();
+            formatter.format(&quot;%-14s %03d\n&quot;,s1,x);
+        }
+        System.out.println(&quot;================================&quot;);
+        sc.close();
+
+    }
+}
+</code></pre>
+<h2 id="第六关：java-loops-i">第六关：Java Loops I</h2>
+<p>输入一个数，打印它和[1,10]的乘积表达式。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">2
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">2 x 1 = 2
+2 x 2 = 4
+2 x 3 = 6
+2 x 4 = 8
+2 x 5 = 10
+2 x 6 = 12
+2 x 7 = 14
+2 x 8 = 16
+2 x 9 = 18
+2 x 10 = 20
+</code></pre>
+<p><strong>解决方案</strong>：</p>
+<pre><code class="language-java">public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        //  readLine()方法会返回用户在按下Enter键之前的所有字符输入,不包括最后按下的Enter返回字符
+        int N = Integer.parseInt(bufferedReader.readLine().trim());
+        for(int i=1;i&lt;=10;i++) {
+            System.out.printf(&quot;%d x %d = %d\n&quot;,N,i,N*i);
+        }
+        bufferedReader.close();
+    }
+}
+</code></pre>
+<h2 id="第七关：java-loops-ii">第七关：Java Loops II</h2>
+<p>第一行输入计算的次数，每次计算输入a, b, n，输出：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211011193230.png" alt="image-20211011193223165"></p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">2
+0 2 10
+5 3 5
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">2 6 14 30 62 126 254 510 1022 2046
+8 14 26 50 98
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public static void main(String []argh){
+    Scanner in = new Scanner(System.in);
+    int t=in.nextInt();
+    for(int i=0;i&lt;t;i++){
+        int a = in.nextInt();
+        int b = in.nextInt();
+        int n = in.nextInt();
+        int result = a; 
+        int pow = 1;
+        for(int j=0;j&lt;n-1;j++) {
+            result += pow*b;
+            System.out.printf(&quot;%d &quot;,result);
+            pow*=2;
+        }
+        System.out.printf(&quot;%d\n&quot;,result+pow*b);
+    }
+    in.close();
+}
+</code></pre>
+<h2 id="第八关：java-int数据类型">第八关：Java int数据类型</h2>
+<p>Java整数类型：</p>
+<ul>
+<li>bytes 8位有符号整型</li>
+<li>short 16位有符号整型</li>
+<li>int 32位有符号整型</li>
+<li>long 64位有符号整型</li>
+</ul>
+<p>输入一个数，判断能是什么类型。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">5
+-150
+150000
+1500000000
+213333333333333333333333333333333333
+-100000000000000
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">-150 can be fitted in:
+* short
+* int
+* long
+150000 can be fitted in:
+* int
+* long
+1500000000 can be fitted in:
+* int
+* long
+213333333333333333333333333333333333 can&#39;t be fitted anywhere.
+-100000000000000 can be fitted in:
+* long
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public static void main(String []argh)
+{
+    Scanner sc = new Scanner(System.in);
+    int t=sc.nextInt();
+
+    for(int i=0;i&lt;t;i++)
+    {
+        try
+        {
+            long x=sc.nextLong();
+            System.out.println(x+&quot; can be fitted in:&quot;);
+            if(x&gt;=Byte.MIN_VALUE &amp;&amp; x&lt;=Byte.MAX_VALUE)System.out.println(&quot;* byte&quot;);
+            if(x&gt;=Short.MIN_VALUE &amp;&amp; x&lt;=Short.MAX_VALUE)System.out.println(&quot;* short&quot;);
+            if(x&gt;=Integer.MIN_VALUE &amp;&amp; x&lt;=Integer.MAX_VALUE)System.out.println(&quot;* int&quot;);
+            if(x&gt;=Long.MIN_VALUE &amp;&amp; x&lt;=Long.MAX_VALUE)System.out.println(&quot;* long&quot;);
+        }
+        catch(Exception e)
+        {
+            System.out.println(sc.next()+&quot; can&#39;t be fitted anywhere.&quot;);
+        }
+
+    }
+}
+</code></pre>
+<blockquote>
+<p>用try catch判断是否能当做整数读入，能再继续判断。</p>
+</blockquote>
+<h2 id="第九关：java-end-of-file">第九关：Java End-of-file</h2>
+<p>统计读入EOF之前的行数。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">Hello world
+I am a file
+Read me until end-of-file.
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">1 Hello world
+2 I am a file
+3 Read me until end-of-file.
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public static void main(String[] args) throws IOException{
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String s;
+    int n = 1;
+    while((s=br.readLine())!=null) {
+        System.out.println(n+&quot; &quot;+s);
+        n+=1;
+    }
+    br.close();
+}
+</code></pre>
+<h2 id="第十关：java-static-initializer-block">第十关：Java Static Initializer Block</h2>
+<p>输入长和宽，如果都为正，输出乘积，否则打印一个字符串。</p>
+<pre><code class="language-java">public class Solution {
+
+    static Scanner scanner = new Scanner(System.in);
+    static int B = scanner.nextInt();
+    static int H = scanner.nextInt();
+    static boolean flag = false;
+    static {
+        if(B&gt;0&amp;&amp;H&gt;0) {
+            flag = true;
+        } else {
+            System.out.println(&quot;java.lang.Exception: Breadth and height must be positive&quot;);
+        }
+    }
+
+    public static void main(String[] args){
+        if(flag){
+            int area=B*H;
+            System.out.print(area);
+        }
+    }
+}
+</code></pre>
+<p><strong>类方法的执行顺序：</strong></p>
+<pre><code class="language-java">public class Demo extends Base{
+    static {
+        System.out.println(&quot;test static&quot;);
+    }
+    public Demo(){
+        System.out.println(&quot;test constructor&quot;);
+    }
+    public static void main(String[] args) {
+        System.out.println(&quot;Demo main func start&quot;);
+        new Demo();
+        System.out.println(&quot;Demo main func end&quot;);
+    }
+}
+
+class Base{
+    static{
+        System.out.println(&quot;base static&quot;);
+    }
+    public Base(){
+        System.out.println(&quot;base constructor&quot;);
+    }
+}
+</code></pre>
+<p>输出</p>
+<pre><code class="language-shell">base static
+test static
+Demo main func start
+base constructor
+test constructor
+Demo main func end
+</code></pre>
+<p>程序执行，先找到<code>main</code>方法，执行<code>main</code>前发现继承了<code>Base</code>类，就先执行<code>Base</code>的静态方法，然后是<code>Demo</code>的静态方法。之后开始执行<code>main</code>函数，创建了一个新对象<code>Demo</code>，先执行父类<code>Base</code>的构造函数，然后是<code>Demo</code>的构造函数，之后继续执行<code>main</code>方法。</p>
+<h2 id="第十一关：java-int-to-string">第十一关：Java Int to String</h2>
+<p>一行：</p>
+<pre><code class="language-java">String s = String.valueOf(n);
+</code></pre>
+<h2 id="第十二关：java-date-and-time">第十二关：Java Date and Time</h2>
+<p>输入年月日，输出星期几。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">08 05 2015
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">WEDNESDAY
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public static String findDay(int month, int day, int year) {
+    LocalDate dt = LocalDate.of(year, month, day);
+    return dt.getDayOfWeek().toString();
+}
+</code></pre>
+<p><code>LocalDate</code><strong>的使用：</strong></p>
+<p>源自：<a href="https://links.jianshu.com/go?to=https%3A%2F%2Fblog.csdn.net%2Fh_xiao_x%2Farticle%2Fdetails%2F79729507">java8 — 新日期时间API篇</a></p>
+<p>Java8出的新的时间日期API都是线程安全的，并且性能更好，代码更简洁！</p>
+<p>新时间日期API常用重要对象介绍：</p>
+<ul>
+<li>ZoneId: 时区ID，用来确定Instant和LocalDateTime互相转换的规则</li>
+<li>Instant: 用来表示时间线上的一个点（瞬时）</li>
+<li>LocalDate: 表示没有时区的日期, LocalDate是不可变并且线程安全的</li>
+<li>LocalTime: 表示没有时区的时间, LocalTime是不可变并且线程安全的</li>
+<li>LocalDateTime: 表示没有时区的日期时间, LocalDateTime是不可变并且线程安全的</li>
+<li>Clock: 用于访问当前时刻、日期、时间，用到时区</li>
+<li>Duration: 用秒和纳秒表示时间的数量（长短），用于计算两个日期的“时间”间隔</li>
+<li>Period: 用于计算两个日期间隔</li>
+</ul>
+<p>应用示例：</p>
+<pre><code class="language-java">LocalDate localDate = LocalDate.now(); // 年月日
+System.out.println(localDate); // 2021-10-11
+
+LocalDateTime localDateTime = LocalDateTime.now(); // 具体时间
+System.out.println(localDateTime); //  2021-10-11T21:20:28.455
+
+LocalDate localDate1 = LocalDate.of(2021,10,11);
+System.out.println(localDate1.getDayOfWeek()); // MONDAY
+LocalDate localDate2 = localDate1.plusDays(5); // 加上5天
+System.out.println(localDate2.getDayOfWeek()); // SATURDAY
+System.out.println(localDate1.isLeapYear()); // 是否是闰年 false
+
+// 格式化
+DateTimeFormatter formatter = DateTimeFormatter.ofPattern(&quot;yyyy年MM月dd日 HH:mm:ss&quot;);
+System.out.println(formatter.format(localDateTime)); // 时间格式化 2021年10月11日 21:31:29
+
+// Period 时间间隔
+Period period = Period.between(localDate1,localDate2); //时间间隔应为5天
+System.out.println(period.getDays()); // 5
+</code></pre>
+<h2 id="第十三关：java-currency-formatter">第十三关：Java Currency Formatter</h2>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">12324.134
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">US: $12,324.13
+India: Rs.12,324.13
+China: ￥12,324.13
+France: 12 324,13 €
+</code></pre>
+<p><code>NumberFormat</code>有一个专门处理货币的类。</p>
+<pre><code class="language-java">public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
+    double payment = scanner.nextDouble();
+    scanner.close();
+
+    NumberFormat numberFormat = NumberFormat.getCurrencyInstance(Locale.US);
+    String us = numberFormat.format(payment);
+
+    numberFormat = NumberFormat.getCurrencyInstance(new Locale(&quot;en&quot;,&quot;IN&quot;));
+    String india = numberFormat.format(payment);
+
+    numberFormat = NumberFormat.getCurrencyInstance(Locale.CHINA);
+    String china = numberFormat.format(payment);
+
+    numberFormat = NumberFormat.getCurrencyInstance(Locale.FRANCE);
+    String france = numberFormat.format(payment);
+
+
+    System.out.println(&quot;US: &quot; + us);
+    System.out.println(&quot;India: &quot; + india);
+    System.out.println(&quot;China: &quot; + china);
+    System.out.println(&quot;France: &quot; + france);
+}
+</code></pre>
+<blockquote>
+<p>印度怎么和其它的不一样？</p>
+</blockquote>
+<h2 id="第十四关：java-sort">第十四关：Java Sort</h2>
+<p>ID NAME SCORE，先按SCORE逆序，再按名字正序。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">5
+33 Rumpa 3.68
+85 Ashis 3.85
+56 Samiha 3.75
+19 Samara 3.75
+22 Fahim 3.76
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">Ashis
+Fahim
+Samara
+Samiha
+Rumpa
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">import java.util.*;
+
+class Student{
+    private int id;
+    private String fname;
+    private double cgpa;
+    public Student(int id, String fname, double cgpa) {
+        super();
+        this.id = id;
+        this.fname = fname;
+        this.cgpa = cgpa;
+    }
+    public int getId() {
+        return id;
+    }
+    public String getFname() {
+        return fname;
+    }
+    public double getCgpa() {
+        return cgpa;
+    }
+}
+
+public class Solution
+{
+    public static void main(String[] args){
+        Scanner in = new Scanner(System.in);
+        int testCases = Integer.parseInt(in.nextLine());
+        
+        List&lt;Student&gt; studentList = new ArrayList&lt;Student&gt;();
+        while(testCases&gt;0){
+            int id = in.nextInt();
+            String fname = in.next();
+            double cgpa = in.nextDouble();
+            
+            Student st = new Student(id, fname, cgpa);
+            studentList.add(st);
+            
+            testCases--;
+        }
+        
+        // ========== 排序代码
+        
+          for(Student st: studentList){
+            System.out.println(st.getFname());
+        }
+    }
+}
+</code></pre>
+<p><strong>写法一</strong>：</p>
+<pre><code class="language-java">Collections.sort(studentList, new Comparator&lt;Student&gt;() {
+    @Override
+    public int compare(Student o1, Student o2) {
+        if (o1.getCgpa()==o2.getCgpa()) {
+            return o1.getFname().compareTo(o2.getFname());
+        }
+        return Double.compare(o2.getCgpa(),o1.getCgpa());
+    }
+});
+</code></pre>
+<p><strong>写法二</strong>：</p>
+<pre><code class="language-java">Collections.sort(studentList, (o1, o2) -&gt; {
+    if (o1.getCgpa()==o2.getCgpa()) {
+        return o1.getFname().compareTo(o2.getFname());
+    }
+    return Double.compare(o2.getCgpa(),o1.getCgpa());
+});
+</code></pre>
+<p><strong>写法三：</strong></p>
+<pre><code class="language-java">studentList.sort((o1, o2) -&gt; {
+    if (o1.getCgpa() == o2.getCgpa()) {
+        return o1.getFname().compareTo(o2.getFname());
+    }
+    return Double.compare(o2.getCgpa(), o1.getCgpa());
+});
+</code></pre>
+<h2 id="第十五关：java-dequeue">第十五关：Java Dequeue</h2>
+<p>滑窗unique number的最大数，双端队列。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">6 3 // 6是6个数，3是窗口大小为3
+5 3 5 2 3 2
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">3
+</code></pre>
+<p>即<code>5 3 2</code>, <code>3 5 3</code>, <code>5 2 3</code>，<code>2 3 2</code>其中uniq number最多为3。</p>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public static void main(String[] args) {
+    Scanner in = new Scanner(System.in);
+    Deque&lt;Integer&gt; deque = new ArrayDeque&lt;&gt;();
+    Map&lt;Integer,Integer&gt; map = new HashMap&lt;&gt;();
+    int nn = in.nextInt();
+    int m = in.nextInt();
+
+    for (int i = 0; i &lt; m; i++) {
+        int num = in.nextInt();
+        deque.addLast(num);
+        map.put(num,map.getOrDefault(num,0)+1);
+    }
+    int n = map.size(); // cur unique num length
+    int maxNum = n; // max uniq num len
+    int first;
+    for (int i = m; i &lt; nn; i++) {
+        int num = in.nextInt();
+        first = deque.pollFirst();
+        map.put(first,map.get(first)-1);
+        if(map.get(first)==0) {
+            n -= 1;
+        }
+        deque.addLast(num);
+        map.put(num,map.getOrDefault(num,0)+1);
+        if(map.get(num)==1) {
+            n += 1;
+        }
+        maxNum = n&gt;maxNum?n:maxNum;
+    }
+    System.out.println(maxNum);
+}
+</code></pre>
+<h2 id="第十六关：返回的类型">第十六关：返回的类型</h2>
+<p>看看就好。</p>
+<pre><code class="language-java">import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+//Complete the classes below
+class Flower {
+    public String whatsYourName() {
+        return &quot;I have many names and types.&quot;;
+    }
+}
+
+class Jasmine extends Flower {
+    @Override
+    public String whatsYourName() {
+        return &quot;Jasmine&quot;;
+    }
+}
+
+class Lily extends Flower {
+    @Override
+    public String whatsYourName() {
+        return &quot;Lily&quot;;
+    }
+}
+
+class Region {
+    public Flower yourNationalFlower() {
+        return new Flower();
+    } 
+}
+
+class WestBengal extends Region{
+    @Override
+    public Flower yourNationalFlower() {
+        return new Jasmine();
+    } 
+}
+
+class AndhraPradesh  extends Region{
+    @Override
+    public Flower yourNationalFlower() {
+        return new Lily();
+    } 
+}
+
+
+public class Solution {
+  public static void main(String[] args) throws IOException {
+      BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+      String s = reader.readLine().trim();
+      Region region = null;
+      switch (s) {
+        case &quot;WestBengal&quot;:
+          region = new WestBengal();
+          break;
+        case &quot;AndhraPradesh&quot;:
+          region = new AndhraPradesh();
+          break;
+      }
+      Flower flower = region.yourNationalFlower();
+      System.out.println(flower.whatsYourName());
+    }
+}
+</code></pre>
+<h2 id="第十七关：java-method-overriding">第十七关：Java Method Overriding</h2>
+<p>调用父类被重写的方法。输出：</p>
+<pre><code class="language-shell">Hello I am a motorcycle, I am a cycle with an engine.
+My ancestor is a cycle who is a vehicle with pedals.
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">import java.util.*;
+import java.io.*;
+
+
+class BiCycle{
+    String define_me(){
+        return &quot;a vehicle with pedals.&quot;;
+    }
+}
+
+class MotorCycle extends BiCycle{
+    String define_me(){
+        return &quot;a cycle with an engine.&quot;;
+    }
+    
+    MotorCycle(){
+        System.out.println(&quot;Hello I am a motorcycle, I am &quot;+ define_me());
+        String temp=super.define_me(); //Fix this line
+        System.out.println(&quot;My ancestor is a cycle who is &quot;+ temp );
+    }
+}
+class Solution{
+    public static void main(String []args){
+        MotorCycle M=new MotorCycle();
+    }
+}
+</code></pre>
+<h2 id="第十八关：java-instanceof-keyword">第十八关：Java Instanceof keyword</h2>
+<pre><code class="language-java">Object element=mylist.get(i);
+if(element instanceof Student)
+    ...
+</code></pre>
+<h2 id="第十九关：java-annotations">第十九关：Java Annotations</h2>
+<p>元注解：</p>
+<pre><code class="language-java">@Target(ElementType.METHOD) // 用到方法上
+@Retention(RetentionPolicy.RUNTIME) // 运行时生效
+@interface FamilyBudget {
+   String userRole() default &quot;GUEST&quot;;
+}
+</code></pre>
+<p>详见<a href="https://orzlinux.cn/blog/javareflect20210919.html">Java反射三四例</a></p>
+<p>大致题意就是判断花费是否超预算（注解形式）：</p>
+<pre><code class="language-java">import java.lang.annotation.*;
+import java.lang.reflect.*;
+import java.util.*;
+
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@interface FamilyBudget {
+    String userRole() default &quot;GUEST&quot;;
+    //~~Complete the interface~~
+    int budgetLimit() default 0;
+}
+
+class FamilyMember {
+    //~~Complete this line~~
+    @FamilyBudget(userRole = &quot;SENIOR&quot;,budgetLimit=100)
+    public void seniorMember(int budget, int moneySpend) {
+        System.out.println(&quot;Senior Member&quot;);
+        System.out.println(&quot;Spend: &quot; + moneySpend);
+        System.out.println(&quot;Budget Left: &quot; + (budget - moneySpend));
+    }
+
+    //~~Complete this line~~
+    @FamilyBudget(userRole = &quot;JUNIOR&quot;,budgetLimit=50)
+    public void juniorUser(int budget, int moneySpend) {
+        System.out.println(&quot;Junior Member&quot;);
+        System.out.println(&quot;Spend: &quot; + moneySpend);
+        System.out.println(&quot;Budget Left: &quot; + (budget - moneySpend));
+    }
+}
+
+public class Solution {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int testCases = Integer.parseInt(in.nextLine());
+        while (testCases &gt; 0) {
+            String role = in.next();
+            int spend = in.nextInt();
+            try {
+                Class annotatedClass = FamilyMember.class;
+                Method[] methods = annotatedClass.getMethods();
+                for (Method method : methods) {
+                    if (method.isAnnotationPresent(FamilyBudget.class)) {
+                        FamilyBudget family = method
+                                .getAnnotation(FamilyBudget.class);
+                        String userRole = family.userRole();
+                        //int budgetLimit = ~~Complete this line~~;
+                        int budgetLimit = family.budgetLimit();
+                        if (userRole.equals(role)) {
+                            //if(~~Complete this line~~){
+                            if(budgetLimit&gt;=spend) {
+                                method.invoke(FamilyMember.class.newInstance(),
+                                        budgetLimit, spend);
+                            }else{
+                                System.out.println(&quot;Budget Limit Over&quot;);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            testCases--;
+        }
+    }
+}
+</code></pre>
+<h2 id="第二十关：java-bigdecimal">第二十关：Java BigDecimal</h2>
+<p>大数逆序排序</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">9  //个数
+-100
+50
+0
+56.6
+90
+0.12
+.12
+02.34
+000.000
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">90
+56.6
+50
+02.34
+0.12
+.12
+0
+000.000
+-100
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public static void main(String[] args) {
+    //Input
+    Scanner sc= new Scanner(System.in);
+    int n=sc.nextInt();
+    String []s=new String[n];
+    for(int i=0;i&lt;n;i++){
+        s[i]=sc.next();
+    }
+    sc.close();
+
+
+
+    Arrays.sort(s, Collections.reverseOrder((a1, a2) -&gt; {
+        BigDecimal a = new BigDecimal(a1);
+        BigDecimal b = new BigDecimal(a2);
+        return a.compareTo(b);
+    }));
+
+    //Output
+    for(int i=0;i&lt;n;i++)
+    {
+        System.out.println(s[i]);
+    }
+}
+</code></pre>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"hackerrank_java1.html";
+			document.getElementById("blogaddr-a").innerHTML="Java练习Hackerrank二十道";
+			</script></body></html> 

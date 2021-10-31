@@ -1,0 +1,599 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>yadiChat-step1-登陆注册
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>yadiChat-step1-登陆注册</h1><hr>
+<p>示例程序链接：<a href="https://yadichat.orzlinux.cn">https://yadiChat.orzlinux.cn</a></p>
+<p>github地址：<a href="https://github.com/hqingLau/YadiChat">https://github.com/hqingLau/YadiChat</a></p>
+<h2 id="目录">目录</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211024114515.png" alt="image-20211024114515289"></p>
+<h2 id="pomxml">pom.xml</h2>
+<p>pom文件加入依赖，需要springboot，mybatis，mysql，数据库连接池druid，测试junit。</p>
+<pre><code class="language-xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+        &lt;artifactId&gt;druid&lt;/artifactId&gt;
+        &lt;version&gt;1.2.7&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;mysql&lt;/groupId&gt;
+        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+        &lt;version&gt;8.0.26&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;
+        &lt;version&gt;2.1.3&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;junit&lt;/groupId&gt;
+        &lt;artifactId&gt;junit&lt;/artifactId&gt;
+        &lt;version&gt;4.13.2&lt;/version&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre>
+<h2 id="数据库">数据库</h2>
+<p>新建数据库<code>YadiChat</code>，新建表<code>user</code>存放用户基本信息。包括<code>id</code>，<code>id_name</code>（唯一用于指代用户身份的id名，不可重复），<code>nick_name</code>（昵称，随意，可重复），密码（数据库存放MD5加密后的密码，不应存放明文密码）。</p>
+<p>为了方便查找，将<code>id_name</code>设置唯一索引，<code>nick_name</code>也设置索引。</p>
+<pre><code class="language-sql"># 新建数据库 YadiChat
+# 新建表user存放用户基本信息
+CREATE TABLE user
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    id_name VARCHAR(128) NOT NULL, # 唯一的id名字
+    nick_name VARCHAR(128) NOT NULL, # 昵称
+    password VARCHAR(32) NOT NULL, # md5加密后的密码
+    PRIMARY KEY(id),
+    UNIQUE INDEX id_name(id_name),
+    INDEX nick_name(nick_name)
+);
+</code></pre>
+<p><code>user</code>表如下所示：</p>
+<pre><code class="language-shell">mysql&gt; select * from user;
++----+----------+-----------+----------------------------------+
+| id | id_name  | nick_name | password                         |
++----+----------+-----------+----------------------------------+
+|  1 | orzlinux | hqinglau  | 5b5091dcd75fcbc5b7d29ac59fe6b377 |
++----+----------+-----------+----------------------------------+
+1 row in set (0.00 sec)
+</code></pre>
+<p>这样即使泄露了数据库，密码也不会泄露。因为MD5不能逆向计算。</p>
+<h2 id="bean">bean</h2>
+<p>和数据库字段对应，id设置了自增非空，也不看，没必要加入<code>User</code>类。</p>
+<p>User.java:</p>
+<pre><code class="language-java">public class User {
+    private  String idName; // 唯一名id
+    private String nickName;
+    private String password;
+    // getter setter constructor
+}
+</code></pre>
+<h2 id="dao">Dao</h2>
+<p>数据库中用到了两个函数，一个是根据<code>id_name</code>查找，一个是插入用户。</p>
+<pre><code class="language-java">@Mapper
+public interface UserDao {
+    User selectUserByIdname(String idname);
+    int insertUser(User user);
+}
+</code></pre>
+<h2 id="applicationyml">application.yml</h2>
+<p>配置数据库连接参数，static路径，thymeleaf路径，mybatis参数，包括<code>mapper-locations</code>（mapper路径）和<code>type-alises-package</code>（mapper的xml中就不用写全类名了）。</p>
+<pre><code class="language-yaml">spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/YadiChat?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false
+    username: root
+    password: fahkdfh
+
+  mvc:
+    static-path-pattern: /static/**
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+
+mybatis:
+  type-aliases-package: cn.orzlinux.step1_signup_in.bean
+  mapper-locations: classpath:mapper/*.xml
+</code></pre>
+<h2 id="userdaoxml">UserDao.xml</h2>
+<p>数据库字段和User属性不对应时，可以用sql的as 别名。</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+
+&lt;mapper namespace=&quot;cn.orzlinux.step1_signup_in.dao.UserDao&quot;&gt;
+    &lt;select id=&quot;selectUserByIdname&quot; resultType=&quot;User&quot; parameterType=&quot;String&quot;&gt;
+        SELECT id_name idName, nick_name nickName,password FROM user WHERE id_name = #{idname}
+    &lt;/select&gt;
+
+    &lt;insert id=&quot;insertUser&quot; parameterType=&quot;User&quot; &gt;
+        insert into user(id_name,nick_name,password) values(#{idName},#{nickName},#{password})
+    &lt;/insert&gt;
+&lt;/mapper&gt;
+</code></pre>
+<h2 id="md5">MD5</h2>
+<pre><code class="language-java">public class MD5 {
+    private final static String salt = &quot;hqinglau@is;a^good_man&quot;;
+
+    /**
+     * 生成32位的MD5
+     * @param msg
+     * @return
+     */
+    public static String getMd5(String msg) {
+        String base = msg+&quot;/&quot;+salt;
+        return DigestUtils.md5DigestAsHex(base.getBytes(StandardCharsets.UTF_8));
+    }
+}
+</code></pre>
+<h2 id="userservicejava">UserService.java</h2>
+<p><code>selectUserByIdname</code>根据<code>idname</code>从数据库中查找用户，<code>login</code>处理用户在表单中提交的登陆信息，如果查到了就返回用户。匹配需要匹配MD5后的密码。<code>regist</code>处理表单提交的注册请求。</p>
+<pre><code class="language-java">@Service
+public class UserService {
+    @Autowired
+    UserDao userDao;
+
+    public User selectUserByIdname(String idname) {
+        return userDao.selectUserByIdname(idname);
+    }
+
+    public User login(User user) {
+        String idname = user.getIdName();
+        String password = user.getPassword();
+
+        User u1 = userDao.selectUserByIdname(idname);
+        if(u1==null) {
+            return null;
+        }
+        if (u1.getPassword().equals(MD5.getMd5(password))) {
+            return u1;
+        }
+        return null;
+    }
+
+    public boolean regist(User user) {
+        user.setPassword(MD5.getMd5(user.getPassword()));
+        int x = userDao.insertUser(user);
+        return x&gt;0;
+    }
+}
+</code></pre>
+<h2 id="usercontrollerjava">UserController.java</h2>
+<pre><code class="language-java">@Controller
+public class UserController {
+    @Autowired
+    UserService userService;
+
+    // 仅仅返回登录界面
+    @RequestMapping(&quot;/signin&quot;)
+    public String signin() {
+        return &quot;sign-in&quot;;
+    }
+
+    @RequestMapping(&quot;/&quot;)
+    public String index() {
+        return &quot;index&quot;;
+    }
+
+    @RequestMapping(&quot;/home&quot;)
+    public String home() {
+        return &quot;index&quot;;
+    }
+
+    @PostMapping(&quot;/login&quot;)
+    public String login(Model model, HttpServletRequest request, HttpServletResponse response) {
+        String idname = request.getParameter(&quot;idname&quot;);
+        String password = request.getParameter(&quot;password&quot;);
+        User user = userService.login(new User(idname,null,password));
+        if (user==null) {
+            return &quot;redirect:/signin&quot;;
+        }
+        // 随便造一个session，放入
+        String sess = MD5.getMd5(idname+&quot;=^8&amp;&quot;+MD5.getMd5(password));
+        request.getSession().setAttribute(&quot;userid&quot;, sess);
+        model.addAttribute(&quot;userid&quot;,sess);
+        return &quot;redirect:/home&quot;;
+    }
+
+    // 注册
+    @GetMapping(&quot;/signup&quot;)
+    public String signup() {
+        return &quot;sign-up&quot;;
+    }
+
+    @PostMapping(&quot;/regist&quot;)
+    public String regist(Model model, HttpServletRequest request, HttpServletResponse response) {
+        String idname = request.getParameter(&quot;idname&quot;);
+        String password = request.getParameter(&quot;password&quot;);
+        String nickname = request.getParameter(&quot;nickname&quot;);
+        try {
+            boolean ret = userService.regist(new User(idname,nickname,password));
+            if (!ret) {
+                return &quot;redirect:/signup&quot;;
+            }
+            // 随便造一个session，放入
+            String sess = idname;
+            request.getSession().setAttribute(&quot;userid&quot;, sess);
+            return &quot;redirect:/&quot;;
+        } catch (Exception e) {
+            return &quot;redirect:/signup&quot;;
+        }
+
+    }
+
+    @RequestMapping(&quot;/somepage&quot;)
+    @ResponseBody
+    public String somepage(HttpServletRequest request, HttpServletResponse response) {
+        return &quot;private msg&quot;;
+    }
+}
+</code></pre>
+<p>其中，登陆、注册成功都需要加入用户session。</p>
+<blockquote>
+<p>服务器创建session出来后，会把session的id号，以cookie的形式回写给客户机，这样，只要客户机的浏览器不关，再去访问服务器时，都会带着session的id号去，服务器发现客户机浏览器带session id过来了，就会使用内存中与之对应的session为之服务。</p>
+</blockquote>
+<p>这篇文章不错：<a href="https://blog.csdn.net/h19910518/article/details/79348051">session的到底是做什么的？</a></p>
+<h2 id="interceptor">interceptor</h2>
+<p>SessionConfiguration.java</p>
+<pre><code class="language-java">@Configuration
+public class SessionConfiguration implements WebMvcConfigurer {
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new UserInterceptor()).addPathPatterns(&quot;/**&quot;).excludePathPatterns(&quot;/static/**&quot;);
+    }
+}
+</code></pre>
+<p>UserInterceptor.java</p>
+<pre><code class="language-java">public class UserInterceptor implements HandlerInterceptor  {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String uri = request.getRequestURI();
+        if(&quot;/&quot;.equals(uri)||&quot;/error&quot;.equals(uri)||&quot;/signin&quot;.equals(uri)||&quot;/login&quot;.equals(uri)||&quot;/signup&quot;.equals(uri)||&quot;/regist&quot;.equals(uri)) {
+            return true;
+        }
+        Object o = request.getSession().getAttribute(&quot;userid&quot;);
+        if(null == o) {
+            response.sendRedirect(&quot;/signin&quot;);
+            return false;
+        }
+        return true;
+    }
+}
+</code></pre>
+<p>如果session存在并且有userid属性，认为是已登陆用户的操作，否则重定向到登陆页面。</p>
+<h2 id="效果">效果</h2>
+<p>首页：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211024121348.png" alt="image-20211024121348487"></p>
+<p>点击somepage，若未登陆会跳转到登陆界面：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211024121415.png" alt="image-20211024121415216"></p>
+<p>若未注册点击右下角注册，进入注册界面：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211024121454.png" alt="image-20211024121454555"></p>
+<p>登陆之后，主页点击somepage，进入：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211024121604.png" alt="image-20211024121604856"></p>
+<p>示例程序链接：<a href="https://yadichat.orzlinux.cn">https://yadiChat.orzlinux.cn</a></p>
+<p>github地址：<a href="https://github.com/hqingLau/YadiChat">https://github.com/hqingLau/YadiChat</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"yadichat1.html";
+			document.getElementById("blogaddr-a").innerHTML="yadiChat-step1-登陆注册";
+			</script></body></html> 

@@ -1,0 +1,1029 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>SpringMVC和SSM
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>SpringMVC和SSM</h1><hr>
+<h2 id="springmvc">SpringMVC</h2>
+<h3 id="小例子">小例子</h3>
+<p>目录：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927111129.png" alt="image-20210927111129822"></p>
+<p><strong>流程图</strong>：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927111632.png" alt="image-20210927111632522"></p>
+<p>springmvc-servlet.xml</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+    &lt;bean id=&quot;simpleUrlHandlerMapping&quot; class=&quot;org.springframework.web.servlet.handler.SimpleUrlHandlerMapping&quot;&gt;
+        &lt;property name=&quot;mappings&quot;&gt;
+            &lt;props&gt;
+                &lt;prop key=&quot;/index&quot;&gt;indexController&lt;/prop&gt;
+            &lt;/props&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+    &lt;bean id=&quot;indexController&quot; class=&quot;controller.IndexController&quot;&gt;&lt;/bean&gt;
+&lt;/beans&gt;
+</code></pre>
+<p>web.xml用来做映射：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;
+         version=&quot;4.0&quot;&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;springmvc&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+        &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+    &lt;/servlet&gt;
+    
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;springmvc&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
+<p>controller:</p>
+<pre><code class="language-java">package controller;
+
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+
+public class IndexController implements Controller {
+    @Override
+    public ModelAndView handleRequest(javax.servlet.http.HttpServletRequest httpServletRequest, javax.servlet.http.HttpServletResponse httpServletResponse) throws Exception {
+        ModelAndView mav = new ModelAndView(&quot;index.jsp&quot;);
+        mav.addObject(&quot;message&quot;,&quot;HelloSpring MVC&quot;);
+        mav.addObject(&quot;Title&quot;,&quot;my defined title&quot;);
+        return mav;
+    }
+}
+</code></pre>
+<p>包问题：试试这个</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927110900.png" alt="image-20210927110900247"></p>
+<h3 id="视图定位">视图定位</h3>
+<p>把视图约定在<code>/WEB-INF/page/*.jsp</code>。</p>
+<p>修改 springmvc-servlet.xml:</p>
+<pre><code class="language-xml">&lt;bean id=&quot;viewResolver&quot; class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;
+    &lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/page/&quot;/&gt;
+    &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot;/&gt;
+&lt;/bean&gt;
+</code></pre>
+<p>controller：</p>
+<pre><code class="language-java">ModelAndView mav = new ModelAndView(&quot;index&quot;);
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927112224.png" alt="image-20210927112224072"></p>
+<h3 id="注解方式">注解方式</h3>
+<p>显示报错：通配符的匹配很全面, 但无法找到元素 &#39;context:component-scan&#39; 的声明。因为<code>beans</code>这里不全：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.2.xsd&quot;&gt;
+&lt;!--    &lt;bean id=&quot;simpleUrlHandlerMapping&quot; class=&quot;org.springframework.web.servlet.handler.SimpleUrlHandlerMapping&quot;&gt;--&gt;
+&lt;!--        &lt;property name=&quot;mappings&quot;&gt;--&gt;
+&lt;!--            &lt;props&gt;--&gt;
+&lt;!--                &lt;prop key=&quot;/index&quot;&gt;indexController&lt;/prop&gt;--&gt;
+&lt;!--            &lt;/props&gt;--&gt;
+&lt;!--        &lt;/property&gt;--&gt;
+&lt;!--    &lt;/bean&gt;--&gt;
+&lt;!--    &lt;bean id=&quot;indexController&quot; class=&quot;controller.IndexController&quot;&gt;&lt;/bean&gt;--&gt;
+
+    &lt;bean id=&quot;viewResolver&quot; class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;
+        &lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/page/&quot;/&gt;
+        &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot;/&gt;
+    &lt;/bean&gt;
+    &lt;!--    自动扫描--&gt;
+    &lt;context:component-scan base-package=&quot;controller&quot;/&gt;
+&lt;/beans&gt;
+</code></pre>
+<p>注解：</p>
+<pre><code class="language-java">@Controller
+public class IndexController{
+
+    @RequestMapping(&quot;/index&quot;)
+    public ModelAndView handleRequest(javax.servlet.http.HttpServletRequest httpServletRequest, javax.servlet.http.HttpServletResponse httpServletResponse) throws Exception {
+        ModelAndView mav = new ModelAndView(&quot;index&quot;);
+        mav.addObject(&quot;message&quot;,&quot;HelloSpring MVC&quot;);
+        mav.addObject(&quot;Title&quot;,&quot;my defined title&quot;);
+        return mav;
+    }
+}
+</code></pre>
+<h3 id="提交表单">提交表单</h3>
+<pre><code class="language-java">
+public class Product {
+    private int id;
+    private String name;
+    private float price;
+    。。getter setter
+}
+===========================
+@Controller
+public class ProductController {
+
+    // addProduct.jsp 提交的name和price会自动注入到参数 product里
+    // 注： 参数product会默认被当做值加入到ModelAndView 中，相当于：
+    // mav.addObject(&quot;product&quot;,product);
+    @RequestMapping(&quot;/addProduct&quot;)
+    public ModelAndView add(Product product) throws Exception {
+        ModelAndView mav = new ModelAndView(&quot;/showProduct.jsp&quot;);
+        return mav;
+    }
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927120237.png" alt="image-20210927120237570"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927120228.png" alt="image-20210927120228314"></p>
+<h3 id="客户端跳转">客户端跳转</h3>
+<p>之前是服务端跳转，url不变的，如：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927120555.png" alt="image-20210927120555185"></p>
+<p>跳转到了index.jsp。</p>
+<p>客户端跳转，url会变：</p>
+<pre><code class="language-java">@RequestMapping(&quot;/jump&quot;)
+public ModelAndView jump() {
+    // redirect:/index 即表示客户端跳转的意思
+    ModelAndView mav = new ModelAndView(&quot;redirect:/index&quot;);
+    return mav;
+}
+</code></pre>
+<h3 id="session">Session</h3>
+<p>spring mvc默认可以直接用<code>HttpSession</code></p>
+<pre><code class="language-java">@RequestMapping(&quot;/check&quot;)
+public ModelAndView check(HttpSession session) {
+    Integer i = (Integer) session.getAttribute(&quot;count&quot;);
+    if(i==null) i=0;
+    i++;
+    session.setAttribute(&quot;count&quot;,i);
+    ModelAndView mav = new ModelAndView(&quot;check&quot;);
+    return mav;
+}
+</code></pre>
+<p>查看cookie，保留了sessionId：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927122011.png" alt="image-20210927122011540"></p>
+<p>删除后，再访问：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927122039.png" alt="image-20210927122039914"></p>
+<p>服务器就认不得它了，重新计数。</p>
+<h3 id="中文">中文</h3>
+<p>直接在web.xml添加：</p>
+<pre><code class="language-xml">&lt;filter&gt;  
+    &lt;filter-name&gt;CharacterEncodingFilter&lt;/filter-name&gt;  
+    &lt;filter-class&gt;org.springframework.web.filter.CharacterEncodingFilter&lt;/filter-class&gt;  
+    &lt;init-param&gt;  
+        &lt;param-name&gt;encoding&lt;/param-name&gt;  
+        &lt;param-value&gt;utf-8&lt;/param-value&gt;  
+    &lt;/init-param&gt;  
+&lt;/filter&gt;  
+&lt;filter-mapping&gt;  
+    &lt;filter-name&gt;CharacterEncodingFilter&lt;/filter-name&gt;  
+    &lt;url-pattern&gt;/*&lt;/url-pattern&gt;  
+&lt;/filter-mapping&gt; 
+</code></pre>
+<p>否则post会乱码：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927122903.png" alt="image-20210927122902987"></p>
+<h3 id="上传文件">上传文件</h3>
+<p>效果：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927134705.png" alt="image-20210927134705174"></p>
+<p>jsp:</p>
+<pre><code class="language-html">&lt;form action=&quot;uploadImage&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+  选择图片:&lt;input type=&quot;file&quot; name=&quot;img&quot; accept=&quot;image/*&quot; /&gt; &lt;br&gt;
+  &lt;input type=&quot;submit&quot; value=&quot;上传&quot;&gt;
+&lt;/form&gt;
+</code></pre>
+<p>这里的img要对应pojo的img：</p>
+<pre><code class="language-java">public class UploadImageFile {
+    MultipartFile img;
+
+    public MultipartFile getImg() {
+        return img;
+    }
+
+    public void setImg(MultipartFile img) {
+        this.img = img;
+    }
+}
+</code></pre>
+<p>否则会对应不上。</p>
+<p>controller</p>
+<pre><code class="language-java">@Controller
+public class UploadController {
+    @RequestMapping(&quot;/uploadImage&quot;)
+    //若没有@RequestParam(&quot;此处对应Form表单input的name属性值&quot;) MultipartFile
+    public ModelAndView upload(HttpServletRequest request,UploadImageFile file) throws IOException {
+        String name = RandomStringUtils.randomAlphabetic(10);
+        String newFileName = name+&quot;.jpg&quot;;
+        File newFile = new File(request.getServletContext().getRealPath(&quot;/image&quot;),newFileName);
+        newFile.getParentFile().mkdirs();
+        file.getImg().transferTo(newFile);
+        ModelAndView mav = new ModelAndView(&quot;showUploadedFile&quot;);
+        mav.addObject(&quot;imageName&quot;, newFileName);
+        return mav;
+    }
+}
+</code></pre>
+<p>遇到的问题：</p>
+<pre><code class="language-xml">org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;multipartResolver&#39;: Lookup method resolution failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [org.springframework.web.multipart.commons.CommonsMultipartResolver] from ClassLoader [ParallelWebappClassLoader
+  context: ROOT
+</code></pre>
+<p>原因是没有文件上传的jar包，引入就可以了。</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;commons-fileupload&lt;/groupId&gt;
+    &lt;artifactId&gt;commons-fileupload&lt;/artifactId&gt;
+    &lt;version&gt;1.3.3&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>不行就再put一下：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927125138.png" alt="image-20210927125138355"></p>
+<h3 id="拦截器">拦截器</h3>
+<pre><code class="language-java">public class IndexInterceptor implements HandlerInterceptor {
+    /**
+     * 在业务处理器处理请求之前被调用
+     * 如果返回false
+     *     从当前的拦截器往回执行所有拦截器的afterCompletion(),再退出拦截器链
+     * 如果返回true
+     *    执行下一个拦截器,直到所有的拦截器都执行完毕
+     *    再执行被拦截的Controller
+     *    然后进入拦截器链,
+     *    从最后一个拦截器往回执行所有的postHandle()
+     *    接着再从最后一个拦截器往回执行所有的afterCompletion()
+     */
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println(&quot;preHandle(), 在访问Controller之前被调用&quot;);
+        return true;
+    }
+
+    /**
+     * 在业务处理器处理请求执行完成后,生成视图之前执行的动作
+     * 可在modelAndView中加入数据，比如当前时间
+     */
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        System.out.println(&quot;postHandle(), 在访问Controller之后，访问视图之前被调用,这里可以注入一个时间到modelAndView中，用于后续视图显示&quot;);
+        assert modelAndView != null;
+        modelAndView.addObject(&quot;date&quot;,&quot;由拦截器生成的时间:&quot; + new Date());
+    }
+
+    /**
+     * 在DispatcherServlet完全处理完请求后被调用,可用于清理资源等
+     * 当有拦截器抛出异常时,会从当前拦截器往回执行所有的拦截器的afterCompletion()
+     */
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        System.out.println(&quot;afterCompletion(), 在访问视图之后被调用&quot;);
+    }
+}
+</code></pre>
+<p>配置：</p>
+<pre><code class="language-xml">&lt;mvc:interceptors&gt;
+    &lt;mvc:interceptor&gt;
+        &lt;!--  /** 拦截所有--&gt;
+        &lt;!--  /category/** 拦截/category路径下的所有--&gt;
+        &lt;mvc:mapping path=&quot;/index&quot;/&gt;
+        &lt;bean class=&quot;interceptor.IndexInterceptor&quot;/&gt;
+    &lt;/mvc:interceptor&gt;
+    &lt;!-- 当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法 --&gt;
+&lt;/mvc:interceptors&gt;
+</code></pre>
+<h2 id="ssm例子">SSM例子</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927193254.png" alt="image-20210927193254616"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927194504.png" alt="image-20210927194504157"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927200425.png" alt="image-20210927200425325"></p>
+<p>跟着代码具体走一下：</p>
+<h3 id="webxml">web.xml</h3>
+<pre><code class="language-xml">&lt;!DOCTYPE web-app PUBLIC
+ &quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot;
+ &quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot; &gt;
+
+&lt;web-app&gt;
+  &lt;display-name&gt;Archetype Created Web Application&lt;/display-name&gt;
+&lt;!--  spring配置文件--&gt;
+  &lt;context-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;classpath:applicationContext.xml&lt;/param-value&gt;
+  &lt;/context-param&gt;
+  &lt;listener&gt;
+    &lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;
+  &lt;/listener&gt;
+
+  &lt;!-- spring mvc核心：分发servlet --&gt;
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;mvc-dispatcher&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;!-- spring mvc的配置文件 --&gt;
+    &lt;init-param&gt;
+      &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+      &lt;param-value&gt;classpath:springMVC.xml&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+  &lt;/servlet&gt;
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;mvc-dispatcher&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
+<h3 id="springmvcxml">springmvc.xml</h3>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.2.xsd&quot;&gt;
+    &lt;context:annotation-config/&gt;
+    &lt;context:component-scan base-package=&quot;cn.orzlinux.controller&quot;&gt;
+        &lt;context:include-filter type=&quot;annotation&quot;
+                                expression=&quot;org.springframework.stereotype.Controller&quot;/&gt;
+    &lt;/context:component-scan&gt;
+
+    &lt;mvc:annotation-driven /&gt;
+
+    &lt;mvc:default-servlet-handler /&gt;
+
+    &lt;!-- 视图定位 --&gt;
+    &lt;bean
+            class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;
+        &lt;property name=&quot;viewClass&quot;
+                  value=&quot;org.springframework.web.servlet.view.JstlView&quot; /&gt;
+        &lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/jsp/&quot; /&gt;
+        &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot; /&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;
+</code></pre>
+<h4 id="contextannotation-config">context:annotation-config</h4>
+<p>本节来自：<a href="https://blog.csdn.net/fox_bert/article/details/80793030">here</a></p>
+<p>&lt; context:annotation-config&gt; 是用于激活那些已经在spring容器里注册过的bean上面的注解，也就是显示的向Spring注册</p>
+<pre><code class="language-xml">AutowiredAnnotationBeanPostProcessor
+CommonAnnotationBeanPostProcessor
+PersistenceAnnotationBeanPostProcessor
+RequiredAnnotationBeanPostProcessor
+</code></pre>
+<p>这四个Processor，注册这4个BeanPostProcessor的作用，就是为了你的系统能够识别相应的注解。BeanPostProcessor就是处理注解的处理器。</p>
+<ul>
+<li>比如我们要使用@Autowired注解，那么就必须事先在 Spring 容器中声明 AutowiredAnnotationBeanPostProcessor Bean。传统声明方式如下</li>
+</ul>
+<pre><code class="language-xml">&lt;bean class=&quot;org.springframework.beans.factory.annotation. AutowiredAnnotationBeanPostProcessor &quot;/&gt;
+</code></pre>
+<ul>
+<li>如果想使用@ Resource 、@ PostConstruct、@ PreDestroy等注解就必须声明CommonAnnotationBeanPostProcessor。传统声明方式如下</li>
+</ul>
+<pre><code class="language-xml">&lt;bean class=&quot;org.springframework.beans.factory.annotation. CommonAnnotationBeanPostProcessor&quot;/&gt; 
+</code></pre>
+<ul>
+<li>如果想使用@PersistenceContext注解，就必须声明PersistenceAnnotationBeanPostProcessor的Bean。</li>
+</ul>
+<pre><code class="language-xml">&lt;bean class=&quot;org.springframework.beans.factory.annotation.PersistenceAnnotationBeanPostProcessor&quot;/&gt; 
+</code></pre>
+<ul>
+<li>如果想使用 @Required的注解，就必须声明RequiredAnnotationBeanPostProcessor的Bean。</li>
+</ul>
+<p>同样，传统的声明方式如下：</p>
+<pre><code class="language-xml">&lt;bean class=&quot;org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor&quot;/&gt; 
+</code></pre>
+<p>一般来说，像@ Resource 、@ PostConstruct、@Antowired这些注解在自动注入还是比较常用，所以如果总是需要按照传统的方式一条一条配置显得有些繁琐和没有必要，于是spring给我们提供&lt; context:annotation-config/&gt;的简化配置方式，自动帮你完成声明。</p>
+<p>思考1：假如我们要使用如@Component、@Controller、@Service等这些注解，使用能否激活这些注解呢?</p>
+<p>答案：单纯使用&lt; context:annotation-config/&gt;对上面这些注解无效，不能激活！</p>
+<h4 id="contextcomponent-scan">context:component-scan</h4>
+<p>Spring 提供了context:component-scan配置，如下</p>
+<pre><code class="language-html">&lt;context:component-scan base-package=”XX.XX”/&gt; 
+</code></pre>
+<p>该配置项其实也包含了自动注入上述 四个processor 的功能，因此当使用 <code>&lt; context:component-scan/&gt;</code> 后，就可以将 <code>&lt; context:annotation-config/&gt;</code> 移除了。 </p>
+<p>通过对<strong>base-package</strong>配置，就可以把controller包下 service包下 dao包下的注解全部扫描到了！</p>
+<h4 id="mvcdefault-servlet-handler">mvc:default-servlet-handler</h4>
+<p>默认 Servlet 的 RequestDispatcher 必须通过名称而不是路径来检索。 换句话说就是 Spring MVC 将接收到的所有请求都看作是一个普通的请求，包括对于静态资源的请求。这样以来，所有对于静态资源的请求都会被看作是一个普通的后台控制器请求，导致请求找不到而报 404 异常错误。查看 tomcat 的日志会报一个警告：</p>
+<p>对于这个问题 Spring MVC 在全局配置文件中提供了一个<code>&lt;mvc:default-servlet-handler/&gt;</code>标签。在 WEB 容器启动的时候会在上下文中定义一个 DefaultServletHttpRequestHandler，它会对DispatcherServlet的请求进行处理，如果该请求已经作了映射，那么会接着交给后台对应的处理程序，如果没有作映射，就交给 WEB 应用服务器默认的 Servlet 处理，从而找到对应的静态资源，只有再找不到资源时才会报错。</p>
+<h4 id="总结">总结</h4>
+<p>（1）**&lt; context:annotation-config /&gt;：<strong>仅能够在已经在已经注册过的bean上面起作用。对于没有在spring容器中注册的bean，它并不能执行任何操作。 
+（2）</strong>&lt; context:component-scan base-package=&quot;XX.XX&quot;/&gt;** ：除了具有上面的功能之外，还具有自动将带有@component,@service,@Repository等注解的对象注册到spring容器中的功能。 </p>
+<p>思考2: 如果同时使用这两个配置会不会出现重复注入的情况呢？</p>
+<p>答案：因为<code>&lt; context:annotation-config /&gt;</code>和 <code>&lt; context:component-scan&gt;</code>同时存在的时候，前者会被忽略。如@autowire，@resource等注入注解只会被注入一次！</p>
+<h4 id="mvcannotation-driven">mvc:annotation-driven</h4>
+<p><code>&lt;mvc:annotation-driven/&gt;</code>会自动注册RequestMappingHandlerMapping与RequestMappingHandlerAdapter两个Bean,这是Spring MVC为@Controller分发请求所必需的。</p>
+<h3 id="categorycontrollerjava">CategoryController.java</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927202246.png" alt="image-20210927200425325"></p>
+<pre><code class="language-java">@Controller
+@RequestMapping(&quot;&quot;)
+public class CategoryController {
+    @Autowired
+    CategoryService categoryService;
+
+    @RequestMapping(&quot;listCategory&quot;)
+    public ModelAndView listCategory() {
+        ModelAndView mav = new ModelAndView();
+        List&lt;Category&gt; cs = categoryService.list();
+        mav.addObject(&quot;cs&quot;,cs);
+        mav.setViewName(&quot;listCategory&quot;);
+        return mav;
+    }
+}
+</code></pre>
+<p>通过springmvc.xml的操作，service已经注册到容器了，准群来说是其实现：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927202539.png" alt="image-20210927202538987"></p>
+<p>要调用service的list方法，得去实现里面找，找到之后就加到mav的object里面传给显示界面。</p>
+<h3 id="categoryserviceimpljava">CategoryServiceImpl.java</h3>
+<pre><code class="language-java">@Service
+public class CategoryServiceImpl implements CategoryService {
+    @Autowired
+    public CategoryMapper categoryMapper;
+
+    @Override
+    public List&lt;Category&gt; list() {
+        return categoryMapper.list();
+    }
+}
+</code></pre>
+<p>这个找就要找mapper了，而mapper和xml的映射和数据库连接已经在applicationContext.xml处理了。</p>
+<h3 id="applicationcontextxml">applicationContext.xml</h3>
+<pre><code class="language-java">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;
+       xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot; xmlns:jdbc=&quot;http://www.springframework.org/schema/jdbc&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
+       xsi:schemaLocation=&quot;
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd&quot;&gt;
+
+&lt;!--    通过注解，将Service的生命周期纳入Spring的管理--&gt;
+    &lt;context:annotation-config/&gt;
+    &lt;context:component-scan base-package=&quot;cn.orzlinux.service&quot;/&gt;
+
+&lt;!--    配置数据源--&gt;
+    &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+        &lt;property name=&quot;driverClassName&quot;&gt;
+            &lt;value&gt;com.mysql.cj.jdbc.Driver&lt;/value&gt;
+        &lt;/property&gt;
+        &lt;property name=&quot;url&quot;&gt;
+            &lt;value&gt;jdbc:mysql://localhost:3306/how2java?characterEncoding=UTF-8&lt;/value&gt;
+        &lt;/property&gt;
+        &lt;property name=&quot;username&quot;&gt;
+            &lt;value&gt;root&lt;/value&gt;
+        &lt;/property&gt;
+        &lt;property name=&quot;password&quot;&gt;
+            &lt;value&gt;===&lt;/value&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+
+    &lt;bean id=&quot;sqlSession&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
+        &lt;property name=&quot;typeAliasesPackage&quot; value=&quot;cn.orzlinux.pojo&quot;/&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+        &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath:cn/orzlinux/mapper/*.xml&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;bean class=&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;&gt;
+        &lt;property name=&quot;basePackage&quot; value=&quot;cn.orzlinux.mapper&quot;/&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;
+</code></pre>
+<p>在 MyBatis 中，可以使用 SqlSessionFactory 来创建 SqlSession。一旦你获得一个 session 之后，可以使用它来执行映射语句、提交或回滚连接，最后，当不再需要它的时 候，可以关闭 session。</p>
+<p>所以，controller就拿到了数据库里的数据，可以显示了。</p>
+<h3 id="catagoryjava">catagory.java</h3>
+<pre><code class="language-java">public class Category {
+    private int id;
+    private String name;
+    。。getter setter
+}
+</code></pre>
+<h3 id="categorymapperjava">CategoryMapper.java</h3>
+<pre><code class="language-java">public interface CategoryMapper {
+    int add(Category category);
+    void delete(int id);
+    Category get(int id);
+    int update(Category category);
+    List&lt;Category&gt; list();
+    int count();
+}
+</code></pre>
+<h3 id="categorymapperxml">CategoryMapper.xml</h3>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper
+        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+
+&lt;mapper namespace=&quot;cn.orzlinux.mapper.CategoryMapper&quot;&gt;
+    &lt;insert id=&quot;add&quot; parameterType=&quot;Category&quot; &gt;
+        insert into category_ ( name ) values (#{name})
+    &lt;/insert&gt;
+
+    &lt;delete id=&quot;delete&quot; parameterType=&quot;Category&quot; &gt;
+        delete from category_ where id= #{id}
+    &lt;/delete&gt;
+
+    &lt;select id=&quot;get&quot; parameterType=&quot;_int&quot; resultType=&quot;Category&quot;&gt;
+        select * from   category_  where id= #{id}
+    &lt;/select&gt;
+
+    &lt;update id=&quot;update&quot; parameterType=&quot;Category&quot; &gt;
+        update category_ set name=#{name} where id=#{id}
+    &lt;/update&gt;
+    &lt;select id=&quot;list&quot; resultType=&quot;Category&quot;&gt;
+        select * from   category_
+    &lt;/select&gt;
+
+&lt;/mapper&gt;
+</code></pre>
+<h3 id="listcategoryjsp">listCategory.jsp</h3>
+<pre><code class="language-html">&lt;%--
+  Created by IntelliJ IDEA.
+  User: PC
+  Date: 2021/9/27
+  Time: 16:53
+  To change this template use File | Settings | File Templates.
+--%&gt;
+&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; isELIgnored=&quot;false&quot; %&gt;
+&lt;%@ taglib uri=&quot;http://java.sun.com/jsp/jstl/core&quot; prefix=&quot;c&quot;%&gt;
+
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+
+&lt;table align=&#39;center&#39; border=&#39;1&#39; cellspacing=&#39;0&#39;&gt;
+  &lt;tr&gt;
+    &lt;td&gt;id&lt;/td&gt;
+    &lt;td&gt;name&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;c:forEach items=&quot;${cs}&quot; var=&quot;c&quot; varStatus=&quot;st&quot;&gt;
+    &lt;tr&gt;
+      &lt;td&gt;${c.id}&lt;/td&gt;
+      &lt;td&gt;${c.name}&lt;/td&gt;
+
+    &lt;/tr&gt;
+  &lt;/c:forEach&gt;
+&lt;/table&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3 id="autowired">Autowired</h3>
+<p>@Autowired原理：
+举例：</p>
+<pre><code class="language-java">@Autowired
+private BookService bookService;
+</code></pre>
+<p>先按照类型去容器中找到对应的组件；<code>bookService = ioc.getBean(BookService.class)</code></p>
+<p>找到一个：找到就赋值，没找到就报异常。</p>
+<p>按照类型可以找到多个？找到多个如何装配上？类型一样就按照变量名为ID继续匹配，匹配上就装配。没有匹配？报错。原因：因为我们按照变量名作为id。继续匹配的使用@Qualifier指定一个新的id，找到就匹配。</p>
+<h3 id="遇到的问题">遇到的问题</h3>
+<h4 id="mybatis问题">Mybatis问题</h4>
+<p>org.apache.ibatis.session java.lang.NoSuchMethodError，左右解决不了。应该是缓存冲突啥之类的问题。</p>
+<p>解决办法如下：</p>
+<p><strong>一：</strong></p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20210927184532.png" alt="image-20210927184532738" style="zoom:80%;" />
+
+<p><strong>二：点击蓝色的选项</strong></p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20210927184600.png" alt="image-20210927184600464" style="zoom:80%;" />
+
+<p><strong>三：重启</strong></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927184927.png" alt="image-20210927184927654"></p>
+<ul>
+<li>分别输入以下命令：</li>
+<li>mvn idea:idea</li>
+<li>mvn clean</li>
+<li>mvn test</li>
+<li>执行完上述命令后一般就会解决问题</li>
+</ul>
+<p>我的也解决了。</p>
+<h4 id="idea-xml问题">IDEA xml问题</h4>
+<p>IDEA并不会将<code>src\main\java\</code>目录下的配置文件（.xml）和资源文件(.properties)搬运到target目录下，解决办法是修改pom.xml文件，添加以下代码：</p>
+<pre><code class="language-xml">&lt;build&gt;
+  &lt;!--解决Intellij构建项目时，target/classes目录下不存在mapper.xml文件--&gt;
+    &lt;!--解决Intellij构建项目时，target/classes目录下不存在mapper.xml文件--&gt;
+    &lt;resources&gt;
+      &lt;resource&gt;
+        &lt;directory&gt;src/main/java&lt;/directory&gt;
+        &lt;includes&gt;
+          &lt;include&gt;**/*.xml&lt;/include&gt;
+        &lt;/includes&gt;
+      &lt;/resource&gt;
+    &lt;/resources&gt;
+  。。。
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927192046.png" alt="image-20210927192046713"></p>
+<p>然后target就有了</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927192618.png" alt="image-20210927192618881"></p>
+<h4 id="jstl-foreach不生效问题">jstl foreach不生效问题</h4>
+<p>在page directive中的isELIgnored属性用来指定是否忽略。格式为： ＜%@ page isELIgnored＝&quot;true|false&quot;%＞ 如果设定为真，那么JSP中的表达式被当成字符串处理。比如下面这个表达式${2000 % 20}, 在isELIgnored＝&quot;true&quot;时输出为${2000 % 20}，而isELIgnored＝&quot;false&quot;时输出为100。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927193239.png" alt="image-20210927193239749"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927194108.png" alt="image-20210927194108074"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927193254.png" alt="image-20210927193254616"></p>
+<h2 id="ssm其他">SSM其他</h2>
+<h3 id="分页">分页</h3>
+<p>搞一个页面结构体</p>
+<pre><code class="language-java">public class Page {
+    int start = 0;
+    int count = 5;
+    int last = 0;
+}
+</code></pre>
+<p>更改jsp：</p>
+<pre><code class="language-html">&lt;div style=&quot;text-align:center&quot;&gt;
+  &lt;a href=&quot;?start=0&quot;&gt;首  页&lt;/a&gt;
+  &lt;a href=&quot;?start=${page.start-page.count}&quot;&gt;上一页&lt;/a&gt;
+  &lt;a href=&quot;?start=${page.start+page.count}&quot;&gt;下一页&lt;/a&gt;
+  &lt;a href=&quot;?start=${page.last}&quot;&gt;末  页&lt;/a&gt;
+&lt;/div&gt;
+</code></pre>
+<p>更改controller</p>
+<pre><code class="language-java">@RequestMapping(&quot;listCategory&quot;)
+public ModelAndView listCategory(Page page) {
+    ModelAndView mav = new ModelAndView();
+    List&lt;Category&gt; cs = categoryService.list(page);
+    int total = categoryService.total();
+
+    page.calculateLast(total);
+    mav.addObject(&quot;cs&quot;,cs);
+    mav.setViewName(&quot;listCategory&quot;);
+    return mav;
+}
+</code></pre>
+<p>mapper、service添加。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927210552.png" alt="image-20210927210552763"></p>
+<h3 id="连接池">连接池</h3>
+<pre><code class="language-xml">&lt;bean id=&quot;dataSource&quot; class=&quot;com.alibaba.druid.pool.DruidDataSource&quot; init-method=&quot;init&quot; destroy-method=&quot;close&quot;&gt;
+    &lt;!-- 基本属性 url、user、password --&gt;
+    &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/how2java?characterEncoding=UTF-8&quot; /&gt;
+    &lt;property name=&quot;username&quot; value=&quot;root&quot; /&gt;
+    &lt;property name=&quot;password&quot; value=&quot;===&quot; /&gt;
+    &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.cj.jdbc.Driver&quot; /&gt;
+
+    &lt;!-- 配置初始化大小、最小、最大 --&gt;
+    &lt;property name=&quot;initialSize&quot; value=&quot;3&quot; /&gt;
+    &lt;property name=&quot;minIdle&quot; value=&quot;3&quot; /&gt;
+    &lt;property name=&quot;maxActive&quot; value=&quot;20&quot; /&gt;
+
+    &lt;!-- 配置获取连接等待超时的时间 --&gt;
+    &lt;property name=&quot;maxWait&quot; value=&quot;60000&quot; /&gt;
+
+    &lt;!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 --&gt;
+    &lt;property name=&quot;timeBetweenEvictionRunsMillis&quot; value=&quot;60000&quot; /&gt;
+
+    &lt;!-- 配置一个连接在池中最小生存的时间，单位是毫秒 --&gt;
+    &lt;property name=&quot;minEvictableIdleTimeMillis&quot; value=&quot;300000&quot; /&gt;
+
+    &lt;property name=&quot;validationQuery&quot; value=&quot;SELECT 1&quot; /&gt;
+    &lt;property name=&quot;testWhileIdle&quot; value=&quot;true&quot; /&gt;
+    &lt;property name=&quot;testOnBorrow&quot; value=&quot;false&quot; /&gt;
+    &lt;property name=&quot;testOnReturn&quot; value=&quot;false&quot; /&gt;
+
+    &lt;!-- 打开PSCache，并且指定每个连接上PSCache的大小 --&gt;
+    &lt;property name=&quot;poolPreparedStatements&quot; value=&quot;true&quot; /&gt;
+    &lt;property name=&quot;maxPoolPreparedStatementPerConnectionSize&quot; value=&quot;20&quot; /&gt;
+&lt;/bean&gt;
+</code></pre>
+<h3 id="maven更新">maven更新</h3>
+<p>点一下就行了。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210927211645.png" alt="image-20210927211645798"></p>
+<h3 id="事务">事务</h3>
+<pre><code class="language-java">@Override
+@Transactional(propagation= Propagation.REQUIRED,rollbackForClassName=&quot;Exception&quot;)
+public void addTwo() {
+    Category c1 = new Category();
+    c1.setName(&quot;短的名字&quot;);
+    categoryMapper.add(c1);
+
+    Category c2 = new Category();
+    c2.setName(&quot;名字长对应字段放不下,名字长对应字段放不下,名字长对应字段放不下,名字长对应字段放不下,名字长对应字段放不下,名字长对应字段放不下,名字长对应字段放不下,名字长对应字段放不下,&quot;);
+    categoryMapper.add(c2);
+}
+</code></pre>
+<p>配置：</p>
+<pre><code class="language-xml">&lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot;/&gt;
+&lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+    &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
+&lt;/bean&gt;
+</code></pre>
+<p><strong>事物传播行为介绍:</strong> </p>
+<pre><code class="language-shell">@Transactional(propagation=Propagation.REQUIRED) ：如果有事务, 那么加入事务, 没有的话新建一个(默认情况下)
+@Transactional(propagation=Propagation.NOT_SUPPORTED) ：容器不为这个方法开启事务
+@Transactional(propagation=Propagation.REQUIRES_NEW) ：不管是否存在事务,都创建一个新的事务,原来的挂起,新的执行完毕,继续执行老的事务
+@Transactional(propagation=Propagation.MANDATORY) ：必须在一个已有的事务中执行,否则抛出异常
+@Transactional(propagation=Propagation.NEVER) ：必须在一个没有的事务中执行,否则抛出异常(与Propagation.MANDATORY相反)
+@Transactional(propagation=Propagation.SUPPORTS) ：如果其他bean调用这个方法,在其他bean中声明事务,那就用事务.如果其他bean没有声明事务,那就不用事务.
+</code></pre>
+<h2 id="参考">参考</h2>
+<p><a href="https://how2j.cn/module/98.html">SPRING MVC</a></p>
+<p> <a href="https://how2j.cn/module/126.html">SSM</a> </p>
+<p><a href="https://blog.csdn.net/awodwde/article/details/107705778">★spring@Autowired注解原理，通俗易懂（笔记）</a></p>
+<p><a href="https://blog.csdn.net/qq_41740004/article/details/106661212">Mybatis 出现org.apache.ibatis.io不存在，org.apache.ibatis.session不存在等错误</a></p>
+<p><a href="https://blog.csdn.net/liliuqing/article/details/85045384">IDEA中Maven项目target目录下缺少包及mapper.xml文件</a></p>
+<p><a href="https://blog.csdn.net/fox_bert/article/details/80793030">spring配置注解context:annotation-config和context:component-scan区别</a></p>
+<p><a href="https://blog.csdn.net/codejas/article/details/80055608">mvc:default-servlet-handler标签的作用</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"javaframe20210927.html";
+			document.getElementById("blogaddr-a").innerHTML="SpringMVC和SSM";
+			</script></body></html> 

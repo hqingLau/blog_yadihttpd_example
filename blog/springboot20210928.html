@@ -1,0 +1,835 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>SpringBoot一
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>SpringBoot一</h1><hr>
+<h2 id="内置tomcat">内置tomcat</h2>
+<p><strong>StopWatch计时</strong>：</p>
+<pre><code class="language-java">StopWatch stopWatch = new StopWatch();
+stopWatch.start(&quot;stop watch测试1&quot;);
+Thread.sleep(2000);
+stopWatch.stop();
+
+stopWatch.start(&quot;stop watch测试2&quot;);
+Thread.sleep(1000);
+stopWatch.stop();
+
+System.out.println(stopWatch.prettyPrint());
+System.out.println(stopWatch.getTotalTimeMillis());
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928124002.png" alt="image-20210928124002390"></p>
+<h3 id="run">run</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928124106.png" alt="image-20210928123244835"></p>
+<p><strong>run代码</strong>：</p>
+<pre><code class="language-java">public ConfigurableApplicationContext run(String... args) {
+    StopWatch stopWatch = new StopWatch();
+    stopWatch.start();
+    // 引导启动器上下文环境初始化
+    DefaultBootstrapContext bootstrapContext = this.createBootstrapContext();
+    ConfigurableApplicationContext context = null;
+    
+    // Headless模式是系统的一种配置模式。在系统可能缺少显示设备、键盘或鼠标这些外设的情况下可以使用该模式。
+    // Headless模式虽然不是我们愿意见到的，但事实上我们却常常需要在该模式下工作，尤其是服务器端程序开发者。
+    // 因为服务器（如提供Web服务的主机）往往可能缺少前述设备，但又需要使用他们提供的功能，生成相应的数据，
+    // 以提供给客户端（如浏览器所在的配有相关的显示设备、键盘和鼠标的主机）。 
+    this.configureHeadlessProperty();
+    
+    // 运行时监视器
+    SpringApplicationRunListeners listeners = this.getRunListeners(args);
+    listeners.starting(bootstrapContext, this.mainApplicationClass);
+
+    try {
+        // 保存命令行参数
+        ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+        ConfigurableEnvironment environment = this.prepareEnvironment(listeners, bootstrapContext, applicationArguments);
+        this.configureIgnoreBeanInfo(environment);
+        
+        //打印banner
+        Banner printedBanner = this.printBanner(environment);
+        
+        //创建应用上下文
+        context = this.createApplicationContext();
+        context.setApplicationStartup(this.applicationStartup);
+        
+        //预处理上下文
+        this.prepareContext(bootstrapContext, context, environment, listeners, applicationArguments, printedBanner);
+        
+        //刷新上下文
+        this.refreshContext(context);
+        //再刷新上下文
+        this.afterRefresh(context, applicationArguments);
+        stopWatch.stop();
+        if (this.logStartupInfo) {
+            (new StartupInfoLogger(this.mainApplicationClass)).logStarted(this.getApplicationLog(), stopWatch);
+        }
+
+        listeners.started(context);
+        this.callRunners(context, applicationArguments);
+    } catch (Throwable var10) {
+        this.handleRunFailure(context, var10, listeners);
+        throw new IllegalStateException(var10);
+    }
+
+    try {
+        listeners.running(context);
+        return context;
+    } catch (Throwable var9) {
+        this.handleRunFailure(context, var9, (SpringApplicationRunListeners)null);
+        throw new IllegalStateException(var9);
+    }
+}
+</code></pre>
+<p>顺着<code>fresh</code>一直走，看到：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928130204.png" alt="image-20210928130204655"></p>
+<p>再走，最后看到：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928130502.png" alt="image-20210928130502350"></p>
+<h2 id="示例">示例</h2>
+<p><code>@ResponseBody</code>是作用在方法上的，<code>@ResponseBody</code> 表示该方法的返回结果直接写入 HTTP response body 中，一般在异步获取数据时使用【也就是AJAX】。</p>
+<p><code>@RestController</code> 是spring4里的新注解，是<code>@ResponseBody</code>和<code>@Controlle</code>r的缩写。</p>
+<pre><code class="language-java">@RestController
+public class HelloController {
+    @RequestMapping(&quot;/hello&quot;)
+    public String hello() {
+        return &quot;hi&quot;;
+    }
+}
+</code></pre>
+<h2 id="打包jar">打包jar</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928130835.png" alt="image-20210928130835642"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928131033.png" alt="image-20210928131033343"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928131042.png" alt="image-20210928131042214"></p>
+<blockquote>
+<p>SpringBoot项目既可以打成war包发布，也可以找成jar包发布。</p>
+<p>jar包：直接通过内置Tomcat运行，不需要额外安装Tomcat。如需修改内置Tomcat的配置，只需要在SpringBoot的配置文件中配置。内置Tomcat没有自己的日志输出，全靠jar包应用输出日志。但是比较方便，快速，比较简单。</p>
+<p>war包：传统的应用交付方式，需要安装Tomcat，然后放到wabapps目录下运行war包，可以灵活选择Tomcat版本，可以直接修改Tomcat的配置，有自己的Tomcat日志输出，可以灵活配置安全策略,相对打成jar包来说没那么快速方便。</p>
+</blockquote>
+<h2 id="跑jsp">跑jsp</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928150959.png" alt="image-20210928150958959"></p>
+<p>COntroller里面把rest去掉：</p>
+<pre><code class="language-java">@Controller
+public class HelloController {
+    @RequestMapping(&quot;/hello&quot;)
+    public String hello(Model m) {
+        m.addAttribute(&quot;now&quot;, DateFormat.getDateTimeInstance().format(new Date()));
+        return &quot;hello&quot;;
+    }
+}
+</code></pre>
+<p>写个jsp：</p>
+<pre><code class="language-html">&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+         pageEncoding=&quot;UTF-8&quot;%&gt;
+Hi JSP. 现在时间是  ${now}
+</code></pre>
+<p>结果：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928151051.png" alt="image-20210928151051874"></p>
+<h2 id="maven插件与依赖的关系">maven插件与依赖的关系</h2>
+<blockquote>
+<p>依赖：运行时开发时都需要用到的jar包，比如项目中需要一个Json的jar包，就要添加一个依赖，这个依赖在项目运行时也需要，因此在项目打包时需要把这些依赖也打包进项目里；</p>
+<p>插件：在项目开的发时需要，但是在项目运行时不需要，因此在项目开发完成后不需要把插件打包进项目中，比如有个可以自动生成getter和setter的插件，lombok，因为这玩意在编译时生成getter和setter，编译结束后就没用了，所以项目打包时并不需要把插件放进去~</p>
+</blockquote>
+<h2 id="错误异常处理">错误异常处理</h2>
+<p>在hello那抛出一个异常：</p>
+<pre><code class="language-java">throw new Exception(&quot;some exception&quot;);
+</code></pre>
+<p>为了方便对异常的统一管理，spring mvc提供了<code>ControllerAdvice</code>注解对异常进行统一的处理，拿到这些异常信息后，可以做一些处理，比如提供一个统一的web界面查看异常信息。</p>
+<ul>
+<li><strong>@ExceptionHandler</strong>：统一处理某一类异常，从而能够减少代码重复率和复杂度</li>
+<li><strong>@ControllerAdvice</strong>：异常集中处理，更好的使业务逻辑与异常处理剥离开；其是对Controller层进行拦截</li>
+<li><strong>@ResponseStatus</strong>：可以将某种异常映射为HTTP状态码</li>
+</ul>
+<p>异常处理：</p>
+<pre><code class="language-java">@ControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(value = Exception.class)
+    public ModelAndView defaultErrorHandler(HttpServletRequest req,Exception e) throws Exception {
+        ModelAndView mav = new ModelAndView();
+        mav.addObject(&quot;exception&quot;, e);
+        mav.addObject(&quot;url&quot;, req.getRequestURL());
+        mav.setViewName(&quot;errorPage&quot;);
+        return mav;
+    }
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928183321.png" alt="image-20210928183321932"></p>
+<h2 id="端口号和上下文路径">端口号和上下文路径</h2>
+<pre><code class="language-xml">server.port=8888
+#应用的上下文路径，也可以称为项目路径，是构成url地址的一部分。
+server.servlet.context-path=/test
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928184737.png" alt="image-20210928184736994"></p>
+<h2 id="配置切换">配置切换</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928185129.png" alt="image-20210928185129826"></p>
+<h2 id="yaml配置">yaml配置</h2>
+<pre><code class="language-xml">spring:
+    mvc:
+        view:
+            prefix: /WEB-INF/jsp/
+            suffix: .jsp
+server:
+    port: 8888
+    context-path: /test
+</code></pre>
+<h2 id="jpa">JPA</h2>
+<blockquote>
+<p>Hibernate 从3.2开始，就开始兼容JPA。Hibernate3.2获得了Sun TCK的 JPA(Java Persistence API) 兼容认证。<strong>JPA和Hibernate之间的关系，可以简单的理解为JPA是标准接口，Hibernate是实现，并不是对标关系，借用下图可以看清楚他们之间的关系，Hibernate属于遵循JPA规范的一种实现，但是JPA是Hibernate遵循的规范之一，Hibernate还有其他实现的规范</strong>，所以它们的关系更像是JPA是一种做面条的规范，而Hibernate是一种遵循做面条的规范的汤面，他不仅遵循了做面条的规范，同时也会遵循做汤和调料的其他规范，他们之间并不是吃面条和吃米饭的关系。</p>
+</blockquote>
+<p><strong>数据库连接</strong>：</p>
+<p>application.properties</p>
+<pre><code class="language-xml">spring.datasource.url=jdbc:mysql://127.0.0.1:3306/how2java?characterEncoding=UTF-8
+spring.datasource.username=root
+spring.datasource.password=hqinglau
+#  mysql-connector-java 6
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+# 表示会自动更新表结构，所以创建表 这一步其实是可以不需要的~
+# spring.jpa.properties.hibernate.hbm2ddl.auto=update
+</code></pre>
+<p><strong>pom</strong>添加：</p>
+<pre><code class="language-java">mysql-connector-java
+spring-boot-starter-data-jpa
+</code></pre>
+<p><strong>pojo</strong></p>
+<pre><code class="language-java">@Entity
+@Table(name = &quot;category_&quot;)
+public class Category {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = &quot;id&quot;)
+    private int id;
+
+    @Column(name = &quot;name&quot;)
+    private String name;
+    ...
+}
+</code></pre>
+<p>@Entity 注解表示这是个实体类
+@Table(name = &quot;category_&quot;) 表示这个类对应的表名是 category_ 
+@Id 表明主键
+@GeneratedValue(strategy = GenerationType.IDENTITY) 表明自增长方式</p>
+<blockquote>
+<p>-AUTO主键由程序控制, 是默认选项 ,不设置就是这</p>
+<p>-IDENTITY 主键由数据库生成, 采用数据库自增长, Oracle不支持这种方式</p>
+<p>-SEQUENCE 通过数据库的序列产生主键, MYSQL  不支持</p>
+<p>-Table 提供特定的数据库产生主键, 该方式更有利于数据库的移植</p>
+</blockquote>
+<p>@Column(name = &quot;id&quot;) 表明对应的数据库字段名</p>
+<p><strong>DAO</strong></p>
+<pre><code class="language-java">//提供泛型&lt;Category,Integer&gt; 表示这个是针对Category类的DAO,Integer表示主键是Integer类型。
+//JpaRepository 这个父接口，就提供了CRUD, 分页等等一系列的查询了，直接拿来用，都不需要二次开发的了。
+public interface CategoryDAO extends JpaRepository&lt;Category,Integer&gt; {
+}
+</code></pre>
+<p><strong>controller</strong></p>
+<pre><code class="language-java">@Controller
+public class CategoryController {
+    @Autowired
+    CategoryDAO categoryDAO;
+
+    @RequestMapping(&quot;/listCategory&quot;)
+    public String listCategory(Model m) {
+        List&lt;Category&gt; cs = categoryDAO.findAll();
+        m.addAttribute(&quot;cs&quot;,cs);
+        return &quot;listCategory&quot;;
+    }
+}
+</code></pre>
+<p><strong>list.jsp</strong></p>
+<pre><code class="language-html">&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+         pageEncoding=&quot;UTF-8&quot;%&gt;
+
+&lt;%@ taglib uri=&quot;http://java.sun.com/jsp/jstl/core&quot; prefix=&quot;c&quot;%&gt;
+
+&lt;table align=&#39;center&#39; border=&#39;1&#39; cellspacing=&#39;0&#39;&gt;
+    &lt;tr&gt;
+        &lt;td&gt;id&lt;/td&gt;
+        &lt;td&gt;name&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;c:forEach items=&quot;${cs}&quot; var=&quot;c&quot; varStatus=&quot;st&quot;&gt;
+        &lt;tr&gt;
+            &lt;td&gt;${c.id}&lt;/td&gt;
+            &lt;td&gt;${c.name}&lt;/td&gt;
+
+        &lt;/tr&gt;
+    &lt;/c:forEach&gt;
+&lt;/table&gt;
+</code></pre>
+<p><strong>流程图：</strong></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928201012.png" alt="image-20210928201012838"></p>
+<p><strong>增删改查</strong></p>
+<pre><code class="language-java">@Controller
+public class CategoryController {
+    @Autowired
+    CategoryDAO categoryDAO;
+
+    @RequestMapping(&quot;/listCategory&quot;)
+    public String listCategory(Model m, @RequestParam(value = &quot;start&quot;,defaultValue = &quot;0&quot;)int start,
+                               @RequestParam(value = &quot;size&quot;,defaultValue = &quot;5&quot;)int size) {
+        start = start&lt;0?0:start;
+        // 不支持了
+//        Sort sort = new Sort(Sort.Direction.DESC,&quot;id&quot;);
+//        Pageable pageable = new PageRequest(start,size,sort);
+        Sort sort = Sort.by(Sort.Order.desc(&quot;id&quot;));
+        Pageable pageable = PageRequest.of(start,size,sort);
+
+        Page&lt;Category&gt; page = categoryDAO.findAll(pageable);
+        m.addAttribute(&quot;page&quot;,page);
+        return &quot;listCategory&quot;;
+    }
+    @RequestMapping(&quot;/addCategory&quot;)
+    public String addCategory(Category c) {
+        categoryDAO.save(c);
+        return &quot;redirect:listCategory&quot;; // 客户端跳转，url会变
+    }
+
+    @RequestMapping(&quot;/deleteCategory&quot;)
+    public String deleteCategory(Category c) {
+        categoryDAO.delete(c);
+        return &quot;redirect:listCategory&quot;; // 客户端跳转，url会变
+    }
+
+    @RequestMapping(&quot;/updateCategory&quot;)
+    public String updateCategory(Category c) throws Exception {
+        // JPA 新增和修改用的都是save. 它根据实体类的id是否为0来判断是进行增加还是修改
+        categoryDAO.save(c);
+        return &quot;redirect:listCategory&quot;;
+    }
+
+    @RequestMapping(&quot;/editCategory&quot;)
+    public String editCategory(int id,Model m) {
+        Category c = categoryDAO.getById(id);
+        m.addAttribute(&quot;c&quot;,c);
+        return &quot;editCategory&quot;;
+    }
+}
+</code></pre>
+<p>list.jsp</p>
+<pre><code class="language-html">&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+         pageEncoding=&quot;UTF-8&quot;%&gt;
+
+&lt;%@ taglib uri=&quot;http://java.sun.com/jsp/jstl/core&quot; prefix=&quot;c&quot;%&gt;
+
+&lt;div align=&quot;center&quot;&gt;
+
+&lt;/div&gt;
+
+&lt;div style=&quot;width:500px;margin:20px auto;text-align: center&quot;&gt;
+    &lt;table align=&#39;center&#39; border=&#39;1&#39; cellspacing=&#39;0&#39;&gt;
+        &lt;tr&gt;
+            &lt;td&gt;id&lt;/td&gt;
+            &lt;td&gt;name&lt;/td&gt;
+            &lt;td&gt;编辑&lt;/td&gt;
+            &lt;td&gt;删除&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;c:forEach items=&quot;${page.content}&quot; var=&quot;c&quot; varStatus=&quot;st&quot;&gt;
+            &lt;tr&gt;
+                &lt;td&gt;${c.id}&lt;/td&gt;
+                &lt;td&gt;${c.name}&lt;/td&gt;
+                &lt;td&gt;&lt;a href=&quot;editCategory?id=${c.id}&quot;&gt;编辑&lt;/a&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;a href=&quot;deleteCategory?id=${c.id}&quot;&gt;删除&lt;/a&gt;&lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/c:forEach&gt;
+
+    &lt;/table&gt;
+    &lt;br&gt;
+    &lt;div&gt;
+        &lt;a href=&quot;?start=0&quot;&gt;[首  页]&lt;/a&gt;
+        &lt;a href=&quot;?start=${page.number-1}&quot;&gt;[上一页]&lt;/a&gt;
+        &lt;a href=&quot;?start=${page.number+1}&quot;&gt;[下一页]&lt;/a&gt;
+        &lt;a href=&quot;?start=${page.totalPages-1}&quot;&gt;[末  页]&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;br&gt;
+    &lt;form action=&quot;addCategory&quot; method=&quot;post&quot;&gt;
+
+        name: &lt;input name=&quot;name&quot;&gt; &lt;br&gt;
+        &lt;button type=&quot;submit&quot;&gt;提交&lt;/button&gt;
+
+    &lt;/form&gt;
+&lt;/div&gt;
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928210242.png" alt="image-20210928210242076"></p>
+<h2 id="mybatis">mybatis</h2>
+<pre><code class="language-java">@Controller
+public class CategoryController {
+    @Autowired
+    CategoryMapper categoryMapper;
+
+    @RequestMapping(&quot;/listCategory&quot;)
+    public String listCategory(Model m) throws Exception {
+        List&lt;Category&gt; cs=categoryMapper.findAll();
+        m.addAttribute(&quot;cs&quot;, cs);
+        return &quot;listCategory&quot;;
+    }
+}
+</code></pre>
+<p>mapper这里可以直接写也可以写xml配置文件</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928211133.png" alt="image-20210928211133470"></p>
+<p>xml：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928212819.png" alt="image-20210928212819617"></p>
+<h3 id="增删改查">增删改查</h3>
+<pre><code class="language-java">@Mapper
+public interface CategoryMapper {
+    @Select(&quot;select * from category_ &quot;)
+    List&lt;Category&gt; findAll();
+
+    @Insert(&quot; insert into category_ ( name ) values (#{name}) &quot;)
+    public int save(Category category);
+
+    @Delete(&quot; delete from category_ where id= #{id} &quot;)
+    public void delete(int id);
+
+    @Select(&quot;select * from category_ where id= #{id} &quot;)
+    public Category get(int id);
+
+    @Update(&quot;update category_ set name=#{name} where id=#{id} &quot;)
+    public int update(Category category);
+}
+</code></pre>
+<p>controller</p>
+<pre><code class="language-java">package cn.orzlinux.springbootdemo.web;
+
+import cn.orzlinux.springbootdemo.mapper.CategoryMapper;
+import cn.orzlinux.springbootdemo.pojo.Category;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+
+@Controller
+public class CategoryController {
+    @Autowired
+    CategoryMapper categoryMapper;
+
+    @RequestMapping(&quot;/listCategory&quot;)
+    //在参数里接受当前是第几页 start ，以及每页显示多少条数据 size。 默认值分别是0和5。
+    public String listCategory(Model m, @RequestParam(value = &quot;start&quot;, defaultValue = &quot;0&quot;) int start,
+                               @RequestParam(value = &quot;size&quot;, defaultValue = &quot;5&quot;) int size) throws Exception {
+        //根据start,size进行分页，并且设置id 倒排序
+        PageHelper.startPage(start,size,&quot;id desc&quot;);
+        //因为PageHelper的作用，这里就会返回当前分页的集合了
+        List&lt;Category&gt; cs=categoryMapper.findAll();
+        //根据返回的集合，创建PageInfo对象
+        PageInfo&lt;Category&gt; page = new PageInfo&lt;&gt;(cs);
+        m.addAttribute(&quot;page&quot;, page);
+        return &quot;listCategory&quot;;
+    }
+    @RequestMapping(&quot;/deleteCategory&quot;)
+    public String deleteCategory(Category c) throws Exception {
+        categoryMapper.delete(c.getId());
+        return &quot;redirect:listCategory&quot;;
+    }
+    @RequestMapping(&quot;/updateCategory&quot;)
+    public String updateCategory(Category c) throws Exception {
+        categoryMapper.update(c);
+        return &quot;redirect:listCategory&quot;;
+    }
+    @RequestMapping(&quot;/editCategory&quot;)
+    public String listCategory(int id,Model m) throws Exception {
+        Category c= categoryMapper.get(id);
+        m.addAttribute(&quot;c&quot;, c);
+        return &quot;editCategory&quot;;
+    }
+}
+</code></pre>
+<h3 id="pagehelper分页">pageHelper分页</h3>
+<pre><code class="language-java">//注解@Configuration 表示PageHelperConfig 这个类是用来做配置的。
+@Configuration
+public class PageHelperConfig {
+    //注解@Bean 表示启动PageHelper这个拦截器。
+    @Bean
+    public PageHelper pageHelper() {
+        PageHelper pageHelper = new PageHelper();
+        Properties p = new Properties();
+        // offsetAsPageNum:设置为true时，会将RowBounds第一个参数offset当成pageNum页码使用.
+        p.setProperty(&quot;offsetAsPageNum&quot;,&quot;true&quot;);
+
+        // rowBoundsWithCount:设置为true时，使用RowBounds分页会进行count查询.
+        p.setProperty(&quot;rowBoundsWithCount&quot;,&quot;true&quot;);
+        // 启用合理化时，如果pageNum&lt;1会查询第一页，如果pageNum&gt;pages会查询最后一页。
+        p.setProperty(&quot;reasonable&quot;,&quot;true&quot;);
+        pageHelper.setProperties(p);
+        return pageHelper;
+    }
+}
+</code></pre>
+<p>不生效问题：</p>
+<p>改成这个依赖</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.github.pagehelper&lt;/groupId&gt;
+    &lt;artifactId&gt;pagehelper-spring-boot-starter&lt;/artifactId&gt;
+    &lt;version&gt;1.3.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h2 id="单元测试">单元测试</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928233745.png" alt="image-20210928233744947"></p>
+<h2 id="图片上传">图片上传</h2>
+<p>uploadPage.jsp</p>
+<pre><code class="language-html">&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+         pageEncoding=&quot;UTF-8&quot;%&gt;
+
+&lt;form action=&quot;upload&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+  选择图片:&lt;input type=&quot;file&quot; name=&quot;file&quot; accept=&quot;image/*&quot; /&gt; &lt;br&gt;
+  &lt;input type=&quot;submit&quot; value=&quot;上传&quot;&gt;
+&lt;/form&gt;
+</code></pre>
+<p>showImg.jsp</p>
+<pre><code class="language-html">&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+    pageEncoding=&quot;UTF-8&quot;%&gt;
+    
+&lt;img src=&quot;/uploaded/${fileName}&quot;&gt;
+</code></pre>
+<p>controller.java</p>
+<pre><code class="language-java">@Controller
+public class UploadController {
+    @RequestMapping(&quot;/uploadPage&quot;)
+    public String uploadPage() {
+        return &quot;uploadPage&quot;;
+    }
+
+    @RequestMapping(value = &quot;/upload&quot;, method = RequestMethod.POST)
+    public String upload(HttpServletRequest request, @RequestParam(&quot;file&quot;)MultipartFile file, Model m) {
+        try {
+            String fileName = System.currentTimeMillis()+file.getOriginalFilename();
+            String destFileName=request.getServletContext().getRealPath(&quot;&quot;)+&quot;uploaded&quot;+ File.separator+fileName;
+
+            File destFile = new File(destFileName);
+            destFile.getParentFile().mkdirs();
+            file.transferTo(destFile);
+
+            m.addAttribute(&quot;fileName&quot;,fileName);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return &quot;上传失败,&quot; + e.getMessage();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return &quot;上传失败,&quot; + e.getMessage();
+        }
+
+        return &quot;showImg&quot;;
+    }
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928235247.png" alt="image-20210928235247239"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928235239.png" alt="image-20210928235239438"></p>
+<h2 id="springboot下载错误">springboot下载错误</h2>
+<p>Error: Cannot download <a href="https://start.spring.io/starter.zip">https://start.spring.io/starter.zip</a>?</p>
+<p>解决方法：使用自定义URL：<code>http://start.springboot.io/</code></p>
+<h2 id="最后一句话"><strong>最后一句话</strong></h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210928235558.png" alt="image-20210928235558639"></p>
+<h2 id="参考">参考</h2>
+<p><a href="https://www.cnblogs.com/sword-successful/p/11383723.html">SpringBoot内置tomcat启动原理</a></p>
+<p><a href="https://www.cnblogs.com/pcheng/p/11174947.html">JAVA中用StopWatch计算代码耗时的方法</a></p>
+<p><a href="https://www.cnblogs.com/cy0628/p/15032224.html">jar包和war包区别及理解</a></p>
+<p><a href="https://www.cnblogs.com/kevin-lee123/p/13404005.html">maven插件与依赖的关系</a></p>
+<p> <a href="https://how2j.cn/module/143.html">SPRINGBOOT</a> </p>
+<p><a href="https://www.cnblogs.com/mosoner/p/9494250.html">JPA和Hibernate到底是什么关系？？？</a></p>
+<p><a href="https://blog.csdn.net/sswqzx/article/details/84337921">@GeneratedValue 注解详解</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"springboot20210928.html";
+			document.getElementById("blogaddr-a").innerHTML="SpringBoot一";
+			</script></body></html> 

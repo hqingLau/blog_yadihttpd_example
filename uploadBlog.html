@@ -2,16 +2,16 @@
 <html lang="zh">
 
 <head>
-    <title>上传博客_Orz linux</title>
+    <title>上传博客 - Orz linux</title>
  <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="sogou_site_verification" content="wEcD18BWjC">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
-    <meta name="description" content="刘欢庆的博客，分享Linux，操作系统，编程语言的日志。">
+    <meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
     <meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
     <meta name="format-detection" content="telephone=no">
     <link rel="stylesheet" href="/css/index.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
 
     <link href="/css/prism.css" rel="stylesheet" />
@@ -199,13 +199,14 @@ function closeNav() {
 	</a>
 	</br>
   
-  	<a href="https://orzlinux.cn/blog/yadihttpd.html" style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+  <a href="/blog/yadihttpd.html"
+  style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
 
-	<span class="fa-stack">
-  <i class="fa  fa-lg  fa-server fa-stack-1x"></i>
-</span>
-	File Server
-	</a>
+  <span class="fa-stack">
+    <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+  </span>
+  Yadihttpd
+</a>
 	</br>
   <a href="/uploadBlog.html" style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
 
@@ -215,6 +216,15 @@ function closeNav() {
     Upload
     </a>
     </br>
+    <a href="/blogCategory.html"
+    style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+    <span class="fa-stack">
+      <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+    </span>
+    Category
+  </a>
+  </br>
 </div>
 
 
@@ -278,10 +288,27 @@ function closeNav() {
     			<button id="uploadMd" class="btn btn-primary">上传文件</button>
 		    </div>
 			
+        <div class="input-group"  style="width:400px; display:flex;margin-bottom:3px;margin-left: -15px;">
+          <input type="text" id="label_input" class="form-control" placeholder="输入标签，空白分割">
+          <a href="#" style="text-decoration:none;"><button type="button" class="btn btn-primary">文章标签</button></a>
+            </div>
+
+          <div style="width:400px; margin-bottom:3px;margin-left: -15px;margin-right: 0;">推荐标签：
+            <button onclick="add2label('Linux ')" type="button" class="btn btn-dark btn-sm" style="padding: 2px;" id="label_Linux">Linux</button>
+            <button onclick="add2label('C/C++ ')" type="button" class="btn btn-dark btn-sm" style="padding: 2px;" id="label_C">C/C++</button>
+            <button onclick="add2label('OS ')" type="button" class="btn btn-dark btn-sm" style="padding: 2px;" id="label_OS">操作系统</button>
+            <button onclick="add2label('Java ')" type="button" class="btn btn-dark btn-sm" style="padding: 2px;" id="label_Java">Java</button>
+            <button onclick="add2label('Concurrency ')" type="button" class="btn btn-dark btn-sm" style="padding: 2px;" id="label_Concurrency">Concurrency</button>
+            <button onclick="add2label('Algorighm ')" type="button" class="btn btn-dark btn-sm" style="padding: 2px;" id="label_suanfa">算法</button>
+            <button onclick="add2label('else ')" type="button" class="btn btn-dark btn-sm" style="padding: 2px;" id="label_suibi">杂项</button>
+          </div>
+
 			<div class="input-group"  style="width:400px; display:flex;margin-bottom:30px;margin-left: -15px;">
 			<input type="text" id="passwd" class="form-control" placeholder="输入上传密码">
 			<a href="/editmd.html" style="text-decoration:none;"><button type="button" class="btn btn-primary">在线编辑</button></a>
 		    </div>
+
+      
       </div>
       <div class="row">
         <!-- 拖拽图片到这来 -->
@@ -381,9 +408,9 @@ function closeNav() {
  
             var form = new FormData(); // FormData 对象
             form.append("file", fileObj); // 文件对象
-			form.append("passwd", str2); // 
-			form.append("lname",str); //标题
- 
+            form.append("passwd", str2); // 
+            form.append("lname",str); //标题
+            form.append("label",document.getElementById("label_input").value); //标题
             let xhr = new XMLHttpRequest();  // XMLHttpRequest 对象
             xhr.open("post", url, true); //post方式，url为服务器请求地址，true 该参数规定请求是否异步处理。
  
@@ -432,5 +459,10 @@ function closeNav() {
 }, false);
    </script>
     <script src="https://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+      function add2label(txt) {
+        document.getElementById("label_input").value=document.getElementById("label_input").value+txt;
+      }
+    </script>
 </body>
 </html>

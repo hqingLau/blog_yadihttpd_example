@@ -1,0 +1,833 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>Java练习Hackerrank另外二十道
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>Java练习Hackerrank另外二十道</h1><hr>
+<p>前二十关见：<a href="https://orzlinux.cn/blog/hackerrank_java1.html">Java练习Hackerrank二十道</a></p>
+<h2 id="第二十一关：java-strings-introduction">第二十一关：Java Strings Introduction</h2>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">hello
+java
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">9  // 字母个数
+No // 第一个字符串是否字典序在第二个后面
+Hello Java // 拼接，首字母大写
+</code></pre>
+<p><strong>解决方案</strong>：</p>
+<pre><code class="language-java">public static void main(String[] args) {
+    Scanner sc=new Scanner(System.in);
+    String A=sc.next();
+    String B=sc.next();
+    sc.close();
+    System.out.println(A.length()+B.length());
+    System.out.println(A.compareTo(B)&gt;0?&quot;Yes&quot;:&quot;No&quot;);
+    System.out.printf(&quot;%s %s\n&quot;,A.substring(0,1).toUpperCase()+A.substring(1),
+                      B.substring(0,1).toUpperCase()+B.substring(1));
+}
+</code></pre>
+<blockquote>
+<p><code>compareTo</code>按字典顺序此 <code>String</code> 对象位于参数字符串之前，则比较结果为一个负整数。如果按字典顺序此 <code>String</code> 对象位于参数字符串之后，则比较结果为一个正整数</p>
+</blockquote>
+<h2 id="第二十二关：java-substring">第二十二关：Java Substring</h2>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">Helloworld
+3 7
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">lowo
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211013172632.png" alt="image-20211013172632537"></p>
+<p><strong>解决方案</strong>：</p>
+<pre><code class="language-java">System.out.println(S.substring(start,end));
+</code></pre>
+<p>其中，<code>substring</code>用法：</p>
+<pre><code class="language-java">public String substring(int beginIndex);
+public String substring(int beginIndex, int endIndex);
+</code></pre>
+<h2 id="第二十三关：java-substring-comparisons">第二十三关：Java Substring Comparisons</h2>
+<p>连续字符字典序排序，输出最大和最小值</p>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">welcometojava
+3
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">ava
+wel
+</code></pre>
+<p><strong>解决方案</strong>：</p>
+<pre><code class="language-java">import java.util.Scanner;
+
+public class Solution {
+
+    public static String getSmallestAndLargest(String s, int k) {
+        int n = s.length();
+        if(k&gt;=n||k&lt;=0) {
+            return s+&quot;\n&quot;+s;
+        } 
+        String smallest = s.substring(0,k);
+        String largest = s.substring(0,k);
+        
+        String tmp;
+        for(int i=1;i&lt;=n-k;i++) {
+            tmp = s.substring(i,i+k);
+            if(tmp.compareTo(smallest)&lt;0) {
+                smallest = tmp;
+            }
+            if(largest.compareTo(tmp)&lt;0) {
+                largest = tmp;
+            }
+
+        }
+        
+        return smallest + &quot;\n&quot; + largest;
+    }
+
+
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        String s = scan.next();
+        int k = scan.nextInt();
+        scan.close();
+      
+        System.out.println(getSmallestAndLargest(s, k));
+    }
+}
+</code></pre>
+<h2 id="第二十四关：java-string-reverse">第二十四关：Java String Reverse</h2>
+<p>判断回文串</p>
+<pre><code class="language-java">public static void main(String[] args) {
+    Scanner sc=new Scanner(System.in);
+    String A=sc.next();
+    System.out.println(A.compareTo(new StringBuffer(A).reverse().toString()) == 0 ? &quot;Yes&quot; : &quot;No&quot;);
+}
+</code></pre>
+<h2 id="第二十五关：java-anagrams">第二十五关：Java Anagrams</h2>
+<p>判断变形词（两个单词各个字母的个数一致），忽略大小写。</p>
+<pre><code class="language-java">static boolean isAnagram(String a, String b) {
+    int lenA = a.length();
+    int lenB = b.length();
+    if(lenA!=lenB) {
+        return false;
+    }
+    a = a.toUpperCase();
+    b = b.toUpperCase();
+    int[] countA = new int[26];
+    int[] countB = new int[26];
+    for(int i = 0;i&lt;lenA;i++) {
+        countA[a.charAt(i)-&#39;A&#39;]++;
+        countB[b.charAt(i)-&#39;A&#39;]++;
+    }
+    for(int i=0;i&lt;26;i++) {
+        if(countA[i]!=countB[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+</code></pre>
+<h2 id="第二十六关：java-string-tokens">第二十六关：Java String Tokens</h2>
+<p>分词。</p>
+<p><code>s</code> is composed of <em>any</em> of the following: English alphabetic letters, blank spaces, exclamation points (<code>!</code>), commas (<code>,</code>), question marks (<code>?</code>), periods (<code>.</code>), underscores (<code>_</code>), apostrophes (<code>&#39;</code>), and at symbols (<code>@</code>).</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">He is a very very good boy, isn&#39;t he?
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">10
+He
+is
+a
+very
+very
+good
+boy
+isn
+t
+he
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public static void main(String[] args) {
+    Scanner scan = new Scanner(System.in);
+    String s = scan.nextLine().trim();
+    if(s.length()==0) {
+        System.out.println(&quot;0&quot;);
+        scan.close();
+        return;
+    }
+    String[] strs = s.split(&quot;[\\W_]+&quot;,0);
+    System.out.println(strs.length);
+    for(String str:strs) {
+        System.out.println(str);
+    }
+    scan.close();
+}
+</code></pre>
+<h2 id="第二十七关：pattern-syntax-checker">第二十七关：Pattern Syntax Checker</h2>
+<p>判断正则式是否有效，用<code>Pattern.compile</code>判断。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">3
+([A-Z])(.+)
+[AZ[a-z](a-z)
+batcatpat(nat
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">Valid
+Invalid
+Invalid
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public static void main(String[] args){
+    Scanner in = new Scanner(System.in);
+    int testCases = Integer.parseInt(in.nextLine());
+    while(testCases&gt;0){
+        String pattern = in.nextLine();
+        try {
+            Pattern.compile(pattern);
+            System.out.println(&quot;Valid&quot;);
+        } catch (Exception e) {
+            System.out.println(&quot;Invalid&quot;);
+        }
+        testCases--;
+    }
+}
+</code></pre>
+<h2 id="第二十八关：java-regex">第二十八关：Java Regex</h2>
+<p>判断ip4地址格式</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">000.12.12.034
+121.234.12.12
+23.45.12.56
+00.12.123.123123.123
+122.23
+Hello.IP
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">true
+true
+true
+false
+false
+false
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">class Solution{
+    public static void main(String[] args){
+        Scanner in = new Scanner(System.in);
+        while(in.hasNext()){
+            String IP = in.next();
+            System.out.println(IP.matches(new MyRegex().pattern));
+        }
+    }
+}
+
+class MyRegex {
+    public String pattern;
+    
+    public MyRegex() {
+        pattern = &quot;((25[0-5]|2[0-4][0-9]|1[0-9]{2}|0?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|0?[0-9]?[0-9])&quot;;
+    }
+}
+</code></pre>
+<h2 id="第二十九关：java-regex-2---duplicate-words">第二十九关：Java Regex 2 - Duplicate Words</h2>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">5
+Goodbye bye bye world world world
+Sam went went to to to his business
+Reya is is the the best player in eye eye game
+in inthe
+Hello hello Ab aB
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">Goodbye bye world
+Sam went to his business
+Reya is the best player in eye game
+in inthe
+Hello Ab
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public static void main(String[] args) {
+    String regex = &quot;\\b(\\w+)(?:\\W+\\1\\b)+&quot;;
+    Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+
+    Scanner in = new Scanner(System.in);
+    int numSentences = Integer.parseInt(in.nextLine());
+
+    while (numSentences-- &gt; 0) {
+        String input = in.nextLine();
+        Matcher m = p.matcher(input);
+        // Check for subsequences of input that match the compiled pattern
+        while (m.find()) {
+            input = input.replaceAll(m.group(), m.group(1));
+        }
+        // Prints the modified sentence.
+        System.out.println(input);
+    }
+    in.close();
+}
+</code></pre>
+<p>以下解释来自<a href="https://www.hackerrank.com/challenges/duplicate-word/forum">RodneyShag</a>:</p>
+<pre><code class="language-shell">\w ----&gt; A word character: [a-zA-Z_0-9]
+\W ----&gt; A non-word character: [^\w]
+\b ----&gt; A word boundary
+\1 ----&gt; Matches whatever was matched in the 1st group of parentheses, which in this case is the (\w+)
+\+ ----&gt; Match whatever it&#39;s placed after 1 or more times
+
+The \b boundaries are needed for special cases such as &quot;Bob and Andy&quot; (we don&#39;t want to match &quot;and&quot; twice). Another special case is &quot;My thesis is great&quot; (we don&#39;t want to match &quot;is&quot; twice).
+
+?: 匹配group的时候不算这个组
+group是针对（）来说的，group（0）就是指的整个串，group（1） 指的是第一个括号里的东西，group（2）指的第二个括号里的东西
+</code></pre>
+<h2 id="第三十关：valid-username-regular-expression">第三十关：Valid Username Regular Expression</h2>
+<ul>
+<li>[8,30]个字符</li>
+<li>只能包含字母数字下划线</li>
+<li>首字母只能字母</li>
+</ul>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">class UsernameValidator {
+    /*
+     * Write regular expression here.
+     */
+    // [a-zA-Z0-9_]同\\w
+    public static final String regularExpression = &quot;[a-zA-Z][a-zA-Z0-9_]{7,29}&quot;;
+}
+
+
+public class Solution {
+    private static final Scanner scan = new Scanner(System.in);
+    
+    public static void main(String[] args) {
+        int n = Integer.parseInt(scan.nextLine());
+        while (n-- != 0) {
+            String userName = scan.nextLine();
+
+            if (userName.matches(UsernameValidator.regularExpression)) {
+                System.out.println(&quot;Valid&quot;);
+            } else {
+                System.out.println(&quot;Invalid&quot;);
+            }           
+        }
+    }
+}
+</code></pre>
+<h2 id="第三十一关：tag-content-extractor">第三十一关：Tag Content Extractor</h2>
+<p>去掉标签</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">4
+&lt;h1&gt;Nayeem loves counseling&lt;/h1&gt;
+&lt;h1&gt;&lt;h1&gt;Sanjay has no watch&lt;/h1&gt;&lt;/h1&gt;&lt;par&gt;So wait for a while&lt;/par&gt;
+&lt;Amee&gt;safat codes like a ninja&lt;/amee&gt;
+&lt;SA premium&gt;Imtiaz has a secret crush&lt;/SA premium&gt;
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">Nayeem loves counseling
+Sanjay has no watch
+So wait for a while
+None
+Imtiaz has a secret crush
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public static void main(String[] args) {
+    Scanner in = new Scanner(System.in);
+    int testCases = Integer.parseInt(in.nextLine());
+    while(testCases&gt;0){
+        String line = in.nextLine();
+
+        boolean matchFound = false;
+        // ^&lt;限制表示中间不能有标签，就是取最内层合理的标签
+        Pattern r = Pattern.compile(&quot;&lt;(.+)&gt;([^&lt;]+)&lt;/\\1&gt;&quot;);
+        Matcher m = r.matcher(line);
+
+        while (m.find()) {
+            System.out.println(m.group(2));
+            matchFound = true;
+        }
+        if ( ! matchFound) {
+            System.out.println(&quot;None&quot;);
+        }
+        testCases--;
+    }
+}
+</code></pre>
+<h2 id="第三十二关：java-varargs---simple-addition">第三十二关：Java Varargs - Simple Addition</h2>
+<p>变长参数求和:</p>
+<pre><code class="language-java">public void add(int ...args) {
+    int n = args.length;
+    int sum = args[0];
+    System.out.printf(&quot;%d&quot;,args[0]);
+    for(int i=1;i&lt;n;i++) {
+        System.out.printf(&quot;+%d&quot;,args[i]);
+        sum += args[i];
+    }
+    System.out.printf(&quot;=%d\n&quot;,sum);
+}
+</code></pre>
+<h2 id="第三十三关：java-reflection---attributes">第三十三关：Java Reflection - Attributes</h2>
+<p>反射，打印出类的所有方法。</p>
+<pre><code class="language-java">public static void main(String[] args){
+    Class student = Student.class;
+    Method[] methods =student.getDeclaredMethods();
+
+    ArrayList&lt;String&gt; methodList = new ArrayList&lt;&gt;();
+    for(Method m:methods){
+        methodList.add(m.getName());
+    }
+    Collections.sort(methodList);
+    for(String name: methodList){
+        System.out.println(name);
+    }
+}
+</code></pre>
+<h2 id="第三十四关：can-you-access">第三十四关：Can You Access?</h2>
+<p>调用私有内部类的私有方法：</p>
+<pre><code class="language-java">public class Solution {
+    public static void main(String[] args) throws Exception {
+        try{
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            int num = Integer.parseInt(br.readLine().trim());
+            Object o;
+            o = new Inner().new Private();
+            // 法一：
+            Method method = o.getClass().getDeclaredMethod(&quot;powerof2&quot;, int.class);
+            method.setAccessible(true);
+            System.out.printf(&quot;%d is %s\n&quot;,num,(String) method.invoke(o,num));
+            // 法二：
+            System.out.printf(&quot;%d is %s\n&quot;,num,((Solution.Inner.Private)o).powerof2(num));
+        }//end of try
+    }//end of main
+    static class Inner{
+        private class Private{
+            private String powerof2(int num){
+                return ((num&amp;num-1)==0)?&quot;power of 2&quot;:&quot;not a power of 2&quot;;
+            }
+        }
+    }//end of Inner
+}//end of Solution
+</code></pre>
+<h2 id="第三十五关：prime-checker">第三十五关：Prime Checker</h2>
+<pre><code class="language-java">// 在 JDK 1.5 之后增加了一种静态导入的语法，用于导入指定类的某个静态成员变量、
+// 方法或全部的静态成员变量、方法。如果一个类中的方法全部是使用 static 声明的
+// 静态方法，则在导入时就可以直接使用 import static 的方式导入。
+import static java.lang.System.in;
+class Prime {
+    private boolean isPrime(int n) {
+        if(n&lt;2) {
+            return false;
+        }
+        if(n==2|n==3) {
+            return true;
+        }
+        for(int i=2;i&lt;Math.pow(n,0.5)+0.5;i++) {
+            if(n%i==0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public void checkPrime(int ...args) {
+        String seperator = &quot;&quot;;
+        for(int arg:args) {
+            if(isPrime(arg)) {
+                System.out.printf(&quot;%s%d&quot;,seperator,arg);
+                seperator=&quot; &quot;;
+            }
+        }
+        System.out.println();
+    }
+}
+</code></pre>
+<h2 id="第三十六关：判断重载">第三十六关：判断重载</h2>
+<p>这个是里面经常出现的验证代码，用来判断用户是否重载了函数。</p>
+<p>获取全部方法后将名字插入set，判断重复。</p>
+<pre><code class="language-java">Method[] methods=Prime.class.getDeclaredMethods();
+Set&lt;String&gt; set=new HashSet&lt;&gt;();
+boolean overload=false;
+for(int i=0;i&lt;methods.length;i++)
+{
+    if(set.contains(methods[i].getName()))
+    {
+        overload=true;
+        break;
+    }
+    set.add(methods[i].getName());
+}
+if(overload)
+{
+    throw new Exception(&quot;Overloading not allowed&quot;);
+}
+</code></pre>
+<h2 id="第三十七关：java-factory-pattern">第三十七关：Java Factory Pattern</h2>
+<p>工厂模式：Food是一个接口，Cake和Pizza是它的实现类，根据输入返回具体的实现类。</p>
+<pre><code class="language-java">class FoodFactory {
+    public Food getFood(String order) {
+        switch(order) {
+            case &quot;cake&quot;: return new Cake();
+            case &quot;pizza&quot;: return new Pizza();
+            default: return null;
+        }
+    }
+}
+</code></pre>
+<h2 id="第三十八关：java-singleton-pattern">第三十八关：Java Singleton Pattern</h2>
+<p>单例模式</p>
+<pre><code class="language-java">class Singleton{
+    public String str;
+    private static Singleton instance;
+    private Singleton() {}
+    public static Singleton getSingleInstance() {
+        if(instance==null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+</code></pre>
+<p>双检查模式，适用多线程。如下：</p>
+<pre><code class="language-java">class Singleton{
+    public String str;
+    private static Singleton instance;
+    private Singleton() {}
+    public static Singleton getSingleInstance() {
+        // 有实例的就不用加锁了，直接返回
+        if(instance==null) {
+            // 1 没实例，要创建，锁类
+            synchronized(Singleton.class) {
+                // 防止在 1 处新建了实例
+                if(instance==null) {
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+</code></pre>
+<blockquote>
+<p>采用类锁，无所谓哪个类，都会被拦截，<strong>对于静态方法，由于此时对象还未生成，所以只能采用类锁。</strong></p>
+</blockquote>
+<h2 id="第三十九关：java-visitor-pattern">第三十九关：Java Visitor Pattern</h2>
+<p>访问者模式</p>
+<p><a href="https://www.jianshu.com/p/cd17bae4e949">设计模式[23]-访问者模式-Visitor Pattern</a></p>
+<p>如老师和学生按成绩和论文评分，结构稳定，对数据的操作易变。更改操作只需统一更改visitor实现类。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211014225123.png" alt="image-20211014225123027"></p>
+<h2 id="第四十关：java-lambda-expressions">第四十关：Java Lambda Expressions</h2>
+<p>给一个接口，实现匿名实现类。</p>
+<pre><code class="language-java">interface PerformOperation {
+    boolean check(int a);
+}
+
+public PerformOperation isOdd() {
+    return new PerformOperation() {
+        public boolean check(int a) {
+            return a%2==1;
+        }
+    };
+}
+</code></pre>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"hackerrank_java2.html";
+			document.getElementById("blogaddr-a").innerHTML="Java练习Hackerrank另外二十道";
+			</script></body></html> 

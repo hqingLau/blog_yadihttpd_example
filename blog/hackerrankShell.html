@@ -1,0 +1,526 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>一些Shell练习-hackerrank
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>一些Shell练习-hackerrank</h1><hr>
+<h2 id="通用语法">通用语法</h2>
+<h3 id="插入序列">插入序列</h3>
+<p><strong>Output Format</strong></p>
+<pre><code class="language-shell">1
+3
+5
+.
+.
+.
+.
+.
+99  
+</code></pre>
+<p>解决方案：</p>
+<pre><code class="language-shell">for i in $(seq 1 2 99)
+do
+  echo $i
+done
+</code></pre>
+<h3 id="获取输入">获取输入</h3>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">Dan  
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">Welcome Dan  
+</code></pre>
+<p>解决方案：</p>
+<pre><code class="language-shell">read userName
+echo &quot;Welcome ${userName}&quot;
+</code></pre>
+<h3 id="for-loop-打印1-50">for loop 打印1-50</h3>
+<pre><code class="language-shell">for i in {1..50}
+do
+  echo $i
+done
+</code></pre>
+<h3 id="输入两个数比较大小">输入两个数比较大小</h3>
+<pre><code class="language-shell">read x
+read y
+if [[ $x == $y ]]; then
+    echo &quot;X is equal to Y&quot;
+elif [[ $x &gt; $y ]]; then
+    echo &quot;X is greater than Y&quot;
+else
+    echo &quot;X is less than Y&quot;
+fi
+</code></pre>
+<h3 id="yn-case">YN case</h3>
+<pre><code class="language-shell">read c
+case $c in
+    [yY]):
+        echo &quot;YES&quot;
+        ;;
+    [Nn]):
+        echo &quot;NO&quot;
+        ;;
+esac
+</code></pre>
+<h3 id="判断三角形类型">判断三角形类型</h3>
+<pre><code class="language-shell">read a
+read b
+read c
+# 空格matters
+if [[ $a == $b &amp;&amp; $a == $c ]]; then
+    echo &quot;EQUILATERAL&quot;
+elif [[ $a == $b || $a == $c || $b == $c ]]; then
+    echo &quot;ISOSCELES&quot;
+else
+    echo &quot;SCALENE&quot;
+fi
+</code></pre>
+<h3 id="输入表达式计算">输入表达式计算</h3>
+<pre><code class="language-shell">read exp
+# 直接echo 会存在四舍五入问题
+printf &quot;%.3f&quot; $(echo &quot;scale=5; $exp&quot;|bc)
+</code></pre>
+<h3 id="求平均数">求平均数</h3>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">4 #个数
+1
+2
+9
+8
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">5.000
+</code></pre>
+<pre><code class="language-shell">read n
+sum=0
+for i in $(seq 1 $n); do
+    read tmp
+    sum=$((sum+tmp))
+done
+printf &quot;%.3f&quot; $(echo &quot;scale=5; $sum/$n&quot;|bc)
+</code></pre>
+<h3 id="输出两个数的加减乘除">输出两个数的加减乘除</h3>
+<pre><code class="language-shell">read a
+read b
+echo $((a+b))
+echo $((a-b))
+echo $((a*b))
+echo $((a/b))
+</code></pre>
+<h2 id="cut">cut</h2>
+<p>典型用法：</p>
+<pre><code class="language-shell">$ cat /etc/passwd | head -n5
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+$ cat /etc/passwd | head -n5 | cut -d: -f 7
+/bin/bash
+/sbin/nologin
+/sbin/nologin
+/sbin/nologin
+/sbin/nologin
+</code></pre>
+<blockquote>
+<p>-b ：输入每行第n个字符（半角，注意如果有中文将乱码）。可以<code>cut -b 2,4-7</code></p>
+<p><code>cut -b 13-</code>代表到末尾</p>
+<p>-c ：输入每行第n个字符（适用中文）。</p>
+<p>-d ：自定义分隔符，默认为制表符。</p>
+<p>-f ：与-d一起使用，指定显示哪个区域。</p>
+<p>-n ：取消分割多字节字符（例如中文）。仅和-b标志一起使用。</p>
+</blockquote>
+<h2 id="tr">tr</h2>
+<pre><code class="language-shell"># 压缩重复相邻字符
+$ echo aaabbbaacccfddd | tr -s &#39;abcdf&#39;
+abacfd
+# 替换
+$ echo aaabbbaacccfddd | tr &#39;a-c&#39; &#39;A-C&#39;
+AAABBBAACCCfddd
+# 删除
+$ echo aaabbbaacccfddd | tr -d &#39;a&#39;
+bbbcccfddd
+# c 补集
+$ echo &quot;hello 12 world&quot; | tr -d -c &#39;0-9&#39;
+$ 
+</code></pre>
+<h2 id="数组">数组</h2>
+<p><strong>用下标读取某个元素的值</strong></p>
+<pre><code class="language-shell">arr_element2=${arr_name[2]}，即形式：${数组名[下标]}
+</code></pre>
+<p><strong>用#获取数组长度：</strong></p>
+<pre><code class="language-shell">${#数组名[@]} 或${#数组名[*]} 
+arr_len=${#arr_name[*]}或${#arr_name[@]}
+</code></pre>
+<p><strong>用#获取某元素值的长度</strong></p>
+<pre><code class="language-shell">arr_elem_len=${#arr_name[index]}  #index为数组下标索引
+</code></pre>
+<p><strong>删除数组</strong></p>
+<p>删除数组某个元素：unset arr_name[index]</p>
+<p>删除整个数组：unset arr_number</p>
+<p><strong>数组分片访问</strong></p>
+<p>分片访问形式为：<code>${数组名[@或*]:开始下标:偏移长度}</code></p>
+<p><strong>有用的数组扩展</strong></p>
+<p>数组支持”+=“赋值运算符，利用这一点可以通过这种方式往一个已知数组中更方便的添加元素，特别是往空数组中填充元素时非常有用。</p>
+<h3 id="读入数组">读入数组</h3>
+<pre><code class="language-shell">n=0
+while read a; do
+    array[n]=$a;
+    n=$((n+1))
+done
+echo ${array[@]}
+</code></pre>
+<h3 id="分片">分片</h3>
+<pre><code class="language-shell">echo ${array[@]:3:5}
+</code></pre>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">Namibia  
+Nauru  
+Nepal
+Netherlands
+NewZealand
+Nicaragua
+Niger
+Nigeria
+NorthKorea
+Norway
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">Netherlands NewZealand Nicaragua Niger Nigeria
+</code></pre>
+<h3 id="筛选">筛选</h3>
+<pre><code class="language-shell">echo ${array[@]/*[aA]*/}
+</code></pre>
+<p>过滤含有a或A的字符。</p>
+<h3 id="拼接">拼接</h3>
+<p>拼接三次</p>
+<pre><code class="language-shell">array=($(cat))
+ret=(${array[@]} ${array[@]} ${array[@]})
+
+echo ${ret[@]}
+</code></pre>
+<h3 id="替换">替换</h3>
+<pre><code class="language-shell">echo ${array[@]/[A-Z]/.}
+</code></pre>
+<p>数组中元素A-Z都替换成<code>.</code>。</p>
+<h3 id="孤独的整数">孤独的整数</h3>
+<p>输入N，然后是N个数，选出其中的奇数个数的那个。</p>
+<pre><code class="language-shell">read N
+# 获取数组[1 2 2 1 2]
+array=($(cat))
+# 转化为字符串&quot;1 2 2 1 2&quot;
+str=${array[@]}
+# 字符串替换&quot;1^2^2^1^2&quot;
+# 然后计算表达式，就是剩下的那个
+echo $((${str// /^}))
+</code></pre>
+<blockquote>
+<p>echo ${string/23/bb}   //abc1bb42341  替换一次</p>
+<p>echo ${string//23/bb}  //abc1bb4bb41  双斜杠替换所有匹配</p>
+<p>echo ${string/#abc/bb} //bb12342341   #以什么开头来匹配</p>
+</blockquote>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"hackerrankShell.html";
+			document.getElementById("blogaddr-a").innerHTML="一些Shell练习-hackerrank";
+			</script></body></html> 

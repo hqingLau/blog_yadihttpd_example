@@ -1,0 +1,684 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>关系型数据库是怎么工作的？
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>关系型数据库是怎么工作的？</h1><hr>
+<blockquote>
+<p>英文原文链接：<a href="http://coding-geek.com/how-databases-work/">How does a relational database work</a></p>
+</blockquote>
+<p>谈到关系型数据库，总感觉缺了些什么。它们应用广泛，种类繁多，有小而精的SQLite，也有强大的Reradata（天睿公司，又是一家起源于车库的巨头）。但是解释数据库工作的文章却比较少，而且大都比较短。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025111354.png" alt="image-20211025111347330"></p>
+<p>如果你对数据库感兴趣，但是又不想花费时间深入广泛地挖掘这个领域的话，那么你应该会喜欢这篇文章。</p>
+<p>虽然这篇文章的标题很明显，并不是要讲数据库的用法，但是你应该会一些基础的增删改查和join查询，否则你就应该收藏<a href="https://orzlinux.cn/blog/how-does-a-relational-database-work.html">本篇文章</a>，然后去简单学习一下SQL的使用。</p>
+<p>我们首先从基础谈起，如复杂度，这部分比较枯燥，可对理解数据库的精妙之所在十分有帮助。在这里我们以SQL的查询为例。我只会展示数据库背后的基础概念，所以看完这篇文章后你能对数据库全局有直观的认识。</p>
+<p>文章分为三个部分：</p>
+<ul>
+<li>底层和上层数据库组件</li>
+<li>查询优化过程</li>
+<li>事务和缓冲池管理</li>
+</ul>
+<h2 id="从基础谈起">从基础谈起</h2>
+<p>很久很久以前，程序员很明确的知道他们代码的计算量，因为以前CPU和内存都比较金贵，一丝一毫都不能浪费。时至今日，我们也应该大致知道我们代码的复杂度，毕竟，复杂度指数上升的话再多CPU也不够。</p>
+<h3 id="o1-vs-on2">O(1) vs O(N^2)</h3>
+<p><strong>时间复杂度</strong>是用来查看：对于给定数目的数据，程序会计算多长时间。为了描述这个复杂程度，科学家们给出了大O的概念。对于大O，我们不关注给定数据的数目，也不关心精确的计算量，而是关注复杂度上升的方式。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025114448.png" alt="image-20211025114448147"></p>
+<p>在这张图中，我们可以看到不同类型的复杂度。为了方便对比时间复杂度，这里x轴使用对数尺度。可以看到：</p>
+<ul>
+<li><code>O(1)</code>是常数复杂度，不随输入数据量改变。</li>
+<li><code>O(log(n))</code>即使对于上亿的数据也保持低计算量</li>
+<li>最差的是<code>O(n^2)</code>，计算次数上升非常迅速。</li>
+</ul>
+<p>为了更直观地理解，举几个例子：</p>
+<ul>
+<li>在一个好的哈希表中查找元素，复杂度为<code>O(1)</code></li>
+<li>在一个好的平衡树中查找元素，复杂度为<code>O(log(n))</code></li>
+<li>在数组中查找元素，复杂度<code>O(n)</code></li>
+<li>最好的排序算法，复杂度<code>O(n * log(n))</code></li>
+<li>差的排序算法，如冒泡排序，复杂度为<code>O(n^2)</code></li>
+</ul>
+<p>在衡量时间复杂度时，一般选用最差情况来分析。除了时间复杂度，还有空间复杂度，磁盘IO复杂度。同样，除了上面列举的大O，还要其他的如<code>O(n^4)</code>，<code>O(2^n)</code>等</p>
+<h3 id="归并排序">归并排序</h3>
+<p>当你需要用到排序的时候，你会怎么做？调用<code>sort()</code>函数。。。好吧，通常情况确实可以。但是对于数据库来说，你需要知道<code>sort()</code>函数到底是怎么工作的。</p>
+<p>有很多种不错的排序算法，这里关注归并排序。这里你可能还不太理解为啥需要排序，在查询优化一节后你就明白了。而且，归并排序能帮助我们理解数据库的<code>merge join</code>操作。</p>
+<h4 id="归并">归并</h4>
+<p>将两个<code>N/2</code>的数组合并成一个<code>N</code>元素的数组。</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211025124045.png" alt="image-20211025124045002" style="zoom:80%;" />
+
+<p>在上图中可以看到，为了构建排序好的8元素数组，你需要在两个4元素数组中迭代，又因为两个4元素数组都是排好序的，所以只需在两个4元素数组的头部各放一个指针，比较得到小的元素放到8元素数组，然后指针后移，继续比较。</p>
+<p>Java代码如下：</p>
+<pre><code class="language-java">public static &lt;T extends Comparable&lt;T&gt;&gt; T[] mergeSort(T[] array) {
+    if (array.length &lt;= 1) {
+        return array;
+    }
+    int half = array.length / 2;
+    T[] left = Arrays.copyOfRange(array, 0, half);
+    T[] right = Arrays.copyOfRange(array, half, array.length);
+    return merge(mergeSort(left), mergeSort(right));
+}
+
+private static &lt;T extends Comparable&lt;T&gt;&gt; T[] merge(T[] left, T[] right) {
+    int lindex = 0;
+    int rindex = 0;
+    int index = 0;
+    // 实际不应频繁创建临时数组
+    // 这里是为了和上图对应
+    T[] ret = (T[]) new Comparable[left.length + right.length];
+    while (lindex &lt; left.length &amp;&amp; rindex &lt; right.length) {
+        if (left[lindex].compareTo(right[rindex]) &lt; 0) {
+            ret[index++] = left[lindex++];
+        } else {
+            ret[index++] = right[rindex++];
+        }
+    }
+    while (lindex &lt; left.length) {
+        ret[index++] = left[lindex++];
+    }
+    while (rindex &lt; right.length) {
+        ret[index++] = right[rindex++];
+    }
+    return ret;
+}
+</code></pre>
+<p>测试如下：</p>
+<pre><code class="language-java">public static void main(String[] args) {
+    Integer[] arr = {3, 6, 8, 7, 6, 9, 1, 8, 2, 4, 10, 0, 3};
+    System.out.println(Arrays.toString(MergeSort.mergeSort(arr)));
+    // output: [0, 1, 2, 3, 3, 4, 6, 6, 7, 8, 8, 9, 10]
+}
+</code></pre>
+<p>归并排序将问题分割成了更小的问题，解决完小问题之后再组合会原来的问题。</p>
+<h4 id="分割阶段">分割阶段</h4>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025150512.png" alt="image-20211025150512152"></p>
+<p>在分割阶段，一个8元素的数组通过3步分割成了最小单元，分割次数为<code>log(N)</code>, N=8。</p>
+<h4 id="排序阶段">排序阶段</h4>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025150647.png" alt="image-20211025150647608"></p>
+<p>排序阶段会从单元素数组开始，通过多次合并，得到了一个排好序的数组。不管是<code>4*2</code>，还是2*4或者<code>1*8</code>，每一步都需要比较N次，又需要<code>log(N)</code>步，所以一共需要<code>N*log(N)</code>步操作。</p>
+<h4 id="归并排序的威力">归并排序的威力</h4>
+<p>为什么归并排序如此牛逼？因为它可以在基础版本上进行优化：</p>
+<ul>
+<li>为了缩减内存占用，可以使用原地排序</li>
+<li>可以在没有巨大IO惩罚的情况下缩减使用的内存（内存里只放正在处理的部分），这样就可以在2G内存上排序10G的数据。</li>
+<li>可以改造成多线程或者多服务器版本</li>
+</ul>
+<h3 id="数组、树、哈希表">数组、树、哈希表</h3>
+<p>现在我们理解了时间复杂度和排序的概念，接下来会列举三种数据结构，它们是现代数据库的基石，我同样也会介绍数据库index的概念。</p>
+<h4 id="数组">数组</h4>
+<p>二维数组是最简单的数据结构，一张表可以视为一个数组，如：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025155132.png" alt="image-20211025155132051"></p>
+<p>这个二维数组是一张包含了行和列的表，每一行是一个对象，每一列是描述对象的一个特征，同时，每一列存储特定的数据类型，如integer或者string、date...</p>
+<p>用它存储或者可视化数据还不错，当你用它来查找数据时就拉倒了。</p>
+<p>例如上表中，你想查找所有在UK工作的人，你必须一行一行遍历，时间复杂度为N(N为行)，倒也不是过于垃圾，但是有更快的方法为何不用呢？这就轮到<a href="https://orzlinux.cn/blog/tree-20211020.html">树</a>出场了。</p>
+<h4 id="树和数据库index">树和数据库index</h4>
+<p>树的知识可以看我以前的这篇文章：<a href="https://orzlinux.cn/blog/tree-20211020.html">数据结构-树</a></p>
+<p>这里用到的树为排序树，如二叉搜索树：右子树的结点比当前结点大，左子树的结点比当前结点小。如：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025160314.png" alt="image-20211025160314339"></p>
+<p>这棵树有 N=15 个元素，我要找208应该怎么找？</p>
+<p>先从根结点136找，208比136大，找136的右子树398，208比398小，找398的左子树250，208比250小，找250的左子树200，不等，也没子树，所以208不存在。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025160550.png" alt="image-20211025160550185"></p>
+<p>其他同理，找到为止，找不到就是不存在。</p>
+<p>查找的代价呢？<code>O(log(N))</code>。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025162902.png" alt="image-20211025162902630"></p>
+<p>现在回到我们的问题，我们用字符串来指代某人所属的国家。假定有一个树，结点为国家（string类型，可比较）。如果想查找UK的人，只需查找结点，找到UK结点，在UK结点中，就可以在UK结点中找到UK的人。</p>
+<p>在这里，时间复杂度为<code>O(log(N))</code>，同时，以上就是数据库index的思想。</p>
+<p>只要你能比较这些列，你可以为列的任意组合创建index。</p>
+<p>尽管二叉搜索树在查找上性能不错，但是当你想要得到两个值之间的元素时存在一个<strong>大问题</strong>。它的时间复杂度为<code>O(N)</code>，因为你需要查看所有结点去检查结点所属的区间，如用<a href="https://orzlinux.cn/blog/tree-20211020.html">中序遍历</a>。并且，它磁盘IO开销较大，因为需要读取整个树。我们需要一个更高效率的办法去进行区间查询，现代数据库用搜索树的改进版B+树来解决这个问题。在B+树中：</p>
+<p>只有叶子结点存储信息（数据行在表中的位置），其他索引只是用来在查询时导航找到正确的结点。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025170616.png" alt="image-20211025170616142"></p>
+<p>可以看到，结点数多了一倍，决策结点会帮助你找到需要的结点。但是时间复杂度依旧是<code>O(log(N))</code>。区别在于，叶子结点是连起来的。用这个B+树，如要查找区间40到100的结点，只需要找到40，找到100,，就可以了，不需要查找整个树。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025171051.png" alt="image-20211025171051278"></p>
+<p>但是这里面又有新的问题，如果要在数据库中增加或者删除数据（B+树里也要变动）：必须要维护B+树中结点的顺序，同时需要保证B+树的层数最小。换句话说，B+树需要是自排序、自平衡的。幸运的是可以做到，不幸的是插入和删除都伴随着<code>O(log(N))</code>的代价。这也就是为什么会出现<strong>不要有太多索引</strong>这个说法的原因，插入数据库不只是插入数据库，所有的索引都需要更新。更有甚者，增加索引会增加事务管理的负担（后文会谈到）。</p>
+<h4 id="哈希表">哈希表</h4>
+<p>哈希表可以利用键值快速查找元素，建立一个哈希表需要定义：元素的键、哈希函数、键的比较函数（用于在一个桶中快速查找需要的元素）。</p>
+<p>一个简单的例子如下：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025172134.png" alt="image-20211025172134020"></p>
+<p>这个哈希表含有10个桶，哈希函数是对10取模，也就是元素按个位数放入桶中。桶中的元素暂时按列表排序。</p>
+<p>如要找209，就找9的桶，依次遍历，比较。</p>
+<p>为了使不同的桶里放入的元素个数不要差异太大，就需要寻找合适的哈希函数。尤其是对一些复杂的键，如字符串，字符串和时间...在哈希函数足够理想情况下，查找复杂度为<code>O(1)</code>。</p>
+<p>为什么用哈希表不用数组？</p>
+<ul>
+<li>哈希表可以加载需要的桶到内存中，其他的待在硬盘上。</li>
+<li>数组需要连续内存，大数组的情况下不好找大的连续内存。</li>
+<li>哈希表可以选择想要的键。</li>
+</ul>
+<h2 id="全局视角">全局视角</h2>
+<p>我们已经看过了数据库内部的基础组件，现在我们需要从全局角度看一看。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025181557.png" alt="image-20211025181557757"></p>
+<p>数据库是信息的集合，这些信息可以被访问，也可以被修改。如果仅仅这样的话，使用一些文件同样能达到这个目的。像SQLite就是一堆文件的集合，但是是一堆十分巧妙的文件的集合，从而能够：</p>
+<ul>
+<li>使用事务保证数据的安全性和一致性</li>
+<li>面对大量数据也能快速处理</li>
+</ul>
+<p>更通俗的讲，数据库可以视为：</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211025182428.png" alt="image-20211025182428759" style="zoom:80%;" />
+
+<p>核心组件：</p>
+<ul>
+<li>Process manager：进程管理器，许多数据库都有进程池或者线程池需要管理。有一些数据库还会为了更高的效率使用自己的线程而不是系统的线程</li>
+<li>Network manager: 网络管理器，网络IO是一个大问题，尤其是对分布式数据库</li>
+<li>File system manager: 文件系统管理器，磁盘IO是操作系统的第一个瓶颈</li>
+<li>Memory manager: 内存管理器，为了防止磁盘惩罚，需要大量内存，为此需要一个内存管理器，尤其是同一时间有很多查询的情况</li>
+<li>Security manager：安全管理器，验证用户权限</li>
+<li>Client manager：管理用户连接</li>
+</ul>
+<p>工具：</p>
+<ul>
+<li>Backup manager：备份管理器，用于保存和恢复数据库</li>
+<li>Recovery manager：恢复管理器，用于数据库崩溃后重启的一致性状态检查</li>
+<li>Monitor manager：监视管理器，记录数据库活动，提供监视数据库的工具</li>
+<li>Administration manager：存储元数据（如表名，表结构）和提供数据库管理的工具</li>
+</ul>
+<p>查询管理器：</p>
+<ul>
+<li>Query parser: 检查查询是否有效</li>
+<li>Query rewriter: 预优化查询，垃圾代码 -&gt; 还可以的代码</li>
+<li>Query optimizer: 优化查询，还可以代码 -&gt; 高效代码</li>
+<li>Query executor: 编译和执行查询语句</li>
+</ul>
+<p>数据管理器：</p>
+<p>事务管理器用于管理事务，缓存管理器用于数据在内存和硬盘之间的读取存放，数据获取管理器用于从磁盘获取数据。</p>
+<p>接下来，我们重点关注数据库如何管理SQL查询。</p>
+<h2 id="用户管理器">用户管理器</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025183953.png" alt="image-20211025183952993"></p>
+<p>用户管理器用于管理用户连接，这个用户可以是web服务器，也可以是终端的用户或者应用。用户管理器通过一系列API提供了不同的方法去连接数据库，如：JDBC, ODBC... 同时也提供了专用连接API。</p>
+<p>当你连接数据库时：</p>
+<ul>
+<li>管理器首先检查用户信息（用户名和密码），再检查是否有权限用这个数据库。</li>
+<li>然后，检查是否有可用进程或线程去管理你的查询。</li>
+<li>同时也会检查数据库是否在高负载。</li>
+<li>为了获取需要的资源，等待片刻，如果超时了，就关闭连接，返回错误信息。</li>
+<li>之后它将你的查询发送给查询管理器，你的查询就会被处理了。</li>
+<li>因为查询的过程会逐渐获得数据，所以它会放入缓存中，并且开始发送给你。</li>
+<li>有问题情况下，会停止连接，发送给你原因并且释放资源。</li>
+</ul>
+<h2 id="查询管理器">查询管理器</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025185337.png" alt="image-20211025185337086"></p>
+<p>这一部分是数据库的强大所在。在这个环节，一个写的不咋滴的查询语句会被转化成一个高效的查询语句，然后执行，将结果返回给用户管理器。过程如下：</p>
+<ul>
+<li>解析查询语句看是否有效</li>
+<li>优化查询语句</li>
+<li>进一步优化为高性能代码</li>
+<li>编译</li>
+<li>执行</li>
+</ul>
+<p>回顾下查询管理器：</p>
+<ul>
+<li>Query parser: 检查查询是否有效</li>
+<li>Query rewriter: 预优化查询，垃圾代码 -&gt; 还可以的代码</li>
+<li>Query optimizer: 优化查询，还可以代码 -&gt; 高效代码</li>
+<li>Query executor: 编译和执行查询语句</li>
+</ul>
+<h3 id="解析">解析</h3>
+<p>任意一个SQL语句在经过格式验证之后，都会发送给解析器。如果你写错了代码，如将<code>SELECT</code>写成了<code>SEELECT</code>，就拉倒了。之后，会进一步检查关键词的顺序，如<code>WHERE</code>之前没有<code>SELECT</code>。然后会分析查询中的表和字段，解析器用数据库的元数据来检查：表是否存在、表的字段是否存在、操作对于这个字段来说是不是离谱（如比较整数和字符串）。</p>
+<p>元数据检查无误后，会验证用户权限，是否可以读或写这张表。</p>
+<p>在解析过程中，SQL查询会被转化成内部形式，通常是树的形式，如果一切ok，就发送给Query rewriter。</p>
+<h3 id="重写器">重写器</h3>
+<p>三个目的：预优化语句、防止不必要的操作、帮助下一步的优化器找到更好的解决方案。</p>
+<p>重写器对查询执行一系列规则，如果匹配就按规则重写，例如：</p>
+<ul>
+<li><p>去除不必要的操作，如果一个<code>UNIQUE</code>约束用<code>DISTINCT</code></p>
+</li>
+<li><p>重复join删除</p>
+</li>
+<li><p>常数转化，如10+2会被转化为12</p>
+</li>
+<li><p>view merging: 如果你在查询语句中使用了view，这个view就会被转化为对应的SQL代码。</p>
+</li>
+<li><p>subquery flattening：子查询难以优化，所以重写器会试着修改查询。</p>
+</li>
+<li><p>等等</p>
+</li>
+</ul>
+<p>举例：</p>
+<pre><code class="language-sql">SELECT PERSON.*
+FROM PERSON
+WHERE PERSON.person_key IN
+(SELECT MAILS.person_key
+FROM MAILS
+WHERE MAILS.mail LIKE &#39;christophe%&#39;);
+</code></pre>
+<p>将被替换为：</p>
+<pre><code class="language-sql">SELECT PERSON.*
+FROM PERSON, MAILS
+WHERE PERSON.person_key = MAILS.person_key
+and MAILS.mail LIKE &#39;christophe%&#39;;
+</code></pre>
+<h3 id="统计学特征">统计学特征</h3>
+<p>在说数据库优化查询语句之前，需要谈一下统计学特征。如果你不告诉数据库需要分析它自己的数据，它就不会分析，然后可能做出一些十分不明智的假设。</p>
+<p>但是数据库需要什么样的信息呢？</p>
+<p>数据库和操作系统都以页或者块来作为存储的最小单元。当你让数据库收集统计学信息时，它会计算：表的行数、每一列不同的数据值、每一列的数据长度（最大、最小、平均），每一列数据分布信息、表的索引信息。</p>
+<p><strong>这些统计学特征会帮助优化器估计查询过程中的磁盘IO，CPU和内存使用。</strong></p>
+<p>如对一个表<code>PERSON</code>，它需要根据<code>LAST_NAME</code>和<code>FIRST_NAME</code>执行<code>join</code>操作，根据统计学特征，<code>FIRST_NAME</code>有1000个不同的值，而<code>LAST_NAME</code>有1000000个不同的值。那么数据库执行<code>join</code>就应该基于<code>LAST_NAME</code>, <code>FIRST_NAME</code> 而不是<code>FIRST_NAME</code>, <code>LAST_NAME</code>。因为<code>FIRST_NAME</code>很有可能会再次进行比较。</p>
+<p>这些是基础的统计学特征，你还可以让数据库计算高级统计学特征，如直方图可以看出数据的分布情况。这样数据库在查询的时候就进行更加有效的优化。</p>
+<p><strong>统计学特征必须要最新。</strong> 不然数据库以为有十条数据，实际上有十万条，这就乱套了。这就又带来了额外的计算量，这也是大多数数据库不自动开启它的原因。对于上百万的数据，计算也需要一段时间，这种情况可以选择计算基本的统计学特征。</p>
+<h3 id="优化器">优化器</h3>
+<p>所有的数据库都在用<code>Cost Based Optimization</code>，基于代价的优化去优化查询，简称CBO。它的思想就是给每个操作赋予一个代价值，然后去寻找最好的方法取降低查询的代价。</p>
+<p>为了更好的理解CBO的工作，这里以join为例，我们接下来关注时间复杂度，但是<strong>数据库优化器会计算CPU 代价、磁盘IO和需要的内存</strong>。大多数时候，磁盘IO才是性能瓶颈。</p>
+<p><strong>索引：</strong></p>
+<p>在前面B+树已经谈过索引了，它是有序的。有些时候，现代数据库会动态地为当前的查询创建临时索引，去优化执行查询的代价。</p>
+<p><strong>数据获取：</strong></p>
+<p>在join之前，首先需要获取数据。</p>
+<ul>
+<li><p>full scan：扫描整张表</p>
+</li>
+<li><p>range scan：如<code>index range scan</code>。在语句<code>WHERE AGE &gt; 20 AND AGE &lt;40</code>中，如果对AGE已经建立了索引，就可以以得到时间复杂度<code>O(log(N)+M)</code>，其中，N是索引的数目，M是这个范围内的行数，二者都可以通过统计学特征得到。</p>
+</li>
+<li><p>unique scan：从一个索引中获取一个值</p>
+</li>
+<li><p>access by row id：很过时候，数据库用索引，之后还需要查找对应的行号，如：</p>
+<pre><code class="language-sql">SELECT LASTNAME, FIRSTNAME from PERSON WHERE AGE = 28
+</code></pre>
+<p>如果<code>PERSON</code>表中有索引<code>age</code>，优化器会用索引找到所有28岁的人，然后从表中查找对应的行，得到需要的信息。</p>
+<p>但是如果你用下面的语句：</p>
+<pre><code class="language-sql">SELECT TYPE_PERSON.CATEGORY from PERSON, TYPE_PERSON
+WHERE PERSON.AGE = TYPE_PERSON.AGE
+</code></pre>
+<p><code>PERSION</code>表中的索引就会用来和<code>TYPE_PERSON</code>做<code>join</code>，后续也不会查找<code>PERSON</code>表的行号，因为你没要<code>PERSON</code>表的数据。</p>
+<p>access by row id的问题还是在磁盘IO，如果你需要太多行的数据，数据库可能宁愿做一个full scan。</p>
+</li>
+<li><p>其它</p>
+</li>
+</ul>
+<p><strong>join操作</strong></p>
+<p><code>join</code>之前，需要介绍两个术语：<code>inner relation</code>和<code>outer relation</code>。关联可以是表、索引，也可以是操作的中间量。</p>
+<p>当你<code>join</code>这两种关联的时候，join算法会区别对待。接下来假设：<code>outer relation</code>是左边的数据集，<code>inner relation</code>是右边的数据集。</p>
+<p>如：<code>A JOIN B</code> 是A和B的<code>join</code>，B是<code>inner relation</code>，A是<code>outer relation</code>。</p>
+<p>大多数时候，<code>A JOIN B</code> 和 <code>B JOIN A</code>的代价是不一样的。</p>
+<p>我们假设<code>outer relaion</code>有N个元素，<code>inner relation</code>有M个元素。</p>
+<ul>
+<li><p>循环嵌套join</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025212111.png" alt="image-20211025212111788"></p>
+<p>全连接，左边所有和右边所有都有连接，时间复杂度<code>O(N*M)</code>。</p>
+<p>在磁盘IO的角度，<code>outer relation</code>的N行中的每一行，都需要读M行<code>inner relation</code>数据，也就是需要从磁盘读取<code>N+N*M</code>行数据。但是如果<code>inner realtion</code>很小，你就可以把它们都放入内存，只需读<code>N+M</code>次。</p>
+<p>如果<code>inner relation</code>太大不能放入内存的话，有另一个版本：分块读，而不是一行行读，这样也能减小磁盘IO。</p>
+</li>
+<li><p>哈希join</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025213306.png" alt="image-20211025213306312"></p>
+<p>将<code>inner realtion</code>中的元素存入哈希表，遍历<code>outer relation</code>，计算哈希来找到对应<code>inner relation</code>的桶，在桶中查找是否有对应的元素。</p>
+<p>为了计算时间复杂度需要作出一些假设：<code>inner realtion</code>被分为X个桶，哈希函数将哈希值均匀分布，桶里面元素个数一样。</p>
+<p>时间复杂度就是：<code>（M/X)*N+建立哈希表时间+N*哈希函数时间</code>。如果桶里面元素足够小，那么时间复杂度就是<code>O(M+N)</code>。</p>
+</li>
+<li><p>merge join</p>
+<p>先将关联表的关联列格子做排序，然后从各自的排序表中抽取数据，到另一个排序表中做匹配。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025220944.png" alt="image-20211025220944318"></p>
+<p>思想就是找到排序后相等的元素。由于牵扯到排序，所以时间复杂度为<code>O(Nlog(N)+Mlog(M))</code>，如果已经排好序，<code>O(N+M)</code>。</p>
+</li>
+</ul>
+<p>哪个最好？正如没有最好的编程语言，也没有最好的join方法，否则别的存在都没有了意义应针对具体情况分析，如关系已经排好序，就选merge join。</p>
+<p><strong>示例：</strong></p>
+<p>假设为了得到一个人的信息，需要join五张表，一个人可以拥有多个手机、多个邮件、地址、银行账户。</p>
+<p>也就是如下的查询：</p>
+<pre><code class="language-sql">SELECT * from PERSON, MOBILES, MAILS,ADRESSES, BANK_ACCOUNTS
+WHERE
+PERSON.PERSON_ID = MOBILES.PERSON_ID
+AND PERSON.PERSON_ID = MAILS.PERSON_ID
+AND PERSON.PERSON_ID = ADRESSES.PERSON_ID
+AND PERSON.PERSON_ID = BANK_ACCOUNTS.PERSON_ID
+</code></pre>
+<p>查询优化器需要找到最好的join方式，选哪个？用什么顺序连接？如：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025221825.png" alt="image-20211025221825792"></p>
+<p><strong>动态规划、贪心算法：</strong></p>
+<p>很多时候，优化器不需要找到最好的，只需要找到足够好的。因为要找到最好的方案可能时间代价更大。前提：根据统计学特征我们能大致推算复杂度。</p>
+<p>动态规划：</p>
+<p>许多执行过程都是相似的，如：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025222457.png" alt="image-20211025222456967"></p>
+<p>这几种方案都有相同的A JOIN B子树，所以这种可以只计算一次，然后重复利用。效率好了些，但还是指数级别。</p>
+<p>贪心算法：</p>
+<p>如5张表（ABCDE），4个join的查询。从任一一个表开始，如A，计算每个表和Ajoin的代价，选择最小的，如B，之后再选择（A join B）join ? 的最小代价。。。这样的复杂度就可以接受了，这个解决方案的假设是：两个表join之后继续join另一个表仍是这三个表的最佳join方式。</p>
+<h3 id="执行器">执行器</h3>
+<p>现在我们已经有了一个plan，可以被编译为代码。如果CPU和内存够的情况下，它就会被执行，里面的操作可以被序列化执行或者并行执行，这取决于执行器。为了获取和写入数据，执行器需要和数据管理器交互。</p>
+<h2 id="数据管理器">数据管理器</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025224203.png" alt="image-20211025224203424"></p>
+<p>在这一步，查询管理器正在执行查询，并需要来自表和索引的数据。它请求数据管理器获取数据，但这里存在2个问题：</p>
+<ul>
+<li>关系数据库使用事务模型。因此你可能无法获取想要的数据，因为其他人可能在使用甚至修改数据。</li>
+<li><strong>数据检索是数据库中最慢的操作</strong>，因此数据管理器需要巧妙的策略在内存缓冲区中获取和保存数据。</li>
+</ul>
+<h3 id="缓存管理器">缓存管理器</h3>
+<p>数据库的主要瓶颈是磁盘 IO。为了提高性能，现代数据库使用缓存管理器，来减少和磁盘的交互。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211025224611.png" alt="image-20211025224611719"></p>
+<p>查询执行器并不是直接从文件系统获取数据，而是向缓存管理器请求数据。缓存管理器有一个名为<strong>buffer pool</strong>的内存缓存。<strong>从内存中获取数据大大加快了数据库的运行速度</strong>。</p>
+<p>同样有一个问题，缓存管理器需要在查询执行器需要数据之前读取到内存中，否则查询管理器就必须等待磁盘。</p>
+<p><strong>预取：</strong></p>
+<p>查询执行器知道它需要的数据，因为它知道查询的完整流程并且知道磁盘上的数据和统计信息。可以采取的一个思路就是：</p>
+<ul>
+<li>当查询执行器正在处理它的第一组数据时</li>
+<li>它要求缓存管理器预加载第二组数据</li>
+<li>当它开始处理第二组数据时</li>
+<li>要求缓存管理器加载第三组数据，并且清除第一组数组</li>
+</ul>
+<p>如果查询执行器不知道下面要处理什么数据，可以使用猜的方式，例如查询执行器要数据1, 3, 5，那下面很有可能要7, 9, 11, 或者简单地从磁盘加载下一个连续数据。</p>
+<p>缓存的一些东西可以看这篇文章帮助理解：<a href="https://orzlinux.cn/blog/swapspace.html">操作系统交换空间机制和策略</a></p>
+<h3 id="事务管理器">事务管理器</h3>
+<p>在一个事务中，你可以运行多个SQL进行各种操作。</p>
+<h4 id="acid">ACID</h4>
+<p>事务的四个属性：ACID。</p>
+<ul>
+<li><p>原子性Atomicity：事务中的操作要么一点没干，要么全干完了。</p>
+</li>
+<li><p>一致性Consistency：只有有效数据能进入数据库。</p>
+</li>
+<li><p>隔离性Isolation：事务同时运行，必须互不影响。</p>
+</li>
+<li><p>持久性Durability：事务执行完之后，数据应该稳妥妥的进入数据库。</p>
+</li>
+</ul>
+<p>当两个事务使用相同的数据时，局面就有些混乱了。如：</p>
+<ul>
+<li>事务1：从A账户拿100块给B</li>
+<li>事务2：从A账户拿50块给B</li>
+</ul>
+<p>就需要并发控制了。</p>
+<h4 id="并发控制">并发控制</h4>
+<p>为了解决上面的问题，需要并发控制，可以看<a href="https://orzlinux.cn/blog/concurrencyLock.html">锁的实现和并发数据结构</a>、<a href="https://orzlinux.cn/blog/threadsemconevent.html">条件变量、信号量和事件并发</a>。</p>
+<h4 id="日志管理器">日志管理器</h4>
+<p>为了提高性能，数据库将数据存储在内存缓冲区中。但是如果在提交事务时服务器崩溃，那么在崩溃期间你将丢失仍在内存中的数据，这会破坏事务的持久性。</p>
+<p>你可以将所有内容写入磁盘，但是如果服务器崩溃，你最终会将一半的数据写入磁盘，这会破坏事务的原子性。</p>
+<p>可以看这篇文章：<a href="https://orzlinux.cn/blog/filesystem20210830.html">文件系统和崩溃一致性</a></p>
+<h2 id="总结">总结</h2>
+<p>翻译翻译着就发现好多东西都是看过的，只是对数据库运行机制没了解，知识点没串起来。后面的东西像是并发控制和崩溃一致性中的日志系统，本来也就是要增加对数据库运行机制的直观认识，就直接贴博客了。</p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"how-does-a-relational-database-work.html";
+			document.getElementById("blogaddr-a").innerHTML="关系型数据库是怎么工作的？";
+			</script></body></html> 

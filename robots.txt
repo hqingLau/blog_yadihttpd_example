@@ -1,6 +1,3 @@
 User-agent: *
-Disallow: /img/
-Disallow: /css/
-Disallow: /js/
-Disallow: /404.html
 Disallow: /md/
+Sitemap: https://orzlinux.cn/sitemap.xml

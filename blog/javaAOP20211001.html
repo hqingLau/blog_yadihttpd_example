@@ -1,0 +1,1106 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>动态代理、IoC、AOP
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>动态代理、IoC、AOP</h1><hr>
+<h2 id="动态代理">动态代理</h2>
+<h3 id="jdk动态代理">JDK动态代理</h3>
+<p>利用反射机制生成一个实现代理接口的类，在调用具体方法前用<code>invokeHandler</code>来处理。JDK代理只能对实现接口的类生成代理。</p>
+<p>IWork.java</p>
+<pre><code class="language-java">package dynamicProxy;
+
+public interface IWork {
+    void meeting();
+
+    int evaluate(String name);
+}
+</code></pre>
+<p>Leader.java</p>
+<pre><code class="language-java">package dynamicProxy;
+
+import java.util.Random;
+
+public class Leader implements IWork{
+    @Override
+    public void meeting() {
+        System.out.println(&quot;领导早上要组织会议&quot;);
+    }
+
+    @Override
+    public int evaluate(String name) {
+        int score = new Random(System.currentTimeMillis()).nextInt(20) + 80;
+        System.out.println(String.format(&quot;领导给%s的考评为%s分&quot;, name, score));
+        return score;
+    }
+}
+</code></pre>
+<p>Test.java</p>
+<pre><code class="language-java">package dynamicProxy;
+
+import java.lang.reflect.Proxy;
+
+public class Test {
+    public static void main(String[] args) {
+        Leader leader = new Leader();
+
+        //proxy是被代理后生成的对象，是通过IWork接口的字节码增强方式创建的类而构造出来的，是一个临时构造的类的对象
+        IWork proxy = (IWork) Proxy.newProxyInstance(Leader.class.getClassLoader(),
+                new Class[]{IWork.class},new WorkInvocationHandler(leader));
+        proxy.meeting();
+        proxy.evaluate(&quot;Joy&quot;);
+        proxy.evaluate(&quot;James&quot;);
+    }
+}
+</code></pre>
+<p>WorkInvocationHandler.java</p>
+<pre><code class="language-java">package dynamicProxy;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+
+public class WorkInvocationHandler implements InvocationHandler {
+    private Object object;
+
+    public WorkInvocationHandler(Object o) {
+        this.object = o;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        System.out.println(&quot;object: &quot;+object.getClass().getSimpleName());
+        System.out.println(&quot;proxy: &quot;+proxy.getClass().getSimpleName());
+
+        if(&quot;meeting&quot;.equals(method.getName())) {
+            System.out.println(&quot;准备材料。。&quot;);
+            return method.invoke(object,args);
+        } else if(&quot;evaluate&quot;.equals(method.getName())) {
+            if(args[0] instanceof String) {
+                if(&quot;James&quot;.equals(args[0])) {
+                    System.out.println(&quot;James 不好&quot;);
+                    return 70;
+                }
+            }
+            return method.invoke(object,args);
+        }
+        return null;
+    }
+}
+</code></pre>
+<p>输出结果：</p>
+<pre><code class="language-shell">object: Leader
+proxy: $Proxy0
+准备材料。。
+领导早上要组织会议
+object: Leader
+proxy: $Proxy0
+领导给Joy的考评为97分
+object: Leader
+proxy: $Proxy0
+James 不好
+</code></pre>
+<p>从main函数看起：</p>
+<pre><code class="language-java">Leader leader = new Leader();
+//proxy是被代理后生成的对象，是通过IWork接口的字节码增强方式创建的类而构造出来的，是一个临时构造的类的对象
+IWork proxy = (IWork) Proxy.newProxyInstance(Leader.class.getClassLoader(),
+new Class[]{IWork.class},new WorkInvocationHandler(leader));
+proxy.meeting();
+</code></pre>
+<p>通过类<code>WorkInvocationHandler</code>，我们可以动态代理Leader类方法的实现。通过Proxy的静态方法<code>newProxyInstance</code>来生成了一个实例对象。看下源码，解释放在注释里面：</p>
+<pre><code class="language-java">// loader: 选用的类加载器，用哪个类加载器去加载代理对象，本文中是Leader的类加载器
+// interfaces：被代理的类实现的接口，可以是多个
+// h：绑定代理类的一个方法
+public static Object newProxyInstance(ClassLoader loader,
+                                      Class&lt;?&gt;[] interfaces,
+                                      InvocationHandler h)
+    throws IllegalArgumentException
+{
+    // 一些判断和验证
+    Objects.requireNonNull(h);
+    final Class&lt;?&gt;[] intfs = interfaces.clone();
+    final SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        checkProxyAccess(Reflection.getCallerClass(), loader, intfs);
+    }
+    // 查找或生成特定的代理类，也就是会h要处理的类
+    // 内部实现：如果有实现给定接口的代理类，就返回cache，
+    /*
+     * Look up or generate the designated proxy class.
+     */
+    Class&lt;?&gt; cl = getProxyClass0(loader, intfs);
+
+    /*
+     * Invoke its constructor with the designated invocation handler.
+     */
+    try {
+        // 验证
+        if (sm != null) {
+            checkNewProxyPermission(Reflection.getCallerClass(), cl);
+        }
+        // /* parameter types of a proxy class constructor */
+        //private static final Class&lt;?&gt;[] constructorParams =
+        //       { InvocationHandler.class };
+        // getConstructor可以无参也可以有参
+        // 获得代理类构造器 (接收一个 InvocationHandler 参数)
+        // 获取Constructor类对象
+        // 一共有4种方法,全部都在Class类中:
+        // 1. getConstructors()：获取类中的公共方法
+        // 2. getConstructor(Class[] params): 获取类的特定构造方法,params参数指定构造方法的参数类型
+        // 3. getDeclaredConstructors(): 获取类中所有的构造方法(public、protected、default、private)
+        // 4. getDeclaredConstructor(Class[] params): 获取类的特定构造方法,params参数指定构造方法的参数类型
+        final Constructor&lt;?&gt; cons = cl.getConstructor(constructorParams);
+        final InvocationHandler ih = h;
+        if (!Modifier.isPublic(cl.getModifiers())) {
+            AccessController.doPrivileged(new PrivilegedAction&lt;Void&gt;() {
+                public Void run() {
+                    cons.setAccessible(true);
+                    return null;
+                }
+            });
+        }
+        // Class.newInstance() 只能够调用无参的构造函数，即默认的构造函数；
+        // Constructor.newInstance() 可以根据传入的参数，调用任意构造构造函数。
+        return cons.newInstance(new Object[]{h});
+    } catch (IllegalAccessException|InstantiationException e) {
+        throw new InternalError(e.toString(), e);
+    } catch (InvocationTargetException e) {
+        Throwable t = e.getCause();
+        if (t instanceof RuntimeException) {
+            throw (RuntimeException) t;
+        } else {
+            throw new InternalError(t.toString(), t);
+        }
+    } catch (NoSuchMethodException e) {
+        throw new InternalError(e.toString(), e);
+    }
+}
+</code></pre>
+<p>查看代理类的内容，例如这篇文章：<a href="https://www.yisu.com/zixun/597206.html">java怎么查看jvm中动态代理class类内容</a>。</p>
+<p>生成代理类的内容具体如下，可以看到，除了<code>hashCode</code>，<code>toString</code>，<code>equals</code>之外，还实现了<code>IWork</code>接口的两个方法。：</p>
+<pre><code class="language-java">public final class $Proxy0 extends Proxy implements IWork {
+    private static Method m1;
+    private static Method m4;
+    private static Method m2;
+    private static Method m3;
+    private static Method m0;
+
+    public $Proxy0(InvocationHandler var1) {
+        super(var1);
+    }
+
+    static {
+        try {
+            m1 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;equals&quot;, Class.forName(&quot;java.lang.Object&quot;));
+            m4 = Class.forName(&quot;cn.orzlinux.Bean.dynamicProxy.IWork&quot;).getMethod(&quot;meeting&quot;);
+            m2 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;toString&quot;);
+            m3 = Class.forName(&quot;cn.orzlinux.Bean.dynamicProxy.IWork&quot;).getMethod(&quot;evaluate&quot;, Class.forName(&quot;java.lang.String&quot;));
+            m0 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;hashCode&quot;);
+        } catch (NoSuchMethodException var2) {
+            throw new NoSuchMethodError(var2.getMessage());
+        } catch (ClassNotFoundException var3) {
+            throw new NoClassDefFoundError(var3.getMessage());
+        }
+    }
+
+    public final boolean equals(Object var1) {
+        try {
+            return (Boolean)super.h.invoke(this, m1, new Object[]{var1});
+        } catch (RuntimeException | Error var3) {
+            throw var3;
+        } catch (Throwable var4) {
+            throw new UndeclaredThrowableException(var4);
+        }
+    }
+
+    public final String toString() {
+        try {
+            return (String)super.h.invoke(this, m2, (Object[])null);
+        } catch (RuntimeException | Error var2) {
+            throw var2;
+        } catch (Throwable var3) {
+            throw new UndeclaredThrowableException(var3);
+        }
+    }
+
+    public final int hashCode() {
+        try {
+            return (Integer)super.h.invoke(this, m0, (Object[])null);
+        } catch (RuntimeException | Error var2) {
+            throw var2;
+        } catch (Throwable var3) {
+            throw new UndeclaredThrowableException(var3);
+        }
+    }
+
+    public final int evaluate(String var1) {
+        try {
+            return (Integer)super.h.invoke(this, m3, new Object[]{var1});
+        } catch (RuntimeException | Error var3) {
+            throw var3;
+        } catch (Throwable var4) {
+            throw new UndeclaredThrowableException(var4);
+        }
+    }
+
+    public final void meeting() {
+        try {
+            super.h.invoke(this, m4, (Object[])null);
+        } catch (RuntimeException | Error var2) {
+            throw var2;
+        } catch (Throwable var3) {
+            throw new UndeclaredThrowableException(var3);
+        }
+    }
+}
+</code></pre>
+<p>调用则都用了<code>InvocationHandler</code>的invoke方法。我们已经实现了这个方法：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211001144908.png" alt="image-20211001144907164"></p>
+<p><code>invoke</code>的参数：</p>
+<ul>
+<li>proxy就是我们生成的<code>$proxy0</code>类：</li>
+</ul>
+<pre><code class="language-java">IWork proxy = (IWork) Proxy.newProxyInstance(Leader.class.getClassLoader(),
+                new Class[]{IWork.class},new WorkInvocationHandler(leader));
+</code></pre>
+<ul>
+<li>method是<code>$proxy</code>类中实现的那几个方法</li>
+<li>args是参数数组</li>
+</ul>
+<p>这样就一目了然了：</p>
+<p>在main方法中：</p>
+<pre><code class="language-java">Leader leader = new Leader();
+IWork proxy = (IWork) Proxy.newProxyInstance(Leader.class.getClassLoader(),
+new Class[]{IWork.class},new WorkInvocationHandler(leader));
+proxy.meeting();
+</code></pre>
+<p><strong>先生成代理类，代理类中除了<code>hashCode</code>，<code>toString</code>，<code>equals</code>之外，还实现了<code>IWork</code>接口的两个方法。给<code>WorkInvocationHandler</code>传递了一个<code>Leader</code>对象。例如调用<code>proxy.meeting()</code>：</strong></p>
+<p><strong>去代理类中找<code>meeting</code>方法，发现要到<code>handler</code>的<code>invoke</code>方法，而<code>invoke</code>方法可以在<code>leader</code>对象的基础之上加一些准备工作。</strong>也就是输出：</p>
+<pre><code class="language-shell">准备材料。。
+领导早上要组织会议
+</code></pre>
+<p>至此，整体脉络就梳理完了。</p>
+<h3 id="cglib动态代理">CGlib动态代理</h3>
+<p>JDK动态代理是基于接口的方式，换句话来说就是代理类和目标类都实现同一个接口。</p>
+<p><strong>CGLib动态代理是代理类去继承目标类，然后重写其中目标类的方法，这样可以保证代理类拥有目标类的同名方法。</strong></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211001151406.png" alt="image-20211001151404831"></p>
+<h4 id="示例">示例</h4>
+<p>Dog.java</p>
+<pre><code class="language-java">public class Dog {
+    final public void run(String name) {
+        System.out.println(&quot;dog &quot;+name+&quot;--- run&quot;);
+    }
+    public void eat() {
+        System.out.println(&quot;dog --- eat&quot;);
+    }
+}
+</code></pre>
+<p>MyMethodInterceptro.java</p>
+<pre><code class="language-java">public class MyMethodInterceptor implements MethodInterceptor {
+    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+        System.out.println(&quot;对目标类进行增强&quot;);
+        // 方法调用，非反射
+        Object Object = methodProxy.invokeSuper(o,objects);
+        return objects;
+    }
+}
+</code></pre>
+<p>CGlibProxy.java</p>
+<pre><code class="language-java">public class CGlibProxy {
+    public static void main(String[] args) {
+        // 导出cglib动态类
+                    
+        System.setProperty( DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, &quot;F:\\java_classes&quot;);
+
+        // Enhancer，类似于JDK动态代理的Proxy
+        Enhancer enhancer = new Enhancer();
+        //设置目标类的字节码文件
+        enhancer.setSuperclass(Dog.class);
+        enhancer.setCallback(new MyMethodInterceptor());
+        //这里的creat方法就是正式创建代理类
+        Dog proxyDog = (Dog) enhancer.create();
+        proxyDog.eat();
+    }
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211001153425.png" alt="image-20211001153423814"></p>
+<h4 id="代理类">代理类</h4>
+<pre><code class="language-java">//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
+// 代理类继承了Dog，并且实现了Factory接口（设置回调函数和返回实例化对象的方法）
+public class Dog$$EnhancerByCGLIB$$b46ed1e9 extends Dog implements Factory {
+    // method 和 methodProxy
+    private boolean CGLIB$BOUND;
+    private static final ThreadLocal CGLIB$THREAD_CALLBACKS;
+    private static final Callback[] CGLIB$STATIC_CALLBACKS;
+    private MethodInterceptor CGLIB$CALLBACK_0;
+    private static final Method CGLIB$eat$0$Method;
+    private static final MethodProxy CGLIB$eat$0$Proxy;
+    private static final Object[] CGLIB$emptyArgs;
+    private static final Method CGLIB$finalize$1$Method;
+    private static final MethodProxy CGLIB$finalize$1$Proxy;
+    private static final Method CGLIB$equals$2$Method;
+    private static final MethodProxy CGLIB$equals$2$Proxy;
+    private static final Method CGLIB$toString$3$Method;
+    private static final MethodProxy CGLIB$toString$3$Proxy;
+    private static final Method CGLIB$hashCode$4$Method;
+    private static final MethodProxy CGLIB$hashCode$4$Proxy;
+    private static final Method CGLIB$clone$5$Method;
+    private static final MethodProxy CGLIB$clone$5$Proxy;
+
+    // 为目标类的每一个方法都建立索引
+    static void CGLIB$STATICHOOK1() {
+        CGLIB$THREAD_CALLBACKS = new ThreadLocal();
+        CGLIB$emptyArgs = new Object[0];
+        Class var0 = Class.forName(&quot;cn.orzlinux.Bean.cglib.Dog$$EnhancerByCGLIB$$b46ed1e9&quot;);
+        Class var1;
+        Method[] var10000 = ReflectUtils.findMethods(new String[]{&quot;finalize&quot;, &quot;()V&quot;, &quot;equals&quot;, &quot;(Ljava/lang/Object;)Z&quot;, &quot;toString&quot;, &quot;()Ljava/lang/String;&quot;, &quot;hashCode&quot;, &quot;()I&quot;, &quot;clone&quot;, &quot;()Ljava/lang/Object;&quot;}, (var1 = Class.forName(&quot;java.lang.Object&quot;)).getDeclaredMethods());
+        CGLIB$finalize$1$Method = var10000[0];
+        CGLIB$finalize$1$Proxy = MethodProxy.create(var1, var0, &quot;()V&quot;, &quot;finalize&quot;, &quot;CGLIB$finalize$1&quot;);
+        CGLIB$equals$2$Method = var10000[1];
+        CGLIB$equals$2$Proxy = MethodProxy.create(var1, var0, &quot;(Ljava/lang/Object;)Z&quot;, &quot;equals&quot;, &quot;CGLIB$equals$2&quot;);
+        CGLIB$toString$3$Method = var10000[2];
+        CGLIB$toString$3$Proxy = MethodProxy.create(var1, var0, &quot;()Ljava/lang/String;&quot;, &quot;toString&quot;, &quot;CGLIB$toString$3&quot;);
+        CGLIB$hashCode$4$Method = var10000[3];
+        CGLIB$hashCode$4$Proxy = MethodProxy.create(var1, var0, &quot;()I&quot;, &quot;hashCode&quot;, &quot;CGLIB$hashCode$4&quot;);
+        CGLIB$clone$5$Method = var10000[4];
+        CGLIB$clone$5$Proxy = MethodProxy.create(var1, var0, &quot;()Ljava/lang/Object;&quot;, &quot;clone&quot;, &quot;CGLIB$clone$5&quot;);
+        CGLIB$eat$0$Method = ReflectUtils.findMethods(new String[]{&quot;eat&quot;, &quot;()V&quot;}, (var1 = Class.forName(&quot;cn.orzlinux.Bean.cglib.Dog&quot;)).getDeclaredMethods())[0];
+        CGLIB$eat$0$Proxy = MethodProxy.create(var1, var0, &quot;()V&quot;, &quot;eat&quot;, &quot;CGLIB$eat$0&quot;);
+    }
+
+    // 调用目标类的eat方法，
+    final void CGLIB$eat$0() {
+        super.eat();
+    }
+
+    public final void eat() {
+        // 传入的方法拦截器
+        MethodInterceptor var10000 = this.CGLIB$CALLBACK_0;
+        if (var10000 == null) {
+            CGLIB$BIND_CALLBACKS(this);
+            var10000 = this.CGLIB$CALLBACK_0;
+        }
+
+        if (var10000 != null) {
+            var10000.intercept(this, CGLIB$eat$0$Method, CGLIB$emptyArgs, CGLIB$eat$0$Proxy);
+        } else {
+            super.eat();
+        }
+    }
+
+    final void CGLIB$finalize$1() throws Throwable {
+        super.finalize();
+    }
+
+    // ...
+
+    public static MethodProxy CGLIB$findMethodProxy(Signature var0) {
+        String var10000 = var0.toString();
+        switch(var10000.hashCode()) {
+        case -1574182249:
+            if (var10000.equals(&quot;finalize()V&quot;)) {
+                return CGLIB$finalize$1$Proxy;
+            }
+            break;
+        case -1310345955:
+            if (var10000.equals(&quot;eat()V&quot;)) {
+                return CGLIB$eat$0$Proxy;
+            }
+            break;
+        case -508378822:
+            if (var10000.equals(&quot;clone()Ljava/lang/Object;&quot;)) {
+                return CGLIB$clone$5$Proxy;
+            }
+            break;
+        case 1826985398:
+            if (var10000.equals(&quot;equals(Ljava/lang/Object;)Z&quot;)) {
+                return CGLIB$equals$2$Proxy;
+            }
+            break;
+        case 1913648695:
+            if (var10000.equals(&quot;toString()Ljava/lang/String;&quot;)) {
+                return CGLIB$toString$3$Proxy;
+            }
+            break;
+        case 1984935277:
+            if (var10000.equals(&quot;hashCode()I&quot;)) {
+                return CGLIB$hashCode$4$Proxy;
+            }
+        }
+
+        return null;
+    }
+
+    public Dog$$EnhancerByCGLIB$$b46ed1e9() {
+        CGLIB$BIND_CALLBACKS(this);
+    }
+
+    public static void CGLIB$SET_THREAD_CALLBACKS(Callback[] var0) {
+        CGLIB$THREAD_CALLBACKS.set(var0);
+    }
+
+    public static void CGLIB$SET_STATIC_CALLBACKS(Callback[] var0) {
+        CGLIB$STATIC_CALLBACKS = var0;
+    }
+
+    private static final void CGLIB$BIND_CALLBACKS(Object var0) {
+        Dog$$EnhancerByCGLIB$$b46ed1e9 var1 = (Dog$$EnhancerByCGLIB$$b46ed1e9)var0;
+        if (!var1.CGLIB$BOUND) {
+            var1.CGLIB$BOUND = true;
+            Object var10000 = CGLIB$THREAD_CALLBACKS.get();
+            if (var10000 == null) {
+                var10000 = CGLIB$STATIC_CALLBACKS;
+                if (var10000 == null) {
+                    return;
+                }
+            }
+
+            var1.CGLIB$CALLBACK_0 = (MethodInterceptor)((Callback[])var10000)[0];
+        }
+
+    }
+
+    public Object newInstance(Callback[] var1) {
+        CGLIB$SET_THREAD_CALLBACKS(var1);
+        Dog$$EnhancerByCGLIB$$b46ed1e9 var10000 = new Dog$$EnhancerByCGLIB$$b46ed1e9();
+        CGLIB$SET_THREAD_CALLBACKS((Callback[])null);
+        return var10000;
+    }
+
+    public Object newInstance(Callback var1) {
+        CGLIB$SET_THREAD_CALLBACKS(new Callback[]{var1});
+        Dog$$EnhancerByCGLIB$$b46ed1e9 var10000 = new Dog$$EnhancerByCGLIB$$b46ed1e9();
+        CGLIB$SET_THREAD_CALLBACKS((Callback[])null);
+        return var10000;
+    }
+
+    public Object newInstance(Class[] var1, Object[] var2, Callback[] var3) {
+        CGLIB$SET_THREAD_CALLBACKS(var3);
+        Dog$$EnhancerByCGLIB$$b46ed1e9 var10000 = new Dog$$EnhancerByCGLIB$$b46ed1e9;
+        switch(var1.length) {
+        case 0:
+            var10000.&lt;init&gt;();
+            CGLIB$SET_THREAD_CALLBACKS((Callback[])null);
+            return var10000;
+        default:
+            throw new IllegalArgumentException(&quot;Constructor not found&quot;);
+        }
+    }
+
+    public Callback getCallback(int var1) {
+        CGLIB$BIND_CALLBACKS(this);
+        MethodInterceptor var10000;
+        switch(var1) {
+        case 0:
+            var10000 = this.CGLIB$CALLBACK_0;
+            break;
+        default:
+            var10000 = null;
+        }
+
+        return var10000;
+    }
+
+    public void setCallback(int var1, Callback var2) {
+        switch(var1) {
+        case 0:
+            this.CGLIB$CALLBACK_0 = (MethodInterceptor)var2;
+        default:
+        }
+    }
+
+    public Callback[] getCallbacks() {
+        CGLIB$BIND_CALLBACKS(this);
+        return new Callback[]{this.CGLIB$CALLBACK_0};
+    }
+
+    public void setCallbacks(Callback[] var1) {
+        this.CGLIB$CALLBACK_0 = (MethodInterceptor)var1[0];
+    }
+
+    static {
+        CGLIB$STATICHOOK1();
+    }
+}
+</code></pre>
+<p>调用方法一的时候，在代理类中会先判断是否实现了方法拦截的接口，没实现的话直接调用目标类的方法一；如果实现了那就会被方法拦截器拦截，在方法拦截器中会对目标类中所有的方法建立索引，其实大概就是将每个方法的引用保存在数组中，我们就可以根据数组的下标直接调用方法，而不是用反射；索引建立完成之后，方法拦截器内部就会调用invoke方法（这个方法在生成的FastClass中实现），在invoke方法内就是调用CGLIB$方法一$这种方法，也就是调用对应的目标类的方法一。一般我们要添加自己的逻辑就是在方法拦截器那里。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211001154907.png" alt="image-20211001154904445"></p>
+<p>什么时候用cglib什么时候用jdk动态代理？</p>
+<ul>
+<li>目标对象生成了接口 默认用JDK动态代理</li>
+<li>如果目标对象使用了接口，可以强制使用cglib</li>
+</ul>
+<p>JDK动态代理只能对实现了接口的类生成代理，而不能针对类。Cglib是针对类实现代理，主要是对指定的类生成一个子类，覆盖其中的方法，并覆盖其中方法的增强，但是因为采用的是继承，所以该类或方法最好不要生成final，对于final类或方法，是无法继承的。</p>
+<h2 id="ioc">IOC</h2>
+<p>百科解释（意会一下）：</p>
+<blockquote>
+<p>控制反转（Inversion of Control，缩写为IoC），是面向对象编程中的一种设计原则，可以用来减低计算机代码之间的耦合度。其中最常见的方式叫做依赖注入（Dependency Injection，简称DI）。通过控制反转，对象在被创建的时候，由一个调控系统内所有对象的外界实体，将其所依赖的对象的引用传递给它。也可以说，依赖被注入到对象中。</p>
+</blockquote>
+<p>Java类和类之间的引用错综复杂：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211001162040.png" alt="image-20211001162039860"></p>
+<p>引入IOC框架来解耦，维护类的声明周期和类的引用：</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211001162248.png" alt="image-20211001162246775" style="zoom:80%;" />
+
+
+
+<p>IoC框架负责维护，类的使用者只管使用。实现IoC框架和代码详见：<a href="https://www.xilidou.com/2018/01/08/spring-ioc/">徒手撸框架--实现IoC</a></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211001173910.png" alt="image-20211001173909009"></p>
+<p>BeanFactoryImpl.java</p>
+<pre><code class="language-java">public class BeanFactoryImpl implements BeanFactory {
+    private static final ConcurrentHashMap&lt;String,Object&gt; beanMap = new ConcurrentHashMap&lt;&gt;();
+
+    private static final ConcurrentHashMap&lt;String,BeanDefinition&gt; beanDefineMap= new ConcurrentHashMap&lt;&gt;();
+
+    private static final Set&lt;String&gt; beanNameSet = Collections.synchronizedSet(new HashSet&lt;&gt;());
+
+    @Override
+    public Object getBean(String name) throws Exception {
+        //查找对象是否已经实例化过
+        Object bean = beanMap.get(name);
+        if(bean != null){
+            return bean;
+        }
+        //如果没有实例化，那就需要调用createBean来创建对象
+        bean =  createBean(beanDefineMap.get(name));
+
+        if(bean != null) {
+
+            //对象创建成功以后，注入对象需要的参数
+            populatebean(bean);
+
+            //再吧对象存入Map中方便下次使用。
+            beanMap.put(name,bean);
+        }
+
+        //结束返回
+        return bean;
+    }
+
+    protected void registerBean(String name, BeanDefinition bd){
+        beanDefineMap.put(name,bd);
+        beanNameSet.add(name);
+    }
+
+    private Object createBean(BeanDefinition beanDefinition) throws Exception {
+        String beanName = beanDefinition.getClassName();
+        Class clz = ClassUtils.loadClass(beanName);
+        if(clz == null) {
+            throw new Exception(&quot;can not find bean by beanName&quot;);
+        }
+        List&lt;ConstructorArg&gt; constructorArgs = beanDefinition.getConstructorArgs();
+        if(constructorArgs != null &amp;&amp; !constructorArgs.isEmpty()){
+            List&lt;Object&gt; objects = new ArrayList&lt;&gt;();
+            for (ConstructorArg constructorArg : constructorArgs) {
+                if (constructorArg.getValue() != null) {
+                    objects.add(constructorArg.getValue());
+                } else {
+                    objects.add(getBean(constructorArg.getRef()));
+                }
+            }
+            Class[] constructorArgTypes = objects.stream().map(it -&gt; it.getClass()).collect(Collectors.toList()).toArray(new Class[]{});
+            Constructor constructor = clz.getConstructor(constructorArgTypes);
+            return BeanUtils.instanceByCglib(clz, constructor, objects.toArray());
+        } else {
+            return BeanUtils.instanceByCglib(clz, null, null);
+        }
+    }
+
+    private void populatebean(Object bean) throws Exception {
+        Field[] fields = bean.getClass().getSuperclass().getDeclaredFields();
+        if (fields != null &amp;&amp; fields.length &gt; 0) {
+            for (Field field : fields) {
+                String beanName = field.getName();
+                beanName = StringUtils.uncapitalize(beanName);
+                if (beanNameSet.contains(field.getName())) {
+                    Object fieldBean = getBean(beanName);
+                    if (fieldBean != null) {
+                        ReflectionUtils.injectField(field,bean,fieldBean);
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>BeanUtils.java</p>
+<pre><code class="language-java">// 处理对象的实例化
+public class BeanUtils {
+    public static &lt;T&gt; T instanceByCglib(Class&lt;T&gt; clz, Constructor ctr,
+                                        Object[] args) {
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(clz);
+        //NoOp.INSTANCE，这表示一个空Callback，即如果不想对某个方法进行拦截，
+        // 可以在DaoFilter中返回
+        enhancer.setCallback(NoOp.INSTANCE);
+        if(ctr == null) {
+            return (T) enhancer.create();
+        } else {
+            return (T) enhancer.create(ctr.getParameterTypes(),args);
+        }
+    }
+}
+</code></pre>
+<p>JsonApplicationContext.java</p>
+<pre><code class="language-java">public class JsonApplicationContext extends BeanFactoryImpl {
+    private String fileName;
+
+    public JsonApplicationContext(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public void init(){
+        loadFile();
+    }
+
+    private void loadFile(){
+
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+
+        // ObjectMapper提供了readValue(String content, TypeReference valueTypeRef)接口，
+        // 第二个参数为new一个TypeReference的子类实例：
+        // new TypeReference&lt;List&lt;UserResource&gt;&gt;(){}。
+        // 泛型抽象类TypeReference用于通过子类获取完整的泛型类型信息。
+        List&lt;BeanDefinition&gt; beanDefinitions = JsonUtils.readValue(is,new TypeReference&lt;List&lt;BeanDefinition&gt;&gt;(){});
+
+        if(beanDefinitions != null &amp;&amp; !beanDefinitions.isEmpty()) {
+
+            for (BeanDefinition beanDefinition : beanDefinitions) {
+                registerBean(beanDefinition.getName(), beanDefinition);
+            }
+        }
+
+    }
+}
+</code></pre>
+<p>测试类：</p>
+<pre><code class="language-java">JsonApplicationContext applicationContext = new JsonApplicationContext( &quot;application.json&quot; );
+applicationContext.init();
+Robot aiRobot = (Robot) applicationContext.getBean(&quot;robot&quot;);
+aiRobot.show();
+</code></pre>
+<p><strong>运行图</strong>：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211001183248.png" alt="image-20211001183247038"></p>
+<h2 id="aop">AOP</h2>
+<p>AOP(Aspect-Oriented Programming), 即 <strong>面向切面编程</strong>, 它与 OOP( Object-Oriented Programming, 面向对象编程) 相辅相成, 提供了与 OOP 不同的抽象软件结构的视角。</p>
+<p>在 OOP 中, 我们以类(class)作为我们的基本单元, 而 AOP 中的基本单元是 <strong>Aspect(切面)</strong></p>
+<p>本节参考自<a href="https://segmentfault.com/u/yongshun">永顺</a>，链接 <a href="https://segmentfault.com/a/1190000007469968">here</a>。</p>
+<h3 id="术语">术语</h3>
+<blockquote>
+<p>假设一下, 从前有一个叫爪哇的小县城, 在一个月黑风高的晚上, 这个县城中发生了命案. 作案的凶手十分狡猾, 现场没有留下什么有价值的线索. 不过万幸的是, 刚从隔壁回来的老王恰好在这时候无意中发现了凶手行凶的过程, 但是由于天色已晚, 加上凶手蒙着面, 老王并没有看清凶手的面目, 只知道凶手是个男性, 身高约七尺五寸. 爪哇县的县令根据老王的描述, 对守门的士兵下命令说: 凡是发现有身高七尺五寸的男性, 都要抓过来审问. 士兵当然不敢违背县令的命令, 只好把进出城的所有符合条件的人都抓了起来。</p>
+</blockquote>
+<ul>
+<li>join point --&gt; 爪哇的小县城里的百姓: 因为根据定义, join point 是所有可能被织入 advice 的候选的点, 在 Spring AOP中, 则可以认为所有方法执行点都是 join point. 而在我们上面的例子中, 命案发生在小县城中, 按理说在此县城中的所有人都有可能是嫌疑人。</li>
+<li>point cut --&gt; 男性, 身高约七尺五寸: 我们知道, 所有的方法(joint point) 都可以织入 advice, 但是我们并不希望在所有方法上都织入 advice, 而 point cut 的作用就是提供一组规则来匹配join point, 给满足规则的 join point 添加 advice. 同理, 对于县令来说, 他再昏庸, 也知道不能把县城中的所有百姓都抓起来审问, 而是根据<code>凶手是个男性, 身高约七尺五寸</code>, 把符合条件的人抓起来. 在这里 <code>凶手是个男性, 身高约七尺五寸</code> 就是一个修饰谓语, 它限定了凶手的范围, 满足此修饰规则的百姓都是嫌疑人, 都需要抓起来审问。</li>
+<li>advice --&gt; 抓过来审问, advice 是一个动作, 即一段 Java 代码, 这段 Java 代码是作用于 point cut 所限定的那些 join point 上的. 同理, 对比到我们的例子中, <code>抓过来审问</code> 这个动作就是对作用于那些满足 <code>男性, 身高约七尺五寸</code> 的<code>爪哇的小县城里的百姓</code>。</li>
+<li>aspect: aspect 是 point cut 与 advice 的组合, 因此在这里我们就可以类比: <strong>&quot;根据老王的线索, 凡是发现有身高七尺五寸的男性, 都要抓过来审问&quot;</strong> 这一整个动作可以被认为是一个 aspect。</li>
+</ul>
+<p>AOP的工作重心在于如何将增强织入目标对象的连接点上, 这里包含两个工作：如何通过 pointcut 和 advice 定位到特定的 joinpoint 上；如何在 advice 中编写切面代码。</p>
+<p><strong>可以简单地认为, 使用 <code>@Aspect</code> 注解的类就是切面。</strong></p>
+<p>在 Spring 中, 所有的方法都可以认为是 joinpoint, 但是我们并不希望在所有的方法上都添加 Advice, 而 pointcut 的作用就是提供一组规则(使用 AspectJ pointcut expression language 来描述) 来匹配joinpoint, 给满足规则的 joinpoint 添加 Advice。</p>
+<blockquote>
+<p>例子感觉挺不错的，一堆术语放到具体的例子上就大致知道是想说什么了。</p>
+</blockquote>
+<p><strong>AOP的实现方式有两种：</strong></p>
+<ul>
+<li>AOP框架在编译阶段，就对目标类进行修改，得到的class文件已经是被修改过的。生成静态的AOP代理类（生成*.class文件已经被改掉了，需要使用特定的编译器）。以AspectJ为代表 —— 静态AOP框架。</li>
+<li>AOP框架在运行阶段，动态生成AOP代理（在内存中动态地生成AOP代理类），以实现对目标对象的增强。它不需要特殊的编译器。以Spring AOP为代表。—— 动态AOP框架。</li>
+</ul>
+<h3 id="例子：http接口鉴权">例子：http接口鉴权</h3>
+<p>需求：为某些http restful api提供权限验证功能，权限不符合时，返回报错。</p>
+<p>设计：</p>
+<ul>
+<li><p>提供一个特殊的注解 <code>AuthChecker</code>，方法注解，有此注解标注的Controller需要进行权限验证。</p>
+</li>
+<li><p>利用Spring AOP，以<code>@annotation</code>切点标志符来匹配有注解 <code>AuthChecker</code>所标注的 joinpoint。</p>
+</li>
+<li><p>在 advice 中, 简单地检查调用者请求中的 Cookie 中是否有我们指定的 token, 如果有, 则认为此调用者权限合法, 允许调用, 反之权限不合法, 范围错误。</p>
+</li>
+</ul>
+<p>AuthChecker.java</p>
+<pre><code class="language-java">@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface AuthChecker {
+
+}
+</code></pre>
+<p>HttpAOPAdviseDefine.java</p>
+<pre><code class="language-java">@Component
+@Aspect
+public class HttpAOPAdviseDefine {
+    // 定义一个 Pointcut, 使用 切点表达式函数 来描述对哪些 Join point 使用 advise.
+    // 之前例子中的找出七尺五寸的男子, 这里是找出AuthChecker标注的方法
+    @Pointcut(&quot;@annotation(cn.orzlinux.AuthChecker)&quot;)
+    public void pointcut() {
+
+    }
+    
+    // 要把这些男子抓起来审问（对符合标注方法的动作，验证cookie）
+    // 定义advise
+    @Around(&quot;pointcut()&quot;)
+    public Object checkAuth(ProceedingJoinPoint joinPoint) throws Throwable {
+        // 在Web开发中，service层或者某个工具类中需要获取到HttpServletRequest对象还是比较常见的。
+        // 一种方式是将HttpServletRequest作为方法的参数从controller层一直放下传递，
+        // 不过这种有点费劲，且做起来不是优雅；
+        //还有另一种则是RequestContextHolder，直接在需要用的地方使用如下方式
+        //HttpServletRequest即可，使用代码如下：
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest();
+
+        // 检查用户所传递的 token 是否合法
+        String token = getUserToken(request);
+        if (!token.equalsIgnoreCase(&quot;123456&quot;)) {
+            return &quot;错误, 权限不合法!&quot;;
+        }
+        // 如果授权是 true 则 调用 方法( joinPoint.proceed(); )
+        return joinPoint.proceed();
+    }
+    private String getUserToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return &quot;&quot;;
+        }
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equalsIgnoreCase(&quot;user_token&quot;)) {
+                return cookie.getValue();
+            }
+        }
+        return &quot;&quot;;
+    }
+}
+</code></pre>
+<p>测试：</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211001231428.png" alt="image-20211001231427282" style="zoom:80%;" />
+
+<p>加上cookie之后：</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211001232036.png" alt="image-20211001232034785" style="zoom:80%;" />
+
+
+
+<h3 id="解决中文？？？问题">解决中文？？？问题</h3>
+<p>在配置文件中的mvc:annotation-driven中添加如下代码：</p>
+<pre><code class="language-xml">&lt;mvc:annotation-driven &gt;
+    &lt;!-- 消息转换器 --&gt;
+    &lt;mvc:message-converters register-defaults=&quot;true&quot;&gt;
+      &lt;bean class=&quot;org.springframework.http.converter.StringHttpMessageConverter&quot;&gt;
+        &lt;property name=&quot;supportedMediaTypes&quot; value=&quot;text/html;charset=UTF-8&quot;/&gt;
+      &lt;/bean&gt;
+    &lt;/mvc:message-converters&gt;
+  &lt;/mvc:annotation-driven&gt;
+</code></pre>
+<p>有什么乱七八糟的地方找不到类，试试这个：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211001230044.png" alt="image-20211001230041534"></p>
+<h2 id="参考">参考</h2>
+<p><a href="https://www.cnblogs.com/joy99/p/10865391.html">静态代理和动态代理</a></p>
+<p><a href="https://www.cnblogs.com/wyq1995/p/10945034.html">CGLib动态代理</a></p>
+<p><a href="https://www.jianshu.com/p/95970b089360">你真的完全了解Java动态代理吗？看这篇就够了</a></p>
+<p><a href="https://segmentfault.com/a/1190000007469968">彻底征服 Spring AOP 之 理论篇</a></p>
+<p><a href="https://segmentfault.com/a/1190000007469982">彻底征服 Spring AOP 之 实战篇</a></p>
+<p><a href="https://www.xilidou.com/2018/01/08/spring-ioc/">徒手撸框架--实现IoC</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"javaAOP20211001.html";
+			document.getElementById("blogaddr-a").innerHTML="动态代理、IoC、AOP";
+			</script></body></html> 

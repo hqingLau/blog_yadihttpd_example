@@ -1,0 +1,1034 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>Netty概述
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>Netty概述</h1><hr>
+<p><code>Netty</code>是一个<code>JBoss</code>提供的<code>Java</code>开源框架，提供异步、事件驱动的网络应用程序框架和工具。可以快速简单开发出一个网络应用，例如实现某种协议的<code>服务端/客户端</code>应用。<code>JBoss</code>：在<code>J2EE</code>应用服务器领域，<code>JBoss</code>是发展最为迅速的应用服务器。<code>Netty</code> 对 <code>JDK</code> 自带的 <code>NIO</code> 的 <code>API</code> 进行了封装。</p>
+<h2 id="java-nio">Java NIO</h2>
+<h3 id="介绍">介绍</h3>
+<p>一般认为是non-blocking io。</p>
+<p><strong>面向缓冲区</strong>。数据读取到稍后处理的缓冲区，需要时读。</p>
+<p>三大核心：<code>Channel</code>、<code>Buffer</code>、<code>Selector</code>。</p>
+<p><code>Channel</code>、<code>Buffer</code>、<code>Selector</code>关系图如下：</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211021151327.png" alt="image-20211021151327401" style="zoom:80%;" />
+
+<p>一个<code>Channel</code>对应一个<code>buffer</code>，<code>selector</code>对应一个线程，一个线程对应多个<code>channel</code>，上图有三个<code>channel</code>注册到<code>selector</code>，切换到哪个<code>channel</code>由事件决定。<code>buffer</code>是一个内存块，底层有一个数组。</p>
+<h3 id="缓冲区buffer">缓冲区buffer</h3>
+<p><code>Buffer</code>例子：</p>
+<pre><code class="language-java">public static void main(String[] args) {
+    IntBuffer buffer = IntBuffer.allocate(5);
+    for(int i=0;i&lt;buffer.capacity();i++) {
+        buffer.put(i);
+    }
+    buffer.flip(); // 翻转读写模式
+    while(buffer.hasRemaining()) {
+        System.out.println(buffer.get());
+    }
+}
+</code></pre>
+<p><code>Buffer</code>类是一个抽象类，下面有具体的实现。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021152041.png" alt="image-20211021152041588"></p>
+<p>示意图：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021150810.png" alt="image-20211021150810159"></p>
+<p><code>capacity</code>：在读/写模式下都是固定的，就是我们分配的缓冲大小（容量）。</p>
+<p><code>position</code>：类似于读/写指针，表示当前读(写)到什么位置。</p>
+<p><code>limit</code>：在写模式下表示最多能写入多少数据，此时和<code>capacity</code>相同。在读模式下表示最多能读多少数据，此时和缓存中的实际 数据大小相同。</p>
+<h3 id="通道channel">通道Channel</h3>
+<p><code>NIO</code>通道类似流，区别：通道可以同时读写，可以异步读写，可以缓冲区读写。</p>
+<p><code>Channel</code> 在 <code>NIO</code> 中是一个接口 <code>public interface Channel extends Closeable{}</code>。常用的 <code>Channel</code> 类有: <strong><code>FileChannel</code>、<code>DatagramChannel</code>、<code>ServerSocketChannel</code> 和 <code>SocketChannel</code></strong> 。</p>
+<p>【<code>ServerSocketChanne</code> 类似 <code>ServerSocket</code>、<code>SocketChannel</code> 类似 <code>Socket</code>】</p>
+<p><code>FileChannel</code> 用于文件的数据读写，<code>DatagramChannel</code> 用于 <code>UDP</code> 的数据读写，<code>ServerSocketChannel</code> 和 <code>SocketChannel</code> 用于 <code>TCP</code> 的数据读写。</p>
+<h4 id="filechannel">FileChannel</h4>
+<p>写入本地文件：</p>
+<pre><code class="language-java">public class FileChan {
+    public static void main(String[] args) throws IOException {
+        String str = &quot;cn.orzlinux&quot;;
+        //创建输出流
+        FileOutputStream fileOutputStream = new FileOutputStream(&quot;C:\\Users\\PC\\Desktop\\hqinglau.txt&quot;);
+
+        //转换为FileChannel
+        FileChannel fileChannel = fileOutputStream.getChannel();
+
+        //创建缓冲区
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+
+        //str放入缓冲区
+        buffer.put(str.getBytes());
+
+        //转换为读模式
+        buffer.flip();
+
+        //buffer写入fileChannel
+        fileChannel.write(buffer);
+        fileOutputStream.close();
+
+    }
+}
+</code></pre>
+<p>结果：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021153540.png" alt="image-20211021153540257"></p>
+<p>读取本地文件：</p>
+<pre><code class="language-java">public class FileChan {
+    public static void main(String[] args) throws IOException {
+        File file = new File(&quot;C:\\Users\\PC\\Desktop\\hqinglau.txt&quot;);
+        //创建输入流
+        FileInputStream fileInputStream = new FileInputStream(file);
+
+        //转换为FileChannel
+        FileChannel fileChannel = fileInputStream.getChannel();
+
+        //创建缓冲区
+        ByteBuffer buffer = ByteBuffer.allocate((int) file.length());
+
+        //放入缓冲区
+        fileChannel.read(buffer);
+        System.out.println(new String(buffer.array())); // cn.orzlinux
+        fileInputStream.close();
+    }
+}
+</code></pre>
+<p>文件拷贝：可以通过连续读取到缓冲区然后写入文件的方法，或者<code>FileChannel</code>的<code>transferFrom</code>方法。</p>
+<pre><code class="language-java">public class FileChan {
+    public static void main(String[] args) throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(&quot;C:\\Users\\PC\\Desktop\\hqinglau.txt&quot;);
+        FileOutputStream fileOutputStream = new FileOutputStream(&quot;C:\\Users\\PC\\Desktop\\hqinglau2.txt&quot;);
+
+        FileChannel sourceChan = fileInputStream.getChannel();
+        FileChannel destChan = fileOutputStream.getChannel();
+
+        destChan.transferFrom(sourceChan,0,sourceChan.size());
+
+        sourceChan.close();
+        destChan.close();
+        fileInputStream.close();
+        fileOutputStream.close();
+    }
+}
+</code></pre>
+<h3 id="buffer和channel的一些细节">Buffer和Channel的一些细节</h3>
+<h4 id="得到一个只读的buffer">得到一个只读的buffer</h4>
+<pre><code class="language-java">//得到一个只读的 Buffer
+ByteBuffer readOnlyBuffer = buffer.asReadOnlyBuffer();
+</code></pre>
+<p>再放入会报错<code>ReadOnlyBufferException</code>。</p>
+<h4 id="内存中修改文件">内存中修改文件</h4>
+<p><code>NIO</code> 提供了 <code>MappedByteBuffer</code>，可以让文件直接在内存中进行修改，而如何同步到文件由 <code>NIO</code> 来完成。</p>
+<pre><code class="language-java">public static void main(String[] args) throws IOException {
+    RandomAccessFile randomAccessFile = new RandomAccessFile(&quot;C:\\Users\\PC\\Desktop\\hqinglau.txt&quot;,&quot;rw&quot;);
+    FileChannel fileChannel = randomAccessFile.getChannel();
+
+    // mode position size
+    MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_WRITE,0,5);
+    buffer.put(0, (byte) &#39;Y&#39;);
+    buffer.put(3, (byte) &#39;D&#39;);
+    buffer.put(5, (byte) &#39;I&#39;); // 超界
+    // cn.orzlinux -&gt; Yn.Drzlinux
+    randomAccessFile.close();
+}
+</code></pre>
+<h4 id="buffer数组读写操作">Buffer数组读写操作</h4>
+<pre><code class="language-java">public static void main(String[] args) throws IOException {
+    ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+    InetSocketAddress inetSocketAddress = new InetSocketAddress(9999);
+
+    // 端口绑定
+    serverSocketChannel.socket().bind(inetSocketAddress);
+
+    ByteBuffer[] byteBuffers = new ByteBuffer[2];
+    byteBuffers[0] = ByteBuffer.allocate(5);
+    byteBuffers[1] = ByteBuffer.allocate(3);
+
+    SocketChannel socketChannel = serverSocketChannel.accept();
+
+    int messageLen = 8; // 从客户端接收8字节
+    while (true) {
+        int byteRead = 0;
+        while (byteRead &lt; messageLen) {
+            
+            // here
+            long l = socketChannel.read(byteBuffers);
+            if(l&lt;=0) {
+                continue;
+            }
+            byteRead += l;
+            System.out.println(&quot;byteRead = &quot; + byteRead);
+            Arrays.stream(byteBuffers)
+                    .map(buffer -&gt; &quot;position = &quot; + buffer.position() + &quot;, limit = &quot; + buffer.limit())
+                    .forEach(System.out::println);
+        }
+        //将所有的 buffer 进行 flip
+        Arrays.asList(byteBuffers).forEach(Buffer::flip);
+        //将数据读出显示到客户端
+        long byteWirte = 0;
+        while (byteWirte &lt; messageLen) {
+            long l = socketChannel.write(byteBuffers);
+            byteWirte += l;
+        }
+
+        //将所有的buffer进行clear
+        Arrays.asList(byteBuffers).forEach(Buffer::clear);
+
+        System.out.println(&quot;byteRead = &quot; + byteRead + &quot;, byteWrite = &quot; + byteWirte + &quot;, messagelength = &quot; + messageLen);
+    }
+}
+</code></pre>
+<h3 id="选择器selector">选择器Selector</h3>
+<p>类似epoll</p>
+<h2 id="netty">Netty</h2>
+<p>NIO使用比较复杂。开发难度大，某些版本有Bug。<code>Netty</code> 对 <code>JDK</code> 自带的 <code>NIO</code> 的 <code>API</code> 进行了封装，解决了上述问题。</p>
+<h3 id="传统阻塞io服务模型">传统阻塞IO服务模型</h3>
+<p>采用阻塞IO获取输入数据，每个链接独立线程处理。并发数大时，占用大量系统资源。无数据可读时会阻塞。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021180227.png" alt="image-20211021180227082"></p>
+<h3 id="reactor模式">Reactor模式</h3>
+<ul>
+<li><p>IO复用模型，多个连接共用一个阻塞对象，无需阻塞等待所以连接。某个连接有数据可以处理时，操作系统通知应用。</p>
+</li>
+<li><p>线程池，复用线程资源。</p>
+</li>
+</ul>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211021180744.png" alt="image-20211021180744730" style="zoom:80%;" />
+
+<h4 id="单reactor多线程">单Reactor多线程</h4>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021183139.png" alt="image-20211021183139651"></p>
+<p><code>Reactor</code>对象通过<code>select</code>监听客户端请求，收到事件后进行分发。如果是处理请求分配给<code>worker</code>线程池处理。<code>Handler</code>只负责响应，不做业务处理。</p>
+<p>优点：可以利用多核CPU的处理能力。</p>
+<h4 id="主从reactor模式">主从Reactor模式</h4>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021184530.png" alt="image-20211021184530403"></p>
+<p>处理请求分配给<code>SubReactor</code>，<code>SubReactor</code>将连接加入到连接队列进行监听。</p>
+<p>父线程与子线程的数据交互简单职责明确，父线程只需要接收新连接，子线程完成后续的业务处理。父线程与子线程的数据交互简单，<code>Reactor</code> 主线程只需要把新连接传给子线程，子线程无需返回数据。</p>
+<h3 id="netty模型">Netty模型</h3>
+<p>将Reactor的多线程模型改进为多个Reactor。</p>
+<p>详细示意图：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021185409.png" alt="image-20211021185409738"></p>
+<p><code>BossGroup</code>负责接收客户端连接，<code>WorkerGroup</code>负责网络读写。都是<code>NIOEventLoopGroup</code>。</p>
+<p>其中有多个<code>NioEventLoop</code>。每个<code>NioEventLoop</code>表示一个任务处理线程，有一个selector，负责监听绑定在其上的socket的网络通信。</p>
+<p><code>Boss NioEventLoop</code>：轮询<code>accept</code>，处理，与<code>client</code>建立连接，生成<code>channel</code>，注册到某个<code>Worker NioEventLoop</code>上，处理任务队列的任务。</p>
+<p><code>Worker NioEventLoop</code>：轮询<code>read</code>，<code>write</code>，处理<code>IO</code>事件，处理任务队列。</p>
+<p><code>Worker NioEventLoop</code>处理业务时，会使用<code>pipeline</code>，包含了<code>channel</code>，还维护了很多<code>handler</code>处理器。</p>
+<h3 id="echo例子">echo例子</h3>
+<p>项目中建两个module，目录如下：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021193918.png" alt="image-20211021193918893"></p>
+<p>EchoServer.java：</p>
+<pre><code class="language-java">package cn.orzlinux.server;
+
+import cn.orzlinux.server.handler.EchoServerHandler;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+
+import java.net.InetSocketAddress;
+
+public class EchoServer {
+    private final int port;
+
+    public EchoServer(int port) {
+        this.port = port;
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        if(args.length!=1) {
+            System.err.println(&quot;Usage: &quot;+EchoServer.class.getSimpleName()+ &quot; &lt;port&gt;&quot;);
+            return;
+        }
+        new EchoServer(Integer.parseInt(args[0])).start();
+    }
+
+    private void start() throws InterruptedException {
+        final EchoServerHandler serverHandler = new EchoServerHandler();
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1); // 只管接收
+        EventLoopGroup workerGroup = new NioEventLoopGroup(); // 默认cpu核数*2
+        try {
+            // 创建服务端的启动对象，配置参数
+            ServerBootstrap bootstrap = new ServerBootstrap();
+            // 链式编程
+
+            //handler()是发生在初始化的时候，childHandler()是发生在客户端连接之后
+            bootstrap.group(bossGroup,workerGroup) // 设置两个线程组
+                    .channel(NioServerSocketChannel.class) // 使用NioServerSocketChannel作为服务器channel实现
+                    .option(ChannelOption.SO_BACKLOG,128)  // 线程队列连接个数
+                    .childOption(ChannelOption.SO_KEEPALIVE,true) // 保持活动连接状态
+                    .childHandler(new ChannelInitializer&lt;SocketChannel&gt;() {
+                        @Override
+                        protected void initChannel(SocketChannel socketChannel) throws Exception {
+                            socketChannel.pipeline().addLast(serverHandler);
+                        }
+                    });
+            System.out.println(&quot;server is ready.&quot;);
+            // 绑定端口并同步
+            // Netty中的所有IO操作都是异步的。这意味着任何IO调用都将立即返回，而不能保证所请求的IO操作在调用结束时完成。
+            // 相反，将返回一个带有ChannelFuture的实例，该实例将提供有关IO操作的结果或状态的信息。
+            // 此处 future.sync() 目的是等待异步的 socket 绑定事件完成
+            ChannelFuture future = bootstrap.bind(port).sync();
+
+            future.addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                    if (future.isSuccess()) {
+                        System.out.println(&quot;listening on 9999&quot;);
+                    } else {
+                        System.out.println(&quot;listening on 9999 err&quot;);
+                    }
+                }
+            });
+
+            // wait until the server socket is closed
+            future.channel().closeFuture().sync();
+        } finally {
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        }
+    }
+}
+</code></pre>
+<p><code>Bootstrap</code>：提供了一个用于应用程序网络层配置的容器。</p>
+<p><code>Channel</code>：提供读、写、连接、绑定等的接口。</p>
+<p><code>ChannelHandler</code>：用于数据处理。常用<code>ChannelInboundHandler</code>，收到入站事件后处理应用逻辑。业务逻辑经常放在一个或者多个 <code>ChannelInboundHandler</code>。</p>
+<p><code>ChannelPipeline</code>：每个<code>Channel</code>都有自己的<code>pipeline</code>，在<code>Channel</code>创建时自动创建。</p>
+<p>EchoClientHandler：</p>
+<pre><code class="language-java">package cn.orzlinux.server.handler;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.*;
+import io.netty.util.CharsetUtil;
+
+// inbound入境
+// 处理入站事件
+@ChannelHandler.Sharable // 只是标识，标识这类的实例之间可以在channel里共享
+public class EchoServerHandler extends ChannelInboundHandlerAdapter {
+
+    // 每个信息入站都会调用
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println(&quot;服务端读取线程：&quot;+Thread.currentThread().getName()+&quot; channel=&quot;+ctx.channel());
+        System.out.println(&quot;server ctx = &quot;+ctx);
+        System.out.println(&quot;看看channel 和 pipeline的关系&quot;);
+        Channel channel = ctx.channel();
+        ChannelPipeline pipeline = ctx.pipeline(); //本质是一个双向链接, 出站入站
+        System.out.println(&quot;pipeline=&quot;+pipeline.toString());
+
+        //将 msg 转成一个 ByteBuf
+        //ByteBuf 是 Netty 提供的，不是 NIO 的 ByteBuffer.
+        ByteBuf buf = (ByteBuf) msg;
+        System.out.println(&quot;客户端发送消息是:&quot; + buf.toString(CharsetUtil.UTF_8));
+        System.out.println(&quot;客户端地址:&quot; + channel.remoteAddress());
+    }
+
+    // channel 最后一条消息调用
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+    //    将数据写入缓存并刷新
+        ctx.writeAndFlush(Unpooled.copiedBuffer(&quot;Hello, client!&quot;,CharsetUtil.UTF_8));
+    }
+
+    // 读操作捕获异常时调用
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        // 打印堆栈异常
+        cause.printStackTrace();
+        // 关闭通道
+        ctx.close();
+    }
+}
+</code></pre>
+<p>EchoClient.java</p>
+<pre><code class="language-java">package cn.orzlinux.client;
+
+import cn.orzlinux.client.handler.EchoClientHandler;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+
+import java.net.InetSocketAddress;
+import java.nio.channels.Channel;
+
+public class EchoClient {
+    private final String host;
+    private final int port;
+
+    public EchoClient(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        if(args.length!=2) {
+            System.err.println(&quot;Usage: &quot;+EchoClient.class.getSimpleName()+ &quot; &lt;host&gt; &lt;port&gt;&quot;);
+            return;
+        }
+        new EchoClient(args[0],Integer.parseInt(args[1])).start();
+    }
+
+    private void start() throws InterruptedException {
+        EventLoopGroup group = new NioEventLoopGroup();
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.group(group)
+                    .channel(NioSocketChannel.class)
+                    .remoteAddress(new InetSocketAddress(host, port))
+                    .handler(new ChannelInitializer&lt;SocketChannel&gt;() {
+                        @Override
+                        protected void initChannel(SocketChannel socketChannel) throws Exception {
+                            socketChannel.pipeline().addLast(new EchoClientHandler());
+                        }
+                    });
+            ChannelFuture future = bootstrap.connect().sync();
+            future.channel().closeFuture().sync();
+        } finally {
+            group.shutdownGracefully().sync();
+        }
+    }
+}
+</code></pre>
+<p>EchoClientHandler.java</p>
+<pre><code class="language-java">package cn.orzlinux.client.handler;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandler.Sharable;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.CharsetUtil;
+
+//标识同一个ChannelHandler的实例可以被多次添加到多个ChannelPipelines中，而且不会出现竞争条件。
+@Sharable
+public class EchoClientHandler extends SimpleChannelInboundHandler&lt;ByteBuf&gt; {
+    @Override
+    // 从服务器接收到数据后调用
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) throws Exception {
+        System.out.println(&quot;Client received: &quot;+byteBuf.toString(CharsetUtil.UTF_8));
+    }
+
+
+    @Override
+    // 服务器的连接被建立之后调用
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        ctx.writeAndFlush(Unpooled.copiedBuffer(&quot;Netty rocks!&quot;,CharsetUtil.UTF_8));
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        //super.exceptionCaught(ctx, cause);
+        cause.printStackTrace();
+        ctx.close();
+    }
+}
+</code></pre>
+<p>server输出：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021194252.png" alt="image-20211021194252093"></p>
+<h3 id="任务队列">任务队列</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021194750.png" alt="image-20211021194749958"></p>
+<p>提交任务，或自定义，或定时，异步执行。</p>
+<p>EchoServerHandler.java</p>
+<pre><code class="language-java">package cn.orzlinux.server.handler;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.*;
+import io.netty.util.CharsetUtil;
+
+import java.util.concurrent.TimeUnit;
+
+// inbound入境
+// 处理入站事件
+@ChannelHandler.Sharable // 只是标识，标识这类的实例之间可以在channel里共享
+public class EchoServerHandler extends ChannelInboundHandlerAdapter {
+
+    // 每个信息入站都会调用
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+
+        // 用户自定义任务
+        ctx.channel().eventLoop().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ctx.writeAndFlush(Unpooled.copiedBuffer(&quot;start sleep 5s&quot;,CharsetUtil.UTF_8));
+                    Thread.sleep(5*1000);
+                    ctx.writeAndFlush(Unpooled.copiedBuffer(&quot;sleep 5s done.......&quot;,CharsetUtil.UTF_8));
+                    System.out.println(&quot;channel code = &quot;+ctx.channel().hashCode());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        ctx.channel().eventLoop().execute(() -&gt; {
+            try {
+                ctx.writeAndFlush(Unpooled.copiedBuffer(&quot;start sleep 10s&quot;,CharsetUtil.UTF_8));
+                Thread.sleep(10*1000);
+                ctx.writeAndFlush(Unpooled.copiedBuffer(&quot;sleep 10s done.........&quot;,CharsetUtil.UTF_8));
+                System.out.println(&quot;channel code = &quot;+ctx.channel().hashCode());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+    //    用户自定义定时任务
+        ctx.channel().eventLoop().schedule(new Runnable() {
+            @Override
+            public void run() {
+                ctx.writeAndFlush(Unpooled.copiedBuffer(&quot;sleep 20s done&quot;,CharsetUtil.UTF_8));
+                System.out.println(&quot;channel code = &quot;+ctx.channel().hashCode());
+            }
+        },20, TimeUnit.SECONDS);
+    }
+
+    // channel 最后一条消息调用
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+    //    将数据写入缓存并刷新
+        ctx.writeAndFlush(Unpooled.copiedBuffer(&quot;Hello, client!&quot;,CharsetUtil.UTF_8));
+    }
+
+    // 读操作捕获异常时调用
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        // 打印堆栈异常
+        cause.printStackTrace();
+        // 关闭通道
+        ctx.close();
+    }
+}
+</code></pre>
+<h3 id="http示例">http示例</h3>
+<p>HttpServer.java</p>
+<pre><code class="language-java">import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.*;
+import io.netty.util.CharsetUtil;
+
+import java.net.URI;
+
+public class MyHttpServerHandler extends SimpleChannelInboundHandler&lt;HttpObject&gt; {
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
+        System.out.println(&quot;对应的channel=&quot; + ctx.channel() + &quot; pipeline=&quot; + ctx
+                .pipeline() + &quot; 通过pipeline获取channel&quot; + ctx.pipeline().channel());
+
+        System.out.println(&quot;当前ctx的handler=&quot; + ctx.handler());
+
+        //判断 msg 是不是 httprequest请求
+        if (msg instanceof HttpRequest) {
+
+            System.out.println(&quot;ctx 类型=&quot; + ctx.getClass());
+
+            System.out.println(&quot;pipeline hashcode&quot; + ctx.pipeline().hashCode() + &quot; TestHttpServerHandler hash=&quot; + this.hashCode());
+
+            System.out.println(&quot;msg 类型=&quot; + msg.getClass());
+            System.out.println(&quot;客户端地址&quot; + ctx.channel().remoteAddress());
+
+            //获取到
+            HttpRequest httpRequest = (HttpRequest) msg;
+            //获取uri, 过滤指定的资源
+            URI uri = new URI(httpRequest.uri());
+            if (&quot;/favicon.ico&quot;.equals(uri.getPath())) {
+                System.out.println(&quot;请求了 favicon.ico, 不做响应&quot;);
+                return;
+            }
+            //回复信息给浏览器 [http协议]
+
+            ByteBuf content = Unpooled.copiedBuffer(&quot;hello, 我是服务器&quot;, CharsetUtil.UTF_8);
+
+            //构造一个http的相应，即 httpresponse
+            FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content);
+
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, &quot;text/plain;charset=utf-8&quot;);
+            response.headers().set(HttpHeaderNames.CONTENT_LENGTH, content.readableBytes());
+
+            //将构建好 response返回
+            ctx.writeAndFlush(response);
+
+        }
+    }
+}
+</code></pre>
+<p>MyHttpServerHandler.java</p>
+<pre><code class="language-java">import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.*;
+import io.netty.util.CharsetUtil;
+
+import java.net.URI;
+
+public class MyHttpServerHandler extends SimpleChannelInboundHandler&lt;HttpObject&gt; {
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
+        System.out.println(&quot;对应的channel=&quot; + ctx.channel() + &quot; pipeline=&quot; + ctx
+                .pipeline() + &quot; 通过pipeline获取channel&quot; + ctx.pipeline().channel());
+
+        System.out.println(&quot;当前ctx的handler=&quot; + ctx.handler());
+
+        //判断 msg 是不是 httprequest请求
+        if (msg instanceof HttpRequest) {
+
+            System.out.println(&quot;ctx 类型=&quot; + ctx.getClass());
+
+            System.out.println(&quot;pipeline hashcode&quot; + ctx.pipeline().hashCode() + &quot; TestHttpServerHandler hash=&quot; + this.hashCode());
+
+            System.out.println(&quot;msg 类型=&quot; + msg.getClass());
+            System.out.println(&quot;客户端地址&quot; + ctx.channel().remoteAddress());
+
+            //获取到
+            HttpRequest httpRequest = (HttpRequest) msg;
+            //获取uri, 过滤指定的资源
+            URI uri = new URI(httpRequest.uri());
+            if (&quot;/favicon.ico&quot;.equals(uri.getPath())) {
+                System.out.println(&quot;请求了 favicon.ico, 不做响应&quot;);
+                return;
+            }
+            //回复信息给浏览器 [http协议]
+
+            ByteBuf content = Unpooled.copiedBuffer(&quot;hello, 我是服务器&quot;, CharsetUtil.UTF_8);
+
+            //构造一个http的相应，即 httpresponse
+            FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content);
+
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, &quot;text/plain;charset=utf-8&quot;);
+            response.headers().set(HttpHeaderNames.CONTENT_LENGTH, content.readableBytes());
+
+            //将构建好 response返回
+            ctx.writeAndFlush(response);
+
+        }
+    }
+}
+</code></pre>
+<p>输出：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021202428.png" alt="image-20211021202428585"></p>
+<h3 id="netty核心模块组件">Netty核心模块组件</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021204533.png" alt="image-20211021204533715"></p>
+<p>Unpooled:专门操作缓冲区的工具类。常用<code>copiedBuffer</code>，返回<code>Bytebuf</code>，类似NIO的<code>Bytebuf</code>。</p>
+<h3 id="websocket服务器和客户端长连接">WebSocket服务器和客户端长连接</h3>
+<p>http协议无状态，浏览器和服务器请求响应一次，下一次重新创建连接。转出websocket协议。</p>
+<p>server:</p>
+<pre><code class="language-java">import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.stream.ChunkedWriteHandler;
+
+public class LongHttp {
+    public static void main(String[] args) {
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+
+        try {
+            ServerBootstrap serverBootstrap = new ServerBootstrap();
+            serverBootstrap.group(bossGroup,workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .childHandler(new ChannelInitializer&lt;SocketChannel&gt;() {
+                        @Override
+                        protected void initChannel(SocketChannel socketChannel) throws Exception {
+                            ChannelPipeline pipeline = socketChannel.pipeline();
+                            pipeline.addLast(new HttpServerCodec());
+                            // 以块方式写
+                            pipeline.addLast(new ChunkedWriteHandler());
+                            // http在传输过程中分段，这里聚合多个段
+                            pipeline.addLast(new HttpObjectAggregator(8192));
+                            //WebSocketServerProtocolHandler将http协议升级为ws协议，保持长连接
+                            pipeline.addLast(new WebSocketServerProtocolHandler(&quot;/hello2&quot;));
+                            //自定义的handler ，处理业务逻辑
+                            pipeline.addLast(new MyTextWebSocketFrameHandler());
+                        }
+                    });
+            //启动服务器
+            ChannelFuture channelFuture = serverBootstrap.bind(7000).sync();
+            channelFuture.channel().closeFuture().sync();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        }
+    }
+}
+</code></pre>
+<p>handler:</p>
+<pre><code class="language-java">import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.util.concurrent.EventExecutorGroup;
+
+import java.time.LocalDateTime;
+
+public class MyTextWebSocketFrameHandler extends SimpleChannelInboundHandler&lt;TextWebSocketFrame&gt; {
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg)
+            throws Exception {
+        System.out.println(&quot;服务器收到消息 &quot; + msg.text());
+
+        //回复消息
+        ctx.channel().writeAndFlush(new TextWebSocketFrame(&quot;服务器时间&quot; + LocalDateTime.now() + &quot; &quot; + msg.text()));
+    }
+    //当web客户端连接后， 触发方法
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+
+    }
+
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+
+        System.out.println(&quot;handlerRemoved 被调用&quot; + ctx.channel().id().asLongText());
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        System.out.println(&quot;异常发生 &quot; + cause.getMessage());
+        ctx.close(); //关闭连接
+    }
+}
+</code></pre>
+<p>测试：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021212028.png" alt="image-20211021212028071"></p>
+<p>具体<code>websocket</code>可以看<a href="https://www.zhihu.com/question/20215561/answer/40316953">这篇文章</a>。</p>
+<h3 id="google-protobuf">Google Protobuf</h3>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211021213338.png" alt="image-20211021213338652"  />
+
+<p>netty自身提供了一些编解码器codec，但是底层还是用的Java序列化结束，效率低，且无法跨语言。google protobuf up。</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211021213608.png" alt="image-20211021213608237" style="zoom:80%;" />
+
+<h3 id="tcp粘包拆包问题">TCP粘包拆包问题</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211021215218.png" alt="image-20211021215218371"></p>
+<h4 id="粘包原因">粘包原因</h4>
+<p><strong>发送方原因</strong></p>
+<p>TCP默认使用Nagle算法（主要作用：减少网络中报文段的数量），而Nagle算法主要做两件事：只有上一个分组得到确认，才会发送下一个分组，收集多个小分组，在一个确认到来时一起发送。Nagle算法造成了发送方可能会出现粘包问题。</p>
+<p><strong>接收方原因</strong></p>
+<p>TCP接收到数据包时，并不会马上交到应用层进行处理，或者说应用层并不会立即处理。实际上，TCP将接收到的数据包保存在接收缓存里，然后应用程序主动从缓存读取收到的分组。这样一来，如果TCP接收数据包到缓存的速度大于应用程序从缓存中读取数据包的速度，多个包就会被缓存，应用程序就有可能读取到多个首尾相接粘到一起的包。</p>
+<h4 id="何时无需处理">何时无需处理</h4>
+<p>连续数据流不需要处理，如在线视频。</p>
+<p>每一个消息一次连接的情况，不需要处理。</p>
+<p>UDP不需要处理。等等。</p>
+<h4 id="解决">解决</h4>
+<p>使用自定义协议和编解码器解决。关键解决服务端每次读取数据长度问题。</p>
+<h2 id="参考文献">参考文献</h2>
+<p><a href="https://dongzl.github.io/netty-handbook/">Netty 学习手册</a></p>
+<p><a href="https://blog.csdn.net/weixin_41047704/article/details/85340311">TCP粘包</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"netty20211021.html";
+			document.getElementById("blogaddr-a").innerHTML="Netty概述";
+			</script></body></html> 

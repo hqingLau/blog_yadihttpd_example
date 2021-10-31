@@ -1,0 +1,1030 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>秒杀系统环境搭建与DAO层设计
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>秒杀系统环境搭建与DAO层设计</h1><hr>
+<blockquote>
+<p>本文为<a href="http://www.imooc.com/learn/587">Java高并发秒杀API之业务分析与DAO层</a>课程笔记。</p>
+</blockquote>
+<p>编辑器：IDEA</p>
+<p>java版本：java8</p>
+<h2 id="介绍">介绍</h2>
+<p><strong>学习目标</strong>：</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211004142315.png" alt="image-20211004142313232" style="zoom:80%;" />
+
+<p><strong>秒杀业务</strong>：</p>
+<ul>
+<li><p>具有典型的“事务”特性</p>
+<blockquote>
+<p>事务的四大特性主要是：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability）。 原子性是指事务是一个不可分割的工作单位，事务中的操作要么全部成功，要么全部失败</p>
+</blockquote>
+</li>
+<li><p>需求越来越常见</p>
+</li>
+<li><p>面试常问</p>
+</li>
+</ul>
+<p><strong>前提内容（链接可点）</strong>：<a href="https://orzlinux.cn/blog/javaweb20210924.html">J2EE</a>、<a href="https://orzlinux.cn/blog/spring20210926.html">spring一</a>、<a href="https://orzlinux.cn/blog/tomcat20210926.html">模拟一个简单的tomcat</a>、<a href="https://orzlinux.cn/blog/javaframe20210927.html">SpringMVC和SSM</a>、<a href="https://orzlinux.cn/blog/javaAOP20211001.html">动态代理、IoC、AOP</a>、<a href="https://orzlinux.cn/blog/springboot20210928.html">SpringBoot一</a>、<a href="https://orzlinux.cn/blog/springboot20210929.html">SpringBoot二、Thymeleaf</a>、<a href="https://orzlinux.cn/blog/javareflect20210919.html">Java反射三四例</a>。</p>
+<p><strong>具体学习</strong>：</p>
+<p>MySQL：表设计、SQL技巧、事务和行级锁。</p>
+<p>MyBatis：DAO层设计开发、合理使用、与Spring整合。</p>
+<p>Spring：IOC整合Service、声明式事务运用。</p>
+<p>SpringMVC：Restful接口设计和使用、框架运作流程、Controller技巧。</p>
+<p>前端：交互设计、Bootstrap、jQuery。</p>
+<p>高并发：高并发点和分析、优化思路。</p>
+<h2 id="创建项目">创建项目</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211004145840.png" alt="image-20211004145838853"></p>
+<p>创建得到目录如下：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211004151245.png" alt="image-20211004151244385"></p>
+<p>下一步，右键项目名，添加java和resources、test文件夹，IDEA会给相应的提示：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211004151320.png" alt="image-20211004151318865"></p>
+<p>之后目录为：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211004152328.png" alt="image-20211004152327433"></p>
+<p>web.xml修改servlet版本：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee
+                      http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd&quot;
+         version=&quot;3.1&quot; metadata-complete=&quot;true&quot;&gt;
+&lt;/web-app&gt;
+</code></pre>
+<p>pom.xml依赖配置，详见注释：</p>
+<pre><code class="language-xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;!--测试：junit4--&gt;
+        &lt;groupId&gt;junit&lt;/groupId&gt;
+        &lt;artifactId&gt;junit&lt;/artifactId&gt;
+        &lt;version&gt;4.11&lt;/version&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;!--日志：slf4j,log4j,logback,common-logging--&gt;
+    &lt;!--slf4j是规范/接口--&gt;
+    &lt;!--日志实现：log4j,logback,common-logging--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;
+        &lt;version&gt;1.7.12&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+        &lt;artifactId&gt;logback-core&lt;/artifactId&gt;
+        &lt;version&gt;1.1.1&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;!--实现slf4j接口并且整合--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+        &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;
+        &lt;version&gt;1.1.1&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;!--数据库相关依赖--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;mysql&lt;/groupId&gt;
+        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+        &lt;version&gt;5.1.35&lt;/version&gt;
+        &lt;!--驱动只有真正工作才会用到--&gt;
+        &lt;scope&gt;runtime&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;!--数据库连接池--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;c3p0&lt;/groupId&gt;
+        &lt;artifactId&gt;c3p0&lt;/artifactId&gt;
+        &lt;version&gt;0.9.1.2&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;!--DAO框架依赖：mybatis--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
+        &lt;artifactId&gt;mybatis&lt;/artifactId&gt;
+        &lt;version&gt;3.5.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;!--mybatis 自身实现的spring整合依赖--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
+        &lt;artifactId&gt;mybatis-spring&lt;/artifactId&gt;
+        &lt;version&gt;1.3.0&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;!--servlet web相关依赖--&gt;
+    &lt;!--标签库--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;taglibs&lt;/groupId&gt;
+        &lt;artifactId&gt;standard&lt;/artifactId&gt;
+        &lt;version&gt;1.1.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;jstl&lt;/groupId&gt;
+        &lt;artifactId&gt;jstl&lt;/artifactId&gt;
+        &lt;version&gt;1.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;!--Jackson 是当前用的比较广泛的，用来序列化和反序列化 json 的 Java 的开源框架--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+        &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+        &lt;version&gt;2.8.10&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+        &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+        &lt;artifactId&gt;javax.servlet-api&lt;/artifactId&gt;
+        &lt;version&gt;3.1.0&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;!--spring相关依赖--&gt;
+    &lt;!--spring核心依赖--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+        &lt;version&gt;5.3.9&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-beans&lt;/artifactId&gt;
+        &lt;version&gt;5.3.9&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;!--包扫描--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+        &lt;version&gt;5.3.9&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;!--dao依赖--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+        &lt;version&gt;5.1.4.RELEASE&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;!--事务--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-tx&lt;/artifactId&gt;
+        &lt;version&gt;5.1.4.RELEASE&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;!--spring web--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-web&lt;/artifactId&gt;
+        &lt;version&gt;5.3.9&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
+        &lt;version&gt;5.3.9&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;!--spring test相关依赖--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-test&lt;/artifactId&gt;
+        &lt;version&gt;5.3.9&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre>
+<h2 id="秒杀业务分析">秒杀业务分析</h2>
+<h3 id="秒杀系统业务流程">秒杀系统业务流程</h3>
+<p>核心在于<strong>对库存的处理</strong>。</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211004164809.png" alt="image-20211004164748817" style="zoom:80%;" />
+
+
+
+<p>用户针对库存业务分析：</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211004165349.png" alt="image-20211004165349207" style="zoom:80%;" />
+
+<p>购买行为：谁买、成功的时间、付款和发货信息。</p>
+<p>事务：就像转账一样，要么扣钱加钱同时成功要么同时失败。</p>
+<p>数据落地：MySQL VS NoSQL（关系型数据库和非关系型数据库）</p>
+<h3 id="mysql实现秒杀难点分析">MySQL实现秒杀难点分析</h3>
+<p>竞争！</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211004165827.png" alt="image-20211004165827317" style="zoom:80%;" />
+
+<p>解决竞争背后技术：事务+行级锁。</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211004170026.png" alt="image-20211004170026645" style="zoom:50%;" />
+
+<p>行级锁：</p>
+<p>一个用户A利用SQL语句：</p>
+<pre><code class="language-sql">update table set num=num-1 where id=10 and num&gt;1
+</code></pre>
+<p>去修改库存：<code>id=10,name=xxx</code>的项。</p>
+<p>同时另一个用户B也想用该语句修改库存，就需要等待，直到A成功了。</p>
+<p><strong>难点：高效的处理竞争</strong>。</p>
+<h3 id="秒杀功能">秒杀功能</h3>
+<ul>
+<li>秒杀接口暴露</li>
+<li>执行秒杀</li>
+<li>相关查询</li>
+</ul>
+<p>代码开发阶段：DAO设计编码、Service设计编码、Web设计编码</p>
+<h2 id="dao设计编码">DAO设计编码</h2>
+<p>创建数据库，两张表：</p>
+<pre><code class="language-shell">mysql&gt; show tables;
++-------------------+
+| Tables_in_seckill |
++-------------------+
+| seckill           | 
+| success_killed    |
++-------------------+
+</code></pre>
+<p>详细见下面的注释：</p>
+<pre><code class="language-sql">-- 数据库初始化脚本
+
+-- 创建数据库
+CREATE DATABASE seckill;
+-- 使用数据库
+use seckill;
+-- 创建秒杀库存表
+CREATE TABLE seckill(
+    `seckill_id` bigint NOT NULL AUTO_INCREMENT COMMENT &#39;商品库存id&#39;,
+    `name` varchar(120) NOT NULL COMMENT &#39;商品名称&#39;,
+    `number` int NOT NULL COMMENT &#39;库存数量&#39;,
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT &#39;创建时间&#39;,
+    `start_time` timestamp NOT NULL COMMENT &#39;秒杀开启时间&#39;,
+    `end_time` timestamp NOT NULL COMMENT &#39;秒杀结束时间&#39;,
+    PRIMARY KEY (seckill_id),
+    KEY idx_start_time(start_time),
+    KEY idx_end_time(end_time),
+    KEY idx_create_time(create_time)
+)ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8 COMMENT=&quot;秒杀库存表&quot;;
+
+-- 初始化数据
+insert into seckill(name,number,start_time,end_time)
+values
+    (&#39;1000秒杀iphone13&#39;,100,&#39;2021-10-04 18:00:00&#39;,&#39;2021-10-05 18:00:00&#39;),
+    (&#39;500秒杀iphone12&#39;,200,&#39;2021-10-04 18:00:00&#39;,&#39;2021-10-05 18:00:00&#39;),
+    (&#39;300秒杀iphone11&#39;,300,&#39;2021-10-04 18:00:00&#39;,&#39;2021-10-05 18:00:00&#39;),
+    (&#39;100秒杀iphone6&#39;,400,&#39;2021-10-04 18:00:00&#39;,&#39;2021-10-05 18:00:00&#39;);
+
+-- 秒杀成功明细表
+-- 用户登录认证相关的信息
+-- 需要明确用户身份、这里简化为一个字段
+create table success_killed(
+    `seckill_id` bigint NOT NULL COMMENT &#39;秒杀商品id&#39;,
+    `user_phone` bigint NOT NULL COMMENT &#39;用户手机号&#39;,
+    `state` tinyint NOT NULL DEFAULT -1 COMMENT &#39;状态标识：-1无效，0成功，1已付款，2已发货&#39;,
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT &#39;创建时间&#39;,
+    PRIMARY KEY(seckill_id,user_phone),/*联合主键*/
+    KEY idx_create_time(create_time)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=&quot;秒杀成功明细表&quot;
+
+-- 连接数据库控制台
+-- mysql -uroot -p
+</code></pre>
+<p>加COMMENT是为了能方便地查看创建时的想法：</p>
+<p><code>SHOW CREATE TABLE</code> 展示的内容更加丰富，它可以查看表的存储引擎和字符编码；另外，还可以通过 \g 或者 \G 参数来控制展示格式。</p>
+<pre><code class="language-shell">mysql&gt; show create table seckill\G
+*************************** 1. row ***************************
+       Table: seckill
+Create Table: CREATE TABLE `seckill` (
+  `seckill_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT &#39;商品库存id&#39;,
+  `name` varchar(120) NOT NULL COMMENT &#39;商品名称&#39;,
+  `number` int(11) NOT NULL COMMENT &#39;库存数量&#39;,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT &#39;创建时间&#39;,
+  `start_time` timestamp NOT NULL DEFAULT &#39;0000-00-00 00:00:00&#39; COMMENT &#39;秒杀开启时间&#39;,
+  `end_time` timestamp NOT NULL DEFAULT &#39;0000-00-00 00:00:00&#39; COMMENT &#39;秒杀结束时间&#39;,
+  PRIMARY KEY (`seckill_id`),
+  KEY `idx_start_time` (`start_time`),
+  KEY `idx_end_time` (`end_time`),
+  KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB AUTO_INCREMENT=1004 DEFAULT CHARSET=utf8 COMMENT=&#39;秒杀库存表&#39;
+</code></pre>
+<h3 id="dao实体和接口编码">DAO实体和接口编码</h3>
+<p>目录如下：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211004212330.png" alt="image-20211004212330041"></p>
+<p><strong>entity</strong>：对应数据库，常规操作，具体看注释</p>
+<p>SecKill.java - 对应seckill中的秒杀商品：</p>
+<pre><code class="language-java">/**
+ * 对应数据库中的字段
+ * mysql&gt; select * from seckill;
+ * +------------+------------------+--------+---------------------+---------------------+---------------------+
+ * | seckill_id | name             | number | create_time         | start_time          | end_time            |
+ * +------------+------------------+--------+---------------------+---------------------+---------------------+
+ * |       1000 | 1000秒杀iphone13 |    100 | 2021-10-04 19:22:42 | 2021-10-04 18:00:00 | 2021-10-05 18:00:00 |
+ * |       1001 | 500秒杀iphone12  |    200 | 2021-10-04 19:22:42 | 2021-10-04 18:00:00 | 2021-10-05 18:00:00 |
+ * |       1002 | 300秒杀iphone11  |    300 | 2021-10-04 19:22:42 | 2021-10-04 18:00:00 | 2021-10-05 18:00:00 |
+ * |       1003 | 100秒杀iphone6   |    400 | 2021-10-04 19:22:42 | 2021-10-04 18:00:00 | 2021-10-05 18:00:00 |
+ * +------------+------------------+--------+---------------------+---------------------+---------------------+
+ */
+package cn.orzlinux.entity;
+
+import java.util.Date;
+
+public class SecKill {
+    private long seckillId;
+    private String name;
+    private int number;
+    private Date startTime;
+    private Date endTime;
+    private Date createTime;
+
+    // getter setter toString
+}
+</code></pre>
+<p>successkilled.java</p>
+<pre><code class="language-java">/**
+ * mysql&gt; show columns from success_killed;
+ * +-------------+------------+------+-----+-------------------+-------+
+ * | Field       | Type       | Null | Key | Default           | Extra |
+ * +-------------+------------+------+-----+-------------------+-------+
+ * | seckill_id  | bigint(20) | NO   | PRI | NULL              |       |
+ * | user_phone  | bigint(20) | NO   | PRI | NULL              |       |
+ * | state       | tinyint(4) | NO   |     | -1                |       |
+ * | create_time | timestamp  | NO   | MUL | CURRENT_TIMESTAMP |       |
+ * +-------------+------------+------+-----+-------------------+-------+
+ */
+package cn.orzlinux.entity;
+import java.util.Date;
+
+public class SuccessKilled {
+    private long seckillId;
+    private long userPhone;
+    private short state;
+    private Date createTime;
+
+    // 为了能直接获取秒杀成功的商品对象
+    private SecKill secKill;
+    // getter setter toString
+}
+</code></pre>
+<p><strong>DAO</strong>：数据库要实现的方法接口</p>
+<p>SecKillDao.java</p>
+<pre><code class="language-java">public interface SecKillDao {
+    /***
+     * 减库存
+     * @param seckillId
+     * @param killTime
+     * @return 如果影响行数&gt;1，表示更新的记录行数
+     */
+    int reduceNumber(long seckillId, Date killTime);
+
+    /**
+     * 根据Id查秒杀对象
+     * @param seckillId
+     * @return
+     */
+    SecKill queryById(long seckillId);
+
+    List&lt;SecKill&gt; queryAll(int offset,int limit);
+}
+</code></pre>
+<p>SuccessKilledDao.java</p>
+<pre><code class="language-java">public interface SuccessKilledDao {
+    // 插入购买明细，可过滤重复
+    // 通过联合唯一主键
+    // 返回插入的行数
+    int insertSuccessKilled(long seckillId,long userPhone);
+
+    // 根据商品id和用户查询秒杀成功对象实体（带秒杀商品实体）
+    // 原视频应该有误，这里仅凭一个商品Id得不到唯一的秒杀成功对象
+    SuccessKilled queryByIdWithSeckill(long seckillId,long userPhone);
+}
+</code></pre>
+<h3 id="mybatis">MyBatis</h3>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211004212930.png" alt="image-20211004212930759" style="zoom:80%;" />
+
+<p>MyBatis特点：<code>参数+SQL=Entity/List</code></p>
+<p>SQL可以写在xml或者注解中。一般应该用xml</p>
+<p>DAO接口：Mapper自动实现DAO接口（推荐）或者API方式</p>
+<p>官方文档链接：<a href="https://mybatis.org/mybatis-3/zh/configuration.html">mybatis文档</a></p>
+<h4 id="实现dao编程">实现DAO编程</h4>
+<p>在resources文件夹下创建mybatis配置文件和mapper文件夹：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211004214437.png" alt="image-20211004214437091"></p>
+<p>mybatis-config.xml配置如下：</p>
+<p>DTD（Document Type Definition），全称为文档类型定义。具体头可以在官方文档例子中找到。</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE configuration
+        PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+
+&lt;configuration&gt;
+    &lt;!--配置全局属性--&gt;
+    &lt;settings&gt;
+        &lt;!--使用jdbc的getGeneratedKeys获取数据库自增主键--&gt;
+        &lt;setting name=&quot;useGeneratedKeys&quot; value=&quot;true&quot;/&gt;
+        &lt;!--使用列别名替换列名：默认true--&gt;
+        &lt;!--select name as title from table--&gt;
+        &lt;setting name=&quot;userColumn&quot; value=&quot;true&quot;/&gt;
+        &lt;!--开启驼峰命名转换：Table(create_time) -&gt; Entity(createTime)--&gt;
+        &lt;setting name=&quot;namUnderscoreCamelCase&quot; value=&quot;true&quot;/&gt;
+    &lt;/settings&gt;
+&lt;/configuration&gt;
+</code></pre>
+<h4 id="mybatis整合spring">mybatis整合spring</h4>
+<p>mybatis整合spring可以实现更少的配置：</p>
+<ul>
+<li><p><strong>别名</strong>，如<code>resultType=&quot;cn.orzlinux.entity.SecKill&quot;</code>可以简写为<code>SecKill</code>。</p>
+</li>
+<li><p><strong>配置扫描</strong>，如:</p>
+<pre><code class="language-xml">&lt;mapper resource=&quot;mapper/SecKillDao.xml&quot;/&gt;
+&lt;mapper resource=&quot;mapper/SuccessKilledDao.xml&quot;/&gt;
+...
+</code></pre>
+<p>可以简化为自动配置扫描。</p>
+</li>
+<li><p><strong>DAO实现</strong></p>
+<pre><code class="language-xml">&lt;bean id=&quot;ClubDao&quot; class=&quot;...ClubDao&quot;/&gt;
+&lt;bean id=&quot;Club2Dao&quot; class=&quot;...Club2Dao&quot;/&gt;
+...
+</code></pre>
+<p>简化为自动实现DAO接口，自动注入spring容器。</p>
+</li>
+<li><p>依然具有足够的灵活性、定制SQL、自由传参、结果集自动赋值。</p>
+</li>
+</ul>
+<p>新建配置文件：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211004232637.png" alt="image-20211004232637505"></p>
+<p>spring-dao.xml</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd&quot;&gt;
+    &lt;!--配置整合mybatis--&gt;
+
+    &lt;!--配置数据库相关参数，一般在另一个properties文件配置:${url}--&gt;
+    &lt;context:property-placeholder location=&quot;classpath:jdbc.properties&quot;/&gt;
+    &lt;!-- classpath:jdbc.properties具体内容：
+    driver=com.mysql.jdbc.Driver
+    usrl=jdbc:mysql://127.0.0.1:3306/seckill?userUnicode=true&amp;characterEncoding=utf8
+    username=root
+    password= --&gt;
+
+    &lt;!--数据库连接池--&gt;
+    &lt;bean id=&quot;dataSource&quot; class=&quot;com.mchange.v2.c3p0.ComboPooledDataSource&quot;&gt;
+        &lt;!--配置连接池属性--&gt;
+        &lt;property name=&quot;driverClass&quot; value=&quot;${driver}&quot;/&gt;
+        &lt;property name=&quot;jdbcUrl&quot; value=&quot;${url}&quot;/&gt;
+        &lt;property name=&quot;user&quot; value=&quot;${username}&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;${password}&quot;/&gt;
+
+        &lt;!--c3p0连接池私有属性--&gt;
+        &lt;property name=&quot;maxPoolSize&quot; value=&quot;30&quot;/&gt;
+        &lt;property name=&quot;minPoolSize&quot; value=&quot;10&quot;/&gt;
+        &lt;!--连接池在回收数据库连接时是否自动提交事务。如果为false，则会回滚未提交的事务，--&gt;
+        &lt;!--如果为true，则会自动提交事务。（不建议使用）--&gt;
+        &lt;property name=&quot;autoCommitOnClose&quot; value=&quot;false&quot;/&gt;
+        &lt;!--获取连接超时时间--&gt;
+        &lt;property name=&quot;checkoutTimeout&quot; value=&quot;1000&quot;/&gt;
+        &lt;!--获取连接失败重试次数--&gt;
+        &lt;property name=&quot;acquireRetryAttempts&quot; value=&quot;2&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--配置sqlSessionFactory对象--&gt;
+    &lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
+        &lt;!--注入数据库连接池--&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+        &lt;!--配置mybatis全局配置文件--&gt;
+        &lt;property name=&quot;configLocation&quot; value=&quot;classpath:mybatis-config.xml&quot;/&gt;
+        &lt;!--扫描entity包，使用别名 cn.orzlinux.entity.xxx -&gt; xxx --&gt;
+        &lt;property name=&quot;typeAliasesPackage&quot; value=&quot;cn.orzlinux.entity;&quot;/&gt;
+        &lt;!--扫描sql配置文件，mapper需要的xml文件--&gt;
+        &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath:mapper/*.xml&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--配置扫描DAO接口包，动态实现DAO接口,并注入spring容器中--&gt;
+    &lt;bean class=&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;&gt;
+        &lt;!--注入sqlSessionFactory--&gt;
+        &lt;property name=&quot;sqlSessionFactoryBeanName&quot; value=&quot;sqlSessionFactory&quot;/&gt;
+        &lt;!--给出需要扫描DAO接口包--&gt;
+        &lt;property name=&quot;basePackage&quot; value=&quot;cn.orzlinux.dao&quot;/&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;
+</code></pre>
+<h4 id="xml-sql">XML SQL</h4>
+<p>在使用mybatis 时我们sql是写在xml 映射文件中，如果写的sql中有一些特殊的字符的话，在解析xml文件的时候会被转义，但我们不希望他被转义，所以我们要使用<code>&lt;![CDATA[ ]]&gt;</code>来解决。</p>
+<p><code>&lt;![CDATA[  ]]&gt;</code> 是XML语法。在CDATA内部的所有内容都会被解析器忽略。</p>
+<p>SecKillDao.xml：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;cn.orzlinux.dao.SecKillDao&quot;&gt;
+    &lt;!--为DAO接口方法提供sql语句配置--&gt;
+
+    &lt;!--int reduceNumber(long seckillId, Date killTime);--&gt;
+    &lt;update id=&quot;reduceNumber&quot;&gt;
+        update
+            seckill
+        set
+            number = number - 1
+        where seckill_id = #{seckillId}
+        and start_time &lt;![CDATA[ &lt;= ]]&gt; #{killTime}
+        and end_time &gt;= #{killTime}
+        and number &gt; 0;
+    &lt;/update&gt;
+
+    &lt;!--SecKill queryById(long seckillId);--&gt;
+    &lt;select id=&quot;queryById&quot; parameterType=&quot;long&quot; resultType=&quot;SecKill&quot;&gt;
+        select seckill_id,name,number,start_time,end_time,create_time
+        from seckill where seckill_id=#{seckillId};
+    &lt;/select&gt;
+
+    &lt;!--List&lt;SecKill&gt; queryAll(int offset,int limit);--&gt;
+    &lt;select id=&quot;queryAll&quot; resultType=&quot;SecKill&quot;&gt;
+        select seckill_id,name,number,start_time,end_time,create_time
+        from seckill
+        order by create_time DESC
+        limit ${offset},#{limit};
+    &lt;/select&gt;
+
+&lt;/mapper&gt;
+</code></pre>
+<p>SuccessKilledDao.xml</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;cn.orzlinux.dao.SuccessKilledDao&quot;&gt;
+    &lt;!--为DAO接口方法提供sql语句配置--&gt;
+    &lt;!--int insertSuccessKilled(long seckillId,long userPhone);--&gt;
+    &lt;insert id=&quot;insertSuccessKilled&quot;&gt;
+        &lt;!-- 主键冲突，报错
+        INSERT IGNORE 与INSERT INTO的区别就是INSERT IGNORE会忽略数
+        据库中已经存在 的数据，如果数据库没有数据，就插入新的数据，如果有数
+        据的话就跳过这条数据。--&gt;
+        insert ignore into success_killed(seckill_id,user_phone)
+        values (#{seckillId,userPhone})
+    &lt;/insert&gt;
+    
+    &lt;!--SuccessKilled queryByIdWithSeckill(long seckillId,long userPhone);--&gt;
+    &lt;select id=&quot;queryByIdWithSeckill&quot; resultType=&quot;SuccessKilled&quot;&gt;
+        &lt;!-- 根据查询携带seckill实体
+         如何告诉mybatis把结果映射到SuccessKilled同时映射seckill
+         可以自由控制SQL--&gt;
+        select
+            sk.seckill_id,
+            sk.user_phone,
+            sk.create_time,
+            sk.state,
+            s.seckill_id as &quot;secKill.seckill_id&quot;, #开启了驼峰，会自动换
+            s.name &quot;secKill.name&quot;,
+            s.number &quot;secKill.number&quot;,
+            s.start_time &quot;secKill.start_time&quot;,
+            s.end_time &quot;secKill.end_time&quot;,
+            s.create_time &quot;secKill.create_time&quot;
+        from success_killed sk
+        inner join seckill s on sk.seckill_id = s.seckill_id
+        where sk.seckill_id = #{seckillId} and sk.user_phone = #{userPhone};
+    &lt;/select&gt;
+
+&lt;/mapper&gt;
+</code></pre>
+<h3 id="junit单元测试">junit单元测试</h3>
+<h4 id="seckilldaotestjava">SecKillDaoTest.java</h4>
+<pre><code class="language-java">package cn.orzlinux.dao;
+
+import cn.orzlinux.entity.SecKill;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
+
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+/**
+ * 配置spring和junit整合，junit启动时加载spring ioc容器
+ * spring-test,junit
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+//告诉junit spring配置文件
+@ContextConfiguration({&quot;classpath:spring/spring-dao.xml&quot;})
+public class SecKillDaoTest {
+    // 注入DAO实现类依赖,resource注解去spring容器找其实现类
+    @Resource
+    private SecKillDao secKillDao;
+    ...
+}
+</code></pre>
+<p>在queryById的测试中一切正常：</p>
+<pre><code class="language-java">@Test
+public void queryByIdTest() {
+    long id =1000;
+    SecKill secKill = secKillDao.queryById(id);
+    System.out.println(secKill.getName());
+    System.out.println(secKill);
+    // output：1000秒杀iphone13
+    //SecKill{seckillId=1000, name=&#39;1000秒杀iphone13&#39;,
+    // number=100, startTime=Tue Oct 05 02:00:00 CST 2021,
+    // endTime=Wed Oct 06 02:00:00 CST 2021,
+    // createTime=Tue Oct 05 10:01:47 CST 2021}
+}
+</code></pre>
+<p>但是在queryAllTest中出现了问题：</p>
+<pre><code class="language-java">@Test
+public void queryAllTest() {
+    List&lt;SecKill&gt; secKillList = secKillDao.queryAll(0,100);
+    for(SecKill secKill:secKillList) {
+        System.out.println(secKill);
+    }
+}
+</code></pre>
+<p>问题的原因在于：</p>
+<pre><code class="language-xml">&lt;!--List&lt;SecKill&gt; queryAll(int offset,int limit);--&gt;
+&lt;!--java没有保存形参的记录 queryAll(int offset,int limit); -&gt; queryAll(arg0,arg1);--&gt;
+&lt;!--byId可以是因为只有一个参数--&gt;
+&lt;select id=&quot;queryAll&quot; resultType=&quot;SecKill&quot;&gt;
+    select seckill_id,name,number,start_time,end_time,create_time
+    from seckill
+    order by create_time DESC
+    limit ${offset},#{limit};
+&lt;/select&gt;
+</code></pre>
+<p>所以需要在SecKillDao.java里的函数那里配置参数Param：</p>
+<pre><code class="language-java">List&lt;SecKill&gt; queryAll(@Param(&quot;offset&quot;) int offset, @Param(&quot;limit&quot;) int limit);
+</code></pre>
+<p>问题解决，结果如下：</p>
+<pre><code class="language-shell">SecKill{seckillId=1000, name=&#39;1000秒杀iphone13&#39;, number=100, startTime=Tue Oct 05 02:00:00 CST 2021, endTime=Wed Oct 06 02:00:00 CST 2021, createTime=Tue Oct 05 10:01:47 CST 2021}
+SecKill{seckillId=1001, name=&#39;500秒杀iphone12&#39;, number=200, startTime=Tue Oct 05 02:00:00 CST 2021, endTime=Wed Oct 06 02:00:00 CST 2021, createTime=Tue Oct 05 10:01:47 CST 2021}
+SecKill{seckillId=1002, name=&#39;300秒杀iphone11&#39;, number=300, startTime=Tue Oct 05 02:00:00 CST 2021, endTime=Wed Oct 06 02:00:00 CST 2021, createTime=Tue Oct 05 10:01:47 CST 2021}
+SecKill{seckillId=1003, name=&#39;100秒杀iphone6&#39;, number=400, startTime=Tue Oct 05 02:00:00 CST 2021, endTime=Wed Oct 06 02:00:00 CST 2021, createTime=Tue Oct 05 10:01:47 CST 2021}
+</code></pre>
+<p>减库存测试：</p>
+<pre><code class="language-java">@Test
+public void reduceNumberTest() {
+    Date killTime = new Date();
+    int updateCount = secKillDao.reduceNumber(1000L,killTime);
+    System.out.println(updateCount);
+    // 1:表示更改了一条记录
+}
+</code></pre>
+<p>测试记录，查看这里的确少了一件：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211005022450.png" alt="image-20211005022443276"></p>
+<p>分析一下mybatis的行为：</p>
+<pre><code class="language-shell"># 从c3p0连接池拿到链接，没有被spring托管
+02:18:42.793 [main] DEBUG o.m.s.t.SpringManagedTransaction - JDBC Connection [com.mchange.v2.c3p0.impl.NewProxyConnection@1cd629b3] will not be managed by Spring
+
+# SQL
+02:18:42.818 [main] DEBUG c.o.dao.SecKillDao.reduceNumber - ==&gt;  Preparing: update seckill set number = number - 1 where seckill_id = ? and start_time &lt;= ? and end_time &gt;= ? and number &gt; 0; 
+
+# 参数传递
+02:18:42.882 [main] DEBUG c.o.dao.SecKillDao.reduceNumber - ==&gt; Parameters: 1000(Long), 2021-10-05 02:18:42.442(Timestamp), 2021-10-05 02:18:42.442(Timestamp)
+
+# 参数返回
+02:18:42.897 [main] DEBUG c.o.dao.SecKillDao.reduceNumber - &lt;==    Updates: 1
+</code></pre>
+<p>同理另一个dao SuccessKilledDao也进行测试。</p>
+<pre><code class="language-java">package cn.orzlinux.dao;
+
+import cn.orzlinux.entity.SuccessKilled;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
+
+import static org.junit.Assert.*;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+//告诉junit spring配置文件
+@ContextConfiguration({&quot;classpath:spring/spring-dao.xml&quot;})
+public class SuccessKilledDaoTest {
+    // 注入DAO实现类依赖,resource注解去spring容器找其实现类
+    @Resource
+    private SuccessKilledDao successKilledDao;
+    @Test
+    public void insertSuccessKilled() {
+        long id = 1000L;
+        long phone = 12345678901L;
+        int insertCount = successKilledDao.insertSuccessKilled(id,phone);
+        System.out.println(insertCount);
+        // 输出1
+        // 再运行一次输出 0，联合主键的效果
+    }
+
+    @Test
+    public void queryByIdWithSeckill() {
+        long id = 1000L;
+        long phone = 12345678901L;
+        SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(id,phone);
+        System.out.println(successKilled);
+        System.out.println(successKilled.getSecKill());
+        // SuccessKilled{seckillId=1000, userPhone=12345678901, state=-1,
+        //              createTime=Tue Oct 05 10:33:43 CST 2021}
+        // SecKill{seckillId=1000, name=&#39;1000秒杀iphone13&#39;, number=99,
+        //          startTime=Tue Oct 05 02:00:00 CST 2021, endTime=Wed Oct 06 02:00:00 CST 2021, createTime=Tue Oct 05 10:01:47 CST 2021}
+    }
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211005023447.png" alt="image-20211005023447515"></p>
+<p>还有一点就是更改秒杀成功的状态，更改为0，也就是秒杀成功：</p>
+<blockquote>
+<p>状态标识：-1无效，0成功，1已付款，2已发</p>
+</blockquote>
+<pre><code class="language-xml">&lt;insert id=&quot;insertSuccessKilled&quot;&gt;
+    &lt;!-- 主键冲突，报错
+    INSERT IGNORE 与INSERT INTO的区别就是INSERT IGNORE会忽略数
+    据库中已经存在 的数据，如果数据库没有数据，就插入新的数据，如果有数
+    据的话就跳过这条数据。--&gt;
+    insert ignore into success_killed(seckill_id,user_phone,state)
+    values (#{seckillId},#{userPhone},0)
+&lt;/insert&gt;
+</code></pre>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"javaseckill1-20211004.html";
+			document.getElementById("blogaddr-a").innerHTML="秒杀系统环境搭建与DAO层设计";
+			</script></body></html> 

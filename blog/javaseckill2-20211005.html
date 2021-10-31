@@ -1,0 +1,761 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>秒杀系统Service层
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>秒杀系统Service层</h1><hr>
+<blockquote>
+<p>本文为<a href="http://www.imooc.com/learn/631">Java高并发秒杀API之Service层</a>课程笔记。</p>
+</blockquote>
+<p>编辑器：IDEA</p>
+<p>java版本：java8</p>
+<p>前文：<a href="https://orzlinux.cn/blog/javaseckill1-20211004.html">秒杀系统环境搭建与DAO层设计</a></p>
+<h2 id="秒杀业务接口与实现">秒杀业务接口与实现</h2>
+<p>DAO层：接口设计、SQL编写</p>
+<p>Service：业务，DAO拼接等逻辑</p>
+<p>代码和SQL分离，方便review。</p>
+<h3 id="service接口设计">service接口设计</h3>
+<p>目录如下：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211005132705.png" alt="image-20211005132704868"></p>
+<p>首先是SecKillService接口的设计：</p>
+<pre><code class="language-java">/**
+ * 业务接口：站在使用者角度设计接口
+ * 三个方面：
+ * 方法定义粒度 - 方便调用
+ * 参数 - 简练直接
+ * 返回类型 - return（类型、异常）
+ */
+public interface SecKillService {
+    /**
+     * 查询所有秒杀记录
+     * @return
+     */
+    List&lt;SecKill&gt; getSecKillList();
+
+    SecKill getById(long seckillId);
+
+    /**
+     * 秒杀开启时，输出秒杀接口地址
+     * 否则输出系统时间和秒杀时间
+     * @param seckillId
+     */
+    Exposer exportSecKillUrl(long seckillId);
+
+    // 执行秒杀操作验证MD5秒杀地址，抛三个异常（有继承关系）
+    // 是为了更精确的抛出异常
+    SeckillExecution executeSeckill(long seckillId, long userPhone, String md5)
+        throws SeckillException, RepeatKillException,SeckillCloseException;
+
+}
+</code></pre>
+<p><code>exportSecKillUrl</code>函数用来暴露出接口的地址，用一个专门的dto类<code>Exposer</code>来实现：</p>
+<pre><code class="language-java">/**
+ * 暴露秒杀地址DTO
+ */
+public class Exposer {
+    // 是否开启秒杀
+    private boolean exposed;
+    // 加密措施
+    private String md5;
+
+    private long seckillId;
+    // 系统当前时间
+    private long now;
+
+    // 秒杀开启结束时间
+    private long start;
+    private long end;
+    // constructor getter setter
+}
+</code></pre>
+<p>这里有一个md5，是为了构造秒杀地址，防止提前猜出秒杀地址，执行作弊手段。</p>
+<blockquote>
+<p><strong>MD5</strong>是一个安全的散列算法，输入两个不同的明文不会得到相同的输出值，根据输出值，不能得到原始的明文，即其过程不可逆；所以要解密MD5没有现成的算法，只能用穷举法。</p>
+</blockquote>
+<p><code>executeSeckill</code>函数表示执行秒杀，应该返回执行的结果相关信息：</p>
+<pre><code class="language-java">/**
+ * 封装秒杀执行后结果
+ */
+public class SeckillExecution {
+    private long seckillId;
+    // 秒杀结果状态
+    private int state;
+
+    // 状态信息
+    private String stateInfo;
+
+    // 秒杀成功对象
+    private SuccessKilled successKilled;
+    // constructor getter setter
+}
+</code></pre>
+<p>执行过程中可能会抛出异常。这里面用到了几个异常：<code>SeckillException</code>, <code>RepeatKillException</code>, <code>SeckillCloseException</code>。</p>
+<p>SeckillException.java，这个是其他两个的父类，除了那两个精确的异常，都可以返回这个异常。</p>
+<pre><code class="language-java">// 秒杀相关业务异常
+public class SeckillException extends RuntimeException {
+    public SeckillException(String message) {
+        super(message);
+    }
+
+    public SeckillException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
+</code></pre>
+<p>RepeatKillException是重复秒杀异常，一个用户一件商品只能秒杀一次：</p>
+<pre><code class="language-java">// 重复秒杀异常，运行期异常
+public class RepeatKillException extends SeckillException {
+    public RepeatKillException(String message) {
+        super(message);
+    }
+
+    public RepeatKillException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
+</code></pre>
+<p>同理，SeckillCloseException是秒杀关闭异常，秒杀结束了还在抢，返回异常。</p>
+<pre><code class="language-java">// 秒杀关闭异常，如时间到了，库存没了
+public class SeckillCloseException extends SeckillException {
+    public SeckillCloseException(String message) {
+        super(message);
+    }
+
+    public SeckillCloseException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
+</code></pre>
+<h3 id="service接口实现">service接口实现</h3>
+<p>首先开启扫描。</p>
+<p>spring-service.xml</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd&quot;&gt;
+    &lt;!--扫描service包下使用注解的类型--&gt;
+    &lt;context:component-scan base-package=&quot;cn.orzlinux.service&quot;/&gt;
+
+&lt;/beans&gt;
+</code></pre>
+<p>SecKillServiceImpl实现类实现了SecKillService接口的方法：指定日志对象，DAO对象。</p>
+<pre><code class="language-java">@Service
+public class SecKillServiceImpl implements SecKillService {
+    // 使用指定类初始化日志对象，在日志输出的时候，可以打印出日志信息所在类
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    // 需要两个 dao的配合
+    // 注入service依赖
+    @Resource
+    private SecKillDao secKillDao;
+    @Resource
+    private SuccessKilledDao successKilledDao;
+    
+    //...
+}
+</code></pre>
+<p>查询比较简单，直接调用DAO方法：</p>
+<pre><code class="language-java">@Override
+public List&lt;SecKill&gt; getSecKillList() {
+    // 这里因为只有四条秒杀商品
+    return secKillDao.queryAll(0,4);
+}
+
+@Override
+public SecKill getById(long seckillId) {
+    return secKillDao.queryById(seckillId);
+}
+</code></pre>
+<p>暴露秒杀接口函数：</p>
+<pre><code class="language-java">/**
+ * 秒杀开启时，输出秒杀接口地址
+ * 否则输出系统时间和秒杀时间
+ *
+ * @param seckillId
+ */
+@Override
+public Exposer exportSecKillUrl(long seckillId) {
+    SecKill secKill = secKillDao.queryById(seckillId);
+    if(secKill == null) {
+        // 查不到id，false
+        return new Exposer(false,seckillId);
+    }
+    Date startTime = secKill.getStartTime();
+    Date endTime = secKill.getEndTime();
+    Date nowTime = new Date();
+    if(nowTime.getTime()&lt;startTime.getTime()
+            || nowTime.getTime()&gt;endTime.getTime()) {
+        return new Exposer(false,seckillId, nowTime.getTime(),
+                startTime.getTime(),endTime.getTime());
+    }
+    // 不可逆
+    String md5 = getMD5(seckillId);
+    return new Exposer(true,md5,seckillId);
+}
+</code></pre>
+<p>getMD5是一个自定义函数：</p>
+<pre><code class="language-java">// 加入盐、混淆效果，如瞎打一下:
+private final String slat=&quot;lf,ad.ga.dfgm;adrktpqerml[fasedfa]&quot;;
+private String getMD5(long seckillId) {
+    String base = seckillId+&quot;/orzlinux.cn/&quot;+slat;
+    // spring已有实现
+    String md5 = DigestUtils.md5DigestAsHex(base.getBytes(StandardCharsets.UTF_8));
+    return md5;
+}
+</code></pre>
+<blockquote>
+<p>如果直接对密码进行散列，那么黑客可以对通过获得这个密码散列值，然后通过查散列值字典（例如MD5密码破解网站），得到某用户的密码。加Salt可以一定程度上解决这一问题。所谓加Salt方法，就是加点”佐料”。其基本想法是这样的：当用户首次提供密码时（通常是注册时），由系统自动往这个密码里撒一些“佐料”，然后再散列。而当用户登录时，系统为用户提供的代码撒上同样的“佐料”，然后散列，再比较散列值，已确定密码是否正确。这里的“佐料”被称作“Salt值”，这个值是由系统随机生成的，并且只有系统知道。</p>
+</blockquote>
+<p>执行秒杀函数，这里面牵扯到编译异常和运行时异常。</p>
+<p><strong>异常</strong></p>
+<p>编译时异常：编译成字节码过程中可能出现的异常。</p>
+<p>运行时异常：将字节码加载到内存、运行类时出现的异常。</p>
+<p>异常体系结构：</p>
+<pre><code class="language-shell"> * java.lang.Throwable
+ *         |-----java.lang.Error:一般不编写针对性的代码进行处理。
+ *         |-----java.lang.Exception:可以进行异常的处理
+ *             |------编译时异常(checked)
+ *                     |-----IOException
+ *                         |-----FileNotFoundException
+ *                     |-----ClassNotFoundException
+ *             |------运行时异常(unchecked,RuntimeException)
+ *                     |-----NullPointerException
+ *                     |-----ArrayIndexOutOfBoundsException
+ *                     |-----ClassCastException
+ *                     |-----NumberFormatException
+ *                     |-----InputMismatchException
+ *                     |-----ArithmeticException
+</code></pre>
+<p>使用<code>try-catch-finally</code>处理编译时异常，是得程序在编译时就不再报错，但是运行时仍可能报错。相当于我们使用<code>try-catch-finally</code>将一个编译时可能出现的异常，延迟到运行时出现。开发中，由于运行时异常比较常见，所以我们通常就不针对运行时异常编写<code>try-catch-finally</code>了。针对于编译时异常，我们说一定要考虑异常的处理。</p>
+<p>executeSeckill.java</p>
+<pre><code class="language-java">@Override
+public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5) throws
+        SeckillException, RepeatKillException, SeckillException {
+    if(md5==null || !md5.equals(getMD5(seckillId))) {
+        // 秒杀的数据被重写修改了
+        throw new SeckillException(&quot;seckill data rewrite&quot;);
+    }
+    // 执行秒杀逻辑：减库存、加记录购买行为
+    Date nowTime = new Date();
+    // 减库存
+    int updateCount = secKillDao.reduceNumber(seckillId,nowTime);
+    try {
+        if(updateCount&lt;=0) {
+            // 没有更新记录,秒杀结束
+            throw new SeckillCloseException(&quot;seckill is closed&quot;);
+        } else {
+            // 记录购买行为
+            int insertCount = successKilledDao.insertSuccessKilled(seckillId,userPhone);
+            if(insertCount&lt;=0) {
+                // 重复秒杀
+                throw new RepeatKillException(&quot;seckill repeated&quot;);
+            } else {
+                //秒杀成功
+                SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId,userPhone);
+                //return new SeckillExecution(seckillId,1,&quot;秒杀成功&quot;,successKilled);
+                return new SeckillExecution(seckillId, SecKillStatEnum.SUCCESS,successKilled);
+            }
+        }
+    } catch (SeckillCloseException | RepeatKillException e1){
+        throw e1;
+    } catch (Exception e) {
+        logger.error(e.getMessage(),e);
+        // 所有编译期异常转化为运行期异常，这样spring才能回滚
+        throw new SeckillException(&quot;seckill inner error&quot;+e.getMessage());
+    }
+}
+</code></pre>
+<p><code>SeckillCloseException</code>和<code>RepeatKillException</code>都继承了运行时异常，所以这些操作把异常都转化为了运行时异常。这样spring才能回滚。数据库的修改才不会紊乱。</p>
+<p>这里有一个操作就是枚举的使用。</p>
+<pre><code class="language-java">//return new SeckillExecution(seckillId,1,&quot;秒杀成功&quot;,successKilled);
+return new SeckillExecution(seckillId, SecKillStatEnum.SUCCESS,successKilled);
+</code></pre>
+<p>用第一行的方式割裂了状态和状态信息，很不优雅，而且后续要更改的话，这些代码分散在各个代码中，不易修改，所以用枚举代替。</p>
+<pre><code class="language-java">package cn.orzlinux.enums;
+
+/**
+ * 使用枚举表述常量数据字段
+ */
+public enum SecKillStatEnum {
+
+    SUCCESS(1,&quot;秒杀成功&quot;),
+    END(0,&quot;秒杀结束&quot;),
+    REPEAT_KILL(-1,&quot;重复秒杀&quot;),
+    INNER_ERROR(-2,&quot;系统异常&quot;),
+    DATA_REWRITE(-3,&quot;数据篡改&quot;)
+    ;
+
+
+    private int state;
+    private String stateInfo;
+
+    SecKillStatEnum(int state, String stateInfo) {
+        this.state = state;
+        this.stateInfo = stateInfo;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public String getStateInfo() {
+        return stateInfo;
+    }
+
+    public static SecKillStatEnum stateOf(int index) {
+        for(SecKillStatEnum statEnum:values()) {
+            if(statEnum.getState()==index) {
+                return statEnum;
+            }
+        }
+        return null;
+    }
+}
+</code></pre>
+<h3 id="声明式事务">声明式事务</h3>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211005154110.png" alt="image-20211005154110783" style="zoom:80%;" />
+
+<p>spring早期使用方式（2.0）：ProxyFactoryBean + XML</p>
+<p>后来：tx:advice+aop命名空间，一次配置永久生效。</p>
+<p>注解@Transactional，注解控制。（推荐）</p>
+<p>支持事务方法嵌套。</p>
+<p><strong>何时回滚事务？</strong>抛出运行期异常，小心try/catch</p>
+<p>具体配置：</p>
+<p>在spring-service.xml添加：</p>
+<pre><code class="language-xml">&lt;!--配置事务管理器--&gt;
+&lt;bean id=&quot;transationManager&quot;
+      class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+    &lt;!--注入数据库连接池--&gt;
+    &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+&lt;/bean&gt;
+
+&lt;!--配置基于注解的声明式事务--&gt;
+&lt;!--默认使用注解管理事务行为--&gt;
+&lt;tx:annotation-driven transaction-manager=&quot;transationManager&quot;/&gt;
+</code></pre>
+<p>在SecKillServiceImpl.java文件添加注解</p>
+<pre><code class="language-java">@Override
+@Transactional
+public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5)         throws SeckillException, RepeatKillException, SeckillException
+...
+</code></pre>
+<p><strong>使用注解控制事务方法的优点</strong>：</p>
+<ul>
+<li>开发团队达成一致约定，明确标注事务方法的编程风格</li>
+<li>保证事务方法的执行时间尽可能短，不要穿插其它网络操作，要剥离到事务外部</li>
+<li>不是所有的方法都需要事务</li>
+</ul>
+<h3 id="集成测试">集成测试</h3>
+<p>在resource文件夹下新建logback.xml，日志的配置文件：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;configuration&gt;
+    &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+        &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
+            &lt;pattern&gt;[%d{yyyy-MM-dd&#39; &#39;HH:mm:ss.sss}] [%C] [%t] [%L] [%-5p] %m%n&lt;/pattern&gt;
+        &lt;/layout&gt;
+    &lt;/appender&gt;
+
+    &lt;root level=&quot;DEBUG&quot;&gt;
+        &lt;appender-ref ref=&quot;STDOUT&quot;/&gt;
+    &lt;/root&gt;
+&lt;/configuration&gt;
+</code></pre>
+<p>SecKillServiceTest.java</p>
+<pre><code class="language-java">@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration({
+        &quot;classpath:spring/spring-dao.xml&quot;,
+        &quot;classpath:/spring/spring-service.xml&quot;
+})
+public class SecKillServiceTest {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private SecKillService secKillService;
+    @Test
+    public void getSecKillList() {
+        List&lt;SecKill&gt; list = secKillService.getSecKillList();;
+        logger.info(&quot;list={}&quot;,list);
+        // 输出信息： [main] [89] [DEBUG] JDBC Connection [com.mchange.v2.c3p0.impl.NewProxyConnection@5443d039] will not be managed by Spring
+        //[DEBUG] ==&gt;  Preparing: select seckill_id,name,number,start_time,end_time,create_time from seckill order by create_time DESC limit 0,?;
+        //[DEBUG] ==&gt; Parameters: 4(Integer)
+        //[DEBUG] &lt;==      Total: 4
+        //[DEBUG]
+        // ------------------Closing non transactional SqlSession ---------------------
+        // [org.apache.ibatis.session.defaults.DefaultSqlSession@66c61024]
+        //[INFO ] list=[SecKill{seckillId=1000, name=&#39;1000秒杀iphone13&#39;, number=99, startTime=Tue Oct 05 02:00:00 CST 2021, endTime=Wed Oct 06 02:00:00 CST 2021, createTime=Tue Oct 05 10:01:47 CST 2021}, SecKill{seckillId=1001, name=&#39;500秒杀iphone12&#39;, number=200, startTime=Tue Oct 05 02:00:00 CST 2021, endTime=Wed Oct 06 02:00:00 CST 2021, createTime=Tue Oct 05 10:01:47 CST 2021}, SecKill{seckillId=1002, name=&#39;300秒杀iphone11&#39;, number=300, startTime=Tue Oct 05 02:00:00 CST 2021, endTime=Wed Oct 06 02:00:00 CST 2021, createTime=Tue Oct 05 10:01:47 CST 2021}, SecKill{seckillId=1003, name=&#39;100秒杀iphone6&#39;, number=400, startTime=Tue Oct 05 02:00:00 CST 2021, endTime=Wed Oct 06 02:00:00 CST 2021, createTime=Tue Oct 05 10:01:47 CST 2021}]
+    }
+
+    @Test
+    public void getById() {
+        long id = 1000;
+        SecKill secKill = secKillService.getById(id);
+        logger.info(&quot;seckill={}&quot;,secKill);
+        // seckill=SecKill{seckillId=1000, name=&#39;1000秒杀iphone13&#39;, n...}
+    }
+
+    @Test
+    public void exportSecKillUrl() {
+        long id = 1000;
+        Exposer exposer = secKillService.exportSecKillUrl(id);
+        logger.info(&quot;exposer={}&quot;,exposer);
+        //exposer=Exposer{exposed=true, md5=&#39;c78a6784f8e8012796c934dbb3f76c03&#39;,
+        //          seckillId=1000, now=0, start=0, end=0}
+        // 表示在秒杀时间范围内
+    }
+
+    @Test
+    public void executeSeckill() {
+        long id = 1000;
+        long phone = 10134256781L;
+        String md5 = &quot;c78a6784f8e8012796c934dbb3f76c03&quot;;
+
+        // 重复测试会抛出异常，junit会认为测试失败，要把异常捕获一下更好看
+        try {
+            SeckillExecution seckillExecution = secKillService.executeSeckill(id,phone,md5);
+            logger.info(&quot;result: {}&quot;,seckillExecution);
+        } catch (RepeatKillException | SeckillCloseException e) {
+            logger.error(e.getMessage());
+            // 再运行一次： [ERROR] seckill repeated
+        }
+
+
+        // 有事务记录
+        // Committing JDBC transaction on Connection [com.mchange.v2.c3p0.impl.NewProxyConnection@4b40f651]
+        //[2021-10-05 16:45:00.000] [org.springframework.jdbc.datasource.DataSourceTransactionManager] [main] [384] [DEBUG] Releasing JDBC Connection [com.mchange.v2.c3p0.impl.NewProxyConnection@4b40f651] after transaction
+        //result: SeckillExecution{seckillId=1000, state=1, stateInfo=&#39;秒杀成功&#39;, successKilled=SuccessKilled{seckillId=1000, userPhone=10134256781, state=0, createTime=Wed Oct 06 00:45:00 CST 2021}}
+    }
+
+    // 集成测试完整逻辑实现
+    @Test
+    public void testSeckillLogic() {
+        long id = 1001;
+        Exposer exposer = secKillService.exportSecKillUrl(id);
+        if(exposer.isExposed()) {
+            logger.info(&quot;exposer={}&quot;,exposer);
+
+            long phone = 10134256781L;
+            String md5 = exposer.getMd5();
+
+            // 重复测试会抛出异常，junit会认为测试失败，要把异常捕获一下更好看
+            try {
+                SeckillExecution seckillExecution = secKillService.executeSeckill(id,phone,md5);
+                logger.info(&quot;result: {}&quot;,seckillExecution);
+            } catch (RepeatKillException | SeckillCloseException e) {
+                logger.error(e.getMessage());
+                // 再运行一次： [ERROR] seckill repeated
+            }
+
+        } else {
+            // 秒杀未开启
+            logger.warn(&quot;exposer={}&quot;,exposer);
+        }
+    }
+}
+</code></pre>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"javaseckill2-20211005.html";
+			document.getElementById("blogaddr-a").innerHTML="秒杀系统Service层";
+			</script></body></html> 

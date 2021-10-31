@@ -1,0 +1,423 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>Java目录测试
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div><h1>Java目录测试</h1><hr>
+<p>[TOC]</p>
+<h2 id="rmi">RMI</h2>
+<p>远程方法调用（Remote Method Invocation），用于不同虚拟机之间的通信，可以在相同或不同的主机上。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210910151930.png" alt="image-20210910151930494"></p>
+<blockquote>
+<p>每一个远程对象同时也包含一个 skeleton 对象，skeleton 运行在远程对象所在的虚拟机上，接受来自 stub 对象的调用。当skeleton 接收到来自 stub 对象的调用请求后， skeleton 会作如下工作：</p>
+<ol>
+<li>解包stub传来的参数 </li>
+<li>调用远程对象匹配的方法 </li>
+<li>打包返回值或错误发送给stub对象 </li>
+</ol>
+<p>jdk1.2以后的RMI可以通过反射API可以直接将请求发送给真实类，所以不需要 skeleton 类了</p>
+</blockquote>
+<p>IRemoteMath:</p>
+<pre><code class="language-java">package rmi;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface IRemoteMath extends Remote {
+    public double add(double a,double b) throws RemoteException;
+    public double sub(double a,double b) throws RemoteException;
+}
+</code></pre>
+<p>远程方法调用的本质依然是网络通信，只不过隐藏了底层实现，网络通信是经常会出现异常的，所以接口的所有方法都必须抛出<code>RemoteException</code>以说明该方法是有风险的</p>
+<p>RemoteMath:</p>
+<pre><code class="language-java">package rmi;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+/**
+ * 服务器端实现远程接口。
+ * 必须继承UnicastRemoteObject，以允许JVM创建远程的存根/代理。
+ */
+public class RemoteMath extends UnicastRemoteObject implements IRemoteMath {
+    private int numberOfComputations;
+    public RemoteMath() throws RemoteException {
+        numberOfComputations = 0;
+    }
+
+    @Override
+    public double add(double a, double b) throws RemoteException {
+        numberOfComputations++;
+        System.out.println(&quot;Number of computations performed so far = &quot;
+                + numberOfComputations);
+        return (a+b);
+    }
+
+    @Override
+    public double sub(double a, double b) throws RemoteException {
+        numberOfComputations++;
+        System.out.println(&quot;Number of computations performed so far = &quot;
+                + numberOfComputations);
+        return (a-b);
+    }
+}
+</code></pre>
+<p>由于方法参数与返回值最终都将在网络上传输，故必须是可序列化的。</p>
+<p>server:</p>
+<pre><code class="language-java">package rmiServ;
+
+import rmi.IRemoteMath;
+import rmi.RemoteMath;
+
+import java.rmi.AlreadyBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class RMIServer {
+    public static void main(String[] args) {
+        try {
+            IRemoteMath remoteMath = new RemoteMath();
+            LocateRegistry.createRegistry(1099);
+            Registry registry = LocateRegistry.getRegistry();
+            registry.bind(&quot;Compute&quot;,remoteMath);
+            System.out.println(&quot;Math Server Ready.&quot;);
+        } catch (RemoteException | AlreadyBoundException e) {
+            e.printStackTrace();
+        }
+    }
+}
+/*
+输出：
+Math Server Ready.
+Number of computations performed so far = 1
+Number of computations performed so far = 2
+
+ */
+</code></pre>
+<p>client:</p>
+<pre><code class="language-java">import rmi.IRemoteMath;
+
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class rmiCli {
+    public static void main(String[] args) {
+        try {
+            Registry registry = LocateRegistry.getRegistry(&quot;localhost&quot;);
+            IRemoteMath remoteMath = (IRemoteMath) registry.lookup(&quot;Compute&quot;);
+            double addResult = remoteMath.add(5.0, 3.0);
+            System.out.println(&quot;5.0 + 3.0 = &quot; + addResult);
+            double subResult = remoteMath.sub(5.0, 3.0);
+            System.out.println(&quot;5.0 - 3.0 = &quot; + subResult);
+        } catch (AccessException e) {
+            e.printStackTrace();
+        } catch (NotBoundException e) {
+            e.printStackTrace();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+}
+/*
+输出：
+5.0 + 3.0 = 8.0
+5.0 - 3.0 = 2.0
+ */
+</code></pre>
+<p>RMI 依赖于 Java 远程消息交换协议 JRMP（Java Remote Messaging Protocol），该协议为 Java 定制，要求服务端与客户端都为 Java 编写。</p>
+<h2 id="java-bean">Java bean</h2>
+<p>就是一个普通的 Java 类，要求如下</p>
+<ol>
+<li><p>这个类需要是<code>public</code> 的， 然后需要有个无参数的构造函数</p>
+</li>
+<li><p>这个类的属性应该是<code>private</code> 的， 通过<code>setXXX()</code>和<code>getXXX()</code>来访问</p>
+</li>
+<li><p>这个类需要能支持”事件“， 例如<code>addXXXXListener(XXXEvent e)</code>,  事件可以是<code>Click</code>事件，<code>Keyboard</code>事件等等， 当然咱们也支持自定义的事件。 </p>
+</li>
+<li><p>我们得提供一个所谓的自省/反射机制， 这样能在运行时查看<code>java bean</code> 的各种信息</p>
+</li>
+<li><p>这个类应该是可以序列化的， 即可以把<code>bean</code>的状态保存的硬盘上， 以便以后来恢复。 </p>
+</li>
+</ol>
+<h2 id="jmx">JMX</h2>
+<p>JMX（Java Management Extensions）是一个为应用程序植入管理功能的框架。</p>
+<ol start="5">
+<li></li>
+</ol>
+<p>参考：</p>
+<p><a href="https://blog.csdn.net/qq_28081453/article/details/83279066">JAVA RMI 原理和使用浅析</a></p>
+<p><a href="https://blog.csdn.net/a19881029/article/details/9465663">Java RMI详解</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"JavaMultiThreadsSummary20210910.html";
+			document.getElementById("blogaddr-a").innerHTML="Java目录测试";
+			</script></body></html> 

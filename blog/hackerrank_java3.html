@@ -1,0 +1,1240 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>Java练习Hackerrank又又二十道
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>Java练习Hackerrank又又二十道</h1><hr>
+<p>前四十关见：</p>
+<p><a href="https://orzlinux.cn/blog/hackerrank_java1.html">Java练习Hackerrank二十道</a></p>
+<p><a href="https://orzlinux.cn/blog/hackerrank_java2.html">Java练习Hackerrank另外二十道</a></p>
+<h2 id="第四十一关：java-strings-introduction">第四十一关：Java Strings Introduction</h2>
+<p>Java的<code>BigDecimal</code>类（[ˈdesɪm(ə)l]）可以处理任意精度的数字。对其操作要用给定的方法，而不是运算符。</p>
+<p>逆序排序。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">9  // 9个数
+-100
+50
+0
+56.6
+90
+0.12
+.12
+02.34
+000.000
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">90
+56.6
+50
+02.34
+0.12
+.12
+0
+000.000
+-100
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">Arrays.sort(s, 0,n,Collections.reverseOrder((a1, a2) -&gt; {
+    BigDecimal a = new BigDecimal(a1);
+    BigDecimal b = new BigDecimal(a2);
+    return a.compareTo(b);
+}));
+</code></pre>
+<h2 id="第四十二关：java-primality-test">第四十二关：Java Primality Test</h2>
+<p>大数（最多100位）判断质数</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">13
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">prime
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public class Solution {
+    private static BigDecimal one = new BigDecimal(1);
+    
+    private static boolean isPrime(String n) {
+        BigInteger integer = new BigInteger(n);
+        return integer.isProbablePrime(1);
+    }
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        String n = bufferedReader.readLine();
+        bufferedReader.close();
+        System.out.println(isPrime(n)?&quot;prime&quot;:&quot;not prime&quot;);
+    }
+}
+</code></pre>
+<p><strong>解释：</strong></p>
+<pre><code class="language-java">// certainty - 这一措施的调用者能容忍的不确定性：如果调用返回true，
+// 则此BigInteger是素数超过概率(1 - 1/2确定性)。此方法的执行时间正比于该参数的值。
+public boolean isProbablePrime(int certainty) {
+    if (certainty &lt;= 0)
+        return true;
+    BigInteger w = this.abs();
+    if (w.equals(TWO))
+        return true;
+    if (!w.testBit(0) || w.equals(ONE))
+        return false;
+
+    return w.primeToCertainty(certainty, null);
+}
+</code></pre>
+<p>然后100位以内是<code>Miller-Rabin</code>素性测试，100位以上是<code>Miller-Rabin</code>测试和<code>Lucas</code>测试双重判断。</p>
+<p><code>Miller-Rabin</code>算法可以在<code>O(k·log2(n))</code>的时间内检测一个超级大的正整数n是否是素数，k为自己设定的检测的次数，裸的<code>Miller-Rabin</code>算法在验证一个数是否为素数时出错的可能性随着测试次数的增加而降低(不可能降为0)。</p>
+<h2 id="第四十三关：java-subarray">第四十三关：Java Subarray</h2>
+<p>打印出子串和为负数的个数，原串数字个数100以内，如：<code>1 -2 4 - 5 1</code>，输出为9</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211018121719.png" alt="image-20211018121719681"></p>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
+    int n = scanner.nextInt();
+
+    int[] subSum = new int[n];
+    subSum[0] = scanner.nextInt();
+    for(int i=1;i&lt;n;i++) {
+        subSum[i] = subSum[i-1]+scanner.nextInt();
+    }
+    int result = 0;
+    for(int i=0;i&lt;n;i++) {
+        if(subSum[i]&lt;0) {
+            result++;
+        }
+        for(int j=i+1;j&lt;n;j++) {
+            if(subSum[j]-subSum[i]&lt;0) {
+                result++;
+            }
+        }
+    }
+    System.out.println(result);
+}
+</code></pre>
+<h2 id="第四十四关：java-arraylist">第四十四关：Java Arraylist</h2>
+<p>二维数组的查询。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">5 //5个数组
+5 41 77 74 22 44
+1 12
+4 37 34 36 52
+0
+3 20 22 33
+5 // 5个查询
+1 3 // 1,3位置，即74
+3 4
+3 1 
+4 3 // 没有，输出ERROR!
+5 5
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">74
+52
+37
+ERROR!
+ERROR!
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    int n = sc.nextInt();
+    int[][] arr = new int[n][];
+    for(int i=0;i&lt;n;i++) {
+        int len = sc.nextInt();
+        arr[i] = new int[len];
+        for(int j=0;j&lt;len;j++) {
+            arr[i][j] = sc.nextInt();
+        }
+    }
+    int qn = sc.nextInt();
+    for(int i=0;i&lt;qn;i++) {
+        int row = sc.nextInt();
+        int col = sc.nextInt();
+        if(row&gt;arr.length || col&gt;arr[row-1].length) {
+            System.out.println(&quot;ERROR!&quot;);
+        } else {
+            System.out.println(arr[row-1][col-1]);
+        }
+    }
+}
+</code></pre>
+<h2 id="第四十五关：java-biginteger">第四十五关：Java BigInteger</h2>
+<p>大数相加，相乘</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">1234
+20
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">1254  // 和
+24680 // 积
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">import java.io.*;
+import java.util.*;
+import java.math.BigInteger;
+
+public class Solution {
+    public static void main(String[] args) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        String a = bufferedReader.readLine();
+        String b = bufferedReader.readLine();
+        bufferedReader.close();
+        
+        BigInteger integerA = new BigInteger(a);
+        BigInteger integerB = new BigInteger(b);
+        System.out.println((integerA.add(integerB)).toString());
+        System.out.println((integerA.multiply(integerB)).toString());
+    }
+}
+</code></pre>
+<h2 id="第四十六关：java-bitset">第四十六关：Java BitSet</h2>
+<p>位运算，如第一行<code>5 4</code>表明两个5位的数字，有四个操作。</p>
+<p>A: 0 0 0 0 0</p>
+<p>B: 0 0 0 0 0</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">5 4
+AND 1 2 //and or xor，表示赋值给第一个数字，如and后结果给A，都是0，结果0 0
+SET 1 4 // set &lt;&gt; &lt;index&gt;， A: 0 0 0 0 1， 结果 1 0
+FLIP 2 2 // 翻转 &lt;&gt; &lt;index&gt;， B: 0 0 1 0 0 ，结果 1 1
+OR 2 1 // B=B or A， B: 0 0 1 0 1 结果 1 2
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">0 0
+1 0
+1 1
+1 2
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<p>法一：用boolean数组（一些测试用例会越界，没有做边界检查）</p>
+<pre><code class="language-java">public class Solution {
+    private static String operate(boolean[][] arr,String op,int a,int b) {
+        switch (op) {
+            case &quot;AND&quot;:
+                for(int i=0;i&lt;arr[0].length;i++) {
+                    arr[a-1][i] = arr[a-1][i] &amp; arr[b-1][i];
+                }
+                break;
+            case &quot;OR&quot;:
+                for(int i=0;i&lt;arr[0].length;i++) {
+                    arr[a-1][i] = arr[a-1][i] | arr[b-1][i];
+                }
+                break;
+            case &quot;XOR&quot;:
+                for(int i=0;i&lt;arr[0].length;i++) {
+                    arr[a-1][i] = arr[a-1][i]^ arr[b-1][i];
+                }
+                break;
+            case &quot;FLIP&quot;:
+                arr[a-1][b] = !arr[a-1][b];
+                break;
+            case &quot;SET&quot;:
+                arr[a-1][b] = true;
+                break;
+            default:
+                break;
+        }
+        int ret1 = 0;
+        int ret2 = 0;
+        for(int i=0;i&lt;arr[0].length;i++) {
+            if(arr[0][i]) {
+                ret1++;
+            }
+            if(arr[1][i]) {
+                ret2++;
+            }
+        }
+        return String.format(&quot;%d %d&quot;,ret1,ret2);
+
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int size = sc.nextInt();
+        int opNum = sc.nextInt();
+        boolean[][] arr = new boolean[2][size];
+        for(int i=0;i&lt;opNum;i++) {
+            System.out.println(operate(arr,sc.next(),sc.nextInt(),sc.nextInt()));
+        }
+    }
+}
+</code></pre>
+<p>法二：BitSet（自带检查）</p>
+<pre><code class="language-java">import java.io.*;
+import java.util.*;
+
+public class Solution {
+    private static String operate(BitSet[] arr,String op,int a,int b) {
+        switch (op) {
+            case &quot;AND&quot;:
+                arr[a-1].and(arr[b-1]);
+                break;
+            case &quot;OR&quot;:
+                arr[a-1].or(arr[b-1]);
+                break;
+            case &quot;XOR&quot;:
+                arr[a-1].xor(arr[b-1]);
+                break;
+            case &quot;FLIP&quot;:
+                arr[a-1].flip(b);
+                break;
+            case &quot;SET&quot;:
+                arr[a-1].set(b);
+        }
+        //返回true的个数
+        return String.format(&quot;%d %d&quot;,arr[0].cardinality(),arr[1].cardinality());
+
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int size = sc.nextInt();
+        int opNum = sc.nextInt();
+        BitSet[] arr = new BitSet[]{new BitSet(size),new BitSet(size)};
+        for(int i=0;i&lt;opNum;i++) {
+            System.out.println(operate(arr,sc.next(),sc.nextInt(),sc.nextInt()));
+        }
+    }
+}
+</code></pre>
+<p>法三：函数式接口，源自<a href="https://www.hackerrank.com/challenges/java-bitset/forum/comments/151392">tomkri76</a>。</p>
+<p>Consumer：</p>
+<pre><code class="language-java">StringBuilder stringBuilder = new StringBuilder(&quot;orzlinux.cn&quot;);
+
+Consumer&lt;StringBuilder&gt; consumer = (str) -&gt; str.append(&quot;-hqinglau&quot;);
+consumer.accept(stringBuilder);
+System.out.println(stringBuilder);
+// 输出：orzlinux.cn-hqinglau
+</code></pre>
+<p><strong>BiConsumer</strong>: 接收两个参数</p>
+<pre><code class="language-java">StringBuilder stringBuilder = new StringBuilder();
+
+BiConsumer&lt;String,String&gt; consumer = (str1,str2) -&gt; {
+    stringBuilder.append(&quot;my name is &quot;);
+    stringBuilder.append(str1);
+    stringBuilder.append(&quot;, my web site is &quot;);
+    stringBuilder.append(str2);
+
+};
+consumer.accept(&quot;hqinglau&quot;,&quot;orzlinux.cn&quot;);
+System.out.println(stringBuilder);
+// 输出：my name is hqinglau, my web site is orzlinux.cn
+</code></pre>
+<p>在本题中，可以采用BiConsumer接收两个参数。</p>
+<pre><code class="language-java">Scanner sc = new Scanner(System.in);
+int size = sc.nextInt();
+int opNum = sc.nextInt();
+BitSet[] arr = new BitSet[]{new BitSet(size),new BitSet(size)};
+Map&lt;String,BiConsumer&lt;Integer,Integer&gt;&gt; map = new HashMap&lt;&gt;();
+map.put(&quot;AND&quot;,(a,b)-&gt;{arr[a-1].and(arr[b-1]);});
+map.put(&quot;OR&quot;,(a,b)-&gt;{ arr[a-1].or(arr[b-1]); });
+map.put(&quot;XOR&quot;,(a,b)-&gt;{ arr[a-1].xor(arr[b-1]); });
+map.put(&quot;FLIP&quot;,(a,b)-&gt;{ arr[a-1].flip(b); });
+map.put(&quot;SET&quot;,(a,b)-&gt;{ arr[a-1].set(b); });
+for(int i=0;i&lt;opNum;i++) {
+    map.get(sc.next()).accept(sc.nextInt(),sc.nextInt());
+    System.out.println(String.format(&quot;%d %d&quot;,arr[0].cardinality(),arr[1].cardinality()));
+}
+</code></pre>
+<h2 id="第四十七关：java-priority-queue">第四十七关：Java Priority Queue</h2>
+<p>优先队列</p>
+<p>输入格式：</p>
+<ul>
+<li><code>ENTER name CGPA id</code> 放入一个</li>
+<li><code>SERVED</code>取出一个</li>
+</ul>
+<p>优先队列先按CGPA排，一样了再按name字典顺序排，输出最后剩下的。</p>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">12
+ENTER John 3.75 50
+ENTER Mark 3.8 24
+ENTER Shafaet 3.7 35
+SERVED
+SERVED
+ENTER Samiha 3.85 36
+SERVED
+ENTER Ashley 3.9 42
+ENTER Maria 3.6 46
+ENTER Anik 3.95 49
+ENTER Dan 3.95 50
+SERVED
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">Dan
+Ashley
+Shafaet
+Maria
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+/*
+ * Create the Student and Priorities classes here.
+ */
+import java.util.PriorityQueue;
+import java.util.Comparator;
+class Priorities {
+    private PriorityQueue&lt;Student&gt; pq = new PriorityQueue&lt;&gt;(new Comparator&lt;Student&gt;() {
+        @Override
+        public int compare(Student o1, Student o2) {
+            if (o1.getCGPA().equals(o2.getCGPA())) {
+                return o1.getName().compareTo(o2.getName());
+            }
+            return o2.getCGPA().compareTo(o1.getCGPA());
+        }
+    });
+    // lambda
+    // private PriorityQueue&lt;Student&gt; pq = new PriorityQueue&lt;&gt;((o1, o2) -&gt; {
+    //     if (o1.getCGPA().equals(o2.getCGPA())) {
+    //         return o1.getName().compareTo(o2.getName());
+    //     }
+    //     return o2.getCGPA().compareTo(o1.getCGPA());
+    // });
+    
+    public List&lt;Student&gt; getStudents(List&lt;String&gt; events) {
+        // parse and add to priority queue
+        List&lt;Student&gt; list = new ArrayList&lt;&gt;();
+        for(String ev:events) {
+            String[] strs = ev.split(&quot; &quot;);
+            if(strs[0].equals(&quot;SERVED&quot;)) {
+                pq.poll();
+                continue;
+            }
+            Student s = new Student(Integer.parseInt(strs[3]),strs[1],Double.parseDouble(strs[2]));
+            pq.add(s);
+        }
+        while (!pq.isEmpty()) {
+            list.add(pq.poll());
+        }
+        return list;
+    }
+}
+
+class Student{
+    private Double CGPA;
+    private String name;
+    private int id;
+    public Student(int i,String n,double c) {
+        id = i;
+        name = n;
+        CGPA = c;
+    }
+    public String getName() {
+        return name;
+    }
+    public Double getCGPA() {
+        return CGPA;
+    }
+}
+
+
+public class Solution {
+    private final static Scanner scan = new Scanner(System.in);
+    private final static Priorities priorities = new Priorities();
+    
+    public static void main(String[] args) {
+        int totalEvents = Integer.parseInt(scan.nextLine());    
+        List&lt;String&gt; events = new ArrayList&lt;&gt;();
+        
+        while (totalEvents-- != 0) {
+            String event = scan.nextLine();
+            events.add(event);
+        }
+        
+        List&lt;Student&gt; students = priorities.getStudents(events);
+        
+        if (students.isEmpty()) {
+            System.out.println(&quot;EMPTY&quot;);
+        } else {
+            for (Student st: students) {
+                System.out.println(st.getName());
+            }
+        }
+    }
+}
+</code></pre>
+<h2 id="第四十八关：java-1d-array-part-2">第四十八关：Java 1D Array (Part 2)</h2>
+<p>1是栅栏，0是平地，求能不能跳过去，如：</p>
+<pre><code class="language-shell">6 5             game[] size n = 6, leap = 5 (second query)
+0 0 0 1 1 1     . . .
+</code></pre>
+<p>连续1个数最大为3，一跳为5，输出YES。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">STDIN           Function
+-----           --------
+4               q = 4 (number of queries) 代表4个组合，两行一组
+5 3             game[] size n = 5, leap = 3 (first query)
+0 0 0 0 0       game = [0, 0, 0, 0, 0]
+6 5             game[] size n = 6, leap = 5 (second query)
+0 0 0 1 1 1     . . .
+6 3
+0 0 1 1 1 0
+3 1
+0 1 0
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">YES
+YES
+NO
+NO
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">import java.util.*;
+
+public class Solution {
+    private static boolean step(int leap,int[] game,int pos) {
+        if(pos&gt;=game.length || (pos+leap&gt;game.length &amp;&amp; game[pos]==0)) {
+            return true;
+        }
+        if(pos&lt;0 || game[pos]==1) {
+            return false;
+        }
+        game[pos] = 1; // 标记为1,表示此路不通
+        return step(leap,game,pos+1) || step(leap,game,pos-1) || step(leap,game,pos+leap);
+    }
+
+    public static boolean canWin(int leap, int[] game) {
+        return step(leap,game,0);
+    }
+
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        int q = scan.nextInt();
+        while (q-- &gt; 0) {
+            int n = scan.nextInt();
+            int leap = scan.nextInt();
+            
+            int[] game = new int[n];
+            for (int i = 0; i &lt; n; i++) {
+                game[i] = scan.nextInt();
+            }
+
+            System.out.println( (canWin(leap, game)) ? &quot;YES&quot; : &quot;NO&quot; );
+        }
+        scan.close();
+    }
+}
+</code></pre>
+<h2 id="第四十九关：java-list">第四十九关：Java List</h2>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">5 // 初始5个数
+12 0 1 78 12 // 初始数组中数字
+2 // 两个操作
+Insert // 插入
+5 23 // 5位置插入23
+Delete
+0
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">0 1 78 12 23
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        List&lt;Integer&gt; list = new LinkedList&lt;&gt;();
+        for(int i=0;i&lt;n;i++) {
+            list.add(sc.nextInt());
+        }
+        int ops = sc.nextInt();
+        for(int i=0;i&lt;ops;i++) {
+            switch (sc.next()) {
+                case &quot;Delete&quot;:
+                    list.remove(sc.nextInt());
+                    break;
+                case &quot;Insert&quot;:
+                    list.add(sc.nextInt(),sc.nextInt());
+                    break;
+            }
+        }
+        String pre = &quot;&quot;;
+        for(int i=0;i&lt;list.size();i++) {
+            System.out.printf(&quot;%s%d&quot;,pre,list.get(i));
+            pre = &quot; &quot;;
+        }
+        System.out.println();
+    }
+}
+</code></pre>
+<h2 id="第五十关：java-map">第五十关：Java Map</h2>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">3 // 三轮赋值
+uncle sam
+99912222
+tom
+11122222
+harry
+12299933
+uncle sam //然后是三轮查找
+uncle tom
+harry
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">uncle sam=99912222
+Not found
+harry=12299933
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">//Complete this code or write your own from scratch
+import java.util.*;
+import java.io.*;
+
+class Solution{
+    public static void main(String []argh)
+    {
+        Scanner in = new Scanner(System.in);
+        int n=in.nextInt();
+        Map&lt;String,Integer&gt; map = new HashMap&lt;&gt;();
+        in.nextLine();
+        for(int i=0;i&lt;n;i++)
+        {
+            String name=in.nextLine();
+            int phone=in.nextInt();
+            map.put(name,phone);
+            in.nextLine();
+        }
+        while(in.hasNext())
+        {
+            String s=in.nextLine();
+            if(map.containsKey(s)) {
+                System.out.printf(&quot;%s=%d\n&quot;,s,map.get(s));
+            }
+            else {
+                System.out.println(&quot;Not found&quot;);
+            }
+        }
+    }
+}
+</code></pre>
+<h2 id="第五十一关：java-stack">第五十一关：Java Stack</h2>
+<p>判断括号是否规范</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">{}()
+({()})
+{}(
+[]
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">true
+true
+false
+true
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">public static void main(String []argh)
+{
+    Scanner sc = new Scanner(System.in);
+
+    while (sc.hasNext()) {
+        Stack&lt;Character&gt; stack = new Stack&lt;&gt;();
+        String input=sc.next();
+        for(char c:input.toCharArray()) {
+            if(stack.empty()) {
+                stack.push(c);
+                continue;
+            }
+            switch (c) {
+                case &#39;{&#39;:
+                case &#39;[&#39;:
+                case &#39;(&#39;:
+                    stack.push(c);
+                    break;
+                case &#39;)&#39;:
+                    if(stack.peek()==&#39;(&#39;) {
+                        stack.pop();
+                    }
+                    break;
+                case &#39;}&#39;:
+                    if(stack.peek()==&#39;{&#39;) {
+                        stack.pop();
+                    }
+                    break;
+                case &#39;]&#39;:
+                    if(stack.peek()==&#39;[&#39;) {
+                        stack.pop();
+                    }
+                    break;
+            }
+        }
+        System.out.println(stack.empty()?&quot;true&quot;:&quot;false&quot;);
+    }
+}
+</code></pre>
+<h2 id="第五十二关：java-hashset">第五十二关：Java Hashset</h2>
+<p>输入名字，打印个数。</p>
+<pre><code class="language-java">import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public static void main(String[] args) {
+     Scanner s = new Scanner(System.in);
+     int t = s.nextInt();
+     String [] pair_left = new String[t];
+     String [] pair_right = new String[t];
+
+     for (int i = 0; i &lt; t; i++) {
+         pair_left[i] = s.next();
+         pair_right[i] = s.next();
+     }
+
+     s.close();
+     Set&lt;String&gt; set = new HashSet&lt;&gt;();
+     for(int i =0; i&lt;t;i++) {
+         String p = pair_left[i]+&quot;===&quot;+pair_right[i];
+         set.add(p);
+         System.out.println(set.size());
+     }
+ }
+</code></pre>
+<h2 id="第五十三关：java-generics">第五十三关：Java Generics</h2>
+<p>泛型，打印整数数组和字符串数组。</p>
+<pre><code class="language-java">class Printer
+{
+   public &lt;T&gt; void printArray(T[] arr) {
+       for(T t:arr) {
+           System.out.println(t);
+       }
+   }
+}
+</code></pre>
+<h2 id="第五十四关：java-comparator">第五十四关：Java Comparator</h2>
+<pre><code class="language-java">class Player{
+    String name;
+    int score;
+    
+    Player(String name, int score){
+        this.name = name;
+        this.score = score;
+    }
+}
+</code></pre>
+<p>分数逆序，名字正序。</p>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">class Checker implements Comparator&lt;Player&gt; {
+    @Override
+    public int compare(Player o1, Player o2) {
+        if(o1.score==o2.score) {
+            return o1.name.compareTo(o2.name);
+        }
+        return o2.score-o1.score;
+    }
+}
+</code></pre>
+<h2 id="第五十五关：java-inheritance-i">第五十五关：Java Inheritance I</h2>
+<p>基础用法</p>
+<pre><code class="language-java">import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+class Animal{
+    void walk()
+    {
+        System.out.println(&quot;I am walking&quot;);
+    }
+}
+class Bird extends Animal
+{
+    void fly()
+    {
+        System.out.println(&quot;I am flying&quot;);
+    }
+    void sing() {
+        System.out.println(&quot;I am singing&quot;);
+    }
+}
+public class Solution{
+   public static void main(String args[]){
+      Bird bird = new Bird();
+      bird.walk();
+      bird.fly();
+      bird.sing();
+    
+   }
+}
+</code></pre>
+<h2 id="第五十六关：java-inheritance-ii">第五十六关：Java Inheritance II</h2>
+<p>加法类继承。</p>
+<p><strong>Output</strong>:</p>
+<pre><code class="language-shell">My superclass is: Arithmetic
+42 13 20
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+class Arithmetic {
+    public int add(int a,int b) {
+        return a+b;
+    }
+}
+
+class Adder extends Arithmetic {
+
+}
+public class Solution{
+    public static void main(String []args){
+        // Create a new Adder object
+        Adder a = new Adder();
+        System.out.println(&quot;My superclass is: &quot; + a.getClass().getSuperclass().getName());    
+        System.out.print(a.add(10,32) + &quot; &quot; + a.add(10,3) + &quot; &quot; + a.add(10,10) + &quot;\n&quot;);
+     }
+}
+</code></pre>
+<h2 id="第五十七关：java-abstract-class">第五十七关：Java Abstract Class</h2>
+<p>抽象类不能创建实例。</p>
+<pre><code class="language-java">abstract class Book{
+    String title;
+    abstract void setTitle(String s); // 抽象方法，需要子类实现
+    String getTitle(){
+        return title;
+    }
+}
+</code></pre>
+<p>例子：</p>
+<pre><code class="language-java">import java.util.*;
+abstract class Book{
+    String title;
+    abstract void setTitle(String s);
+    String getTitle(){
+        return title;
+    }
+    
+}
+
+class MyBook extends Book {
+    public void setTitle(String s) {
+        title = s;
+    }
+}
+
+public class Main{
+    public static void main(String []args){
+        //Book new_novel=new Book(); This line prHMain.java:25: error: Book is abstract; cannot be instantiated
+        Scanner sc=new Scanner(System.in);
+        String title=sc.nextLine();
+        MyBook new_novel=new MyBook();
+        new_novel.setTitle(title);
+        System.out.println(&quot;The title is: &quot;+new_novel.getTitle());
+          sc.close();
+        
+    }
+}
+</code></pre>
+<h2 id="第五十八关：java-interface">第五十八关：Java Interface</h2>
+<p>求除数的和。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">6
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">I implemented: AdvancedArithmetic
+12 // Divisors of 6 are 1,2,3 and 6. 1+2+3+6=12.
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-java">interface AdvancedArithmetic{
+  int divisor_sum(int n);
+}
+
+class MyCalculator implements AdvancedArithmetic {
+    public int divisor_sum(int n) {
+        if(n==1) return 1;
+        int result = 0;
+        for(int i=1;i&lt;Math.pow(n,0.5);i++) {
+            if(n%i==0) {
+                result+=i;
+                result+=n/i;
+            }
+        }
+        return result;
+    }
+}
+</code></pre>
+<h2 id="第五十九关：java-method-overriding">第五十九关：Java Method Overriding</h2>
+<pre><code class="language-java">import java.util.*;
+class Sports{
+
+    String getName(){
+        return &quot;Generic Sports&quot;;
+    }
+  
+    void getNumberOfTeamMembers(){
+        System.out.println( &quot;Each team has n players in &quot; + getName() );
+    }
+}
+
+class Soccer extends Sports{
+    @Override
+    String getName(){
+        return &quot;Soccer Class&quot;;
+    }
+    @Override
+    void getNumberOfTeamMembers(){
+        System.out.println( &quot;Each team has 11 players in &quot; + getName() );
+    }
+}
+
+public class Solution{
+    
+    public static void main(String []args){
+        Sports c1 = new Sports();
+        Soccer c2 = new Soccer();
+        System.out.println(c1.getName());
+        c1.getNumberOfTeamMembers();
+        System.out.println(c2.getName());
+        c2.getNumberOfTeamMembers();
+    }
+}
+</code></pre>
+<h2 id="第六十关：java-instanceof-keyword">第六十关：Java Instanceof keyword</h2>
+<pre><code class="language-java">import java.util.*;
+
+
+class Student{}
+class Rockstar{   }
+class Hacker{}
+
+
+public class InstanceOFTutorial{
+    
+   static String count(ArrayList mylist){
+      int a = 0,b = 0,c = 0;
+      for(int i = 0; i &lt; mylist.size(); i++){
+         Object element=mylist.get(i);
+         if(element instanceof Student)
+            a++;
+         if(element instanceof Rockstar)
+            b++;
+         if(element instanceof Hacker)
+            c++;
+      }
+      String ret = Integer.toString(a)+&quot; &quot;+ Integer.toString(b)+&quot; &quot;+ Integer.toString(c);
+      return ret;
+   }
+
+   public static void main(String []args){
+      ArrayList mylist = new ArrayList();
+      Scanner sc = new Scanner(System.in);
+      int t = sc.nextInt();
+      for(int i=0; i&lt;t; i++){
+         String s=sc.next();
+         if(s.equals(&quot;Student&quot;))mylist.add(new Student());
+         if(s.equals(&quot;Rockstar&quot;))mylist.add(new Rockstar());
+         if(s.equals(&quot;Hacker&quot;))mylist.add(new Hacker());
+      }
+      System.out.println(count(mylist));
+   }
+}
+</code></pre>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"hackerrank_java3.html";
+			document.getElementById("blogaddr-a").innerHTML="Java练习Hackerrank又又二十道";
+			</script></body></html> 

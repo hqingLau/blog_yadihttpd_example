@@ -1,0 +1,710 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>《动手实现java虚拟机》1、2章
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>《动手实现java虚拟机》1、2章</h1><hr>
+<h2 id="一、命令行工具">一、命令行工具</h2>
+<p>安装Java和Go</p>
+<pre><code class="language-shell">D:\&gt;java -version
+java version &quot;1.8.0_291&quot;
+Java(TM) SE Runtime Environment (build 1.8.0_291-b10)
+Java HotSpot(TM) Client VM (build 25.291-b10, mixed mode)
+
+D:\&gt;go version
+go version go1.17.2 windows/386
+</code></pre>
+<p>设置GOPATH：</p>
+<pre><code class="language-shell">D:\&gt;go env GOPATH
+D:\go\workspace
+</code></pre>
+<p>Java命令</p>
+<pre><code class="language-shell">java [-options] class [args]
+java [-options] -jar jarfile [args]
+javaw [-options] class [args]
+javaw [-options] -jar jarfile [args]
+</code></pre>
+<p>javaw命令不显示命令行窗口，适合GUI应用。</p>
+<p><strong>目录</strong>：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211012140908.png" alt="image-20211012140908828"></p>
+<p>cmd.go</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;flag&quot;
+    &quot;fmt&quot;
+    &quot;os&quot;
+)
+
+type Cmd struct {
+    helpFlag    bool // 显示帮助信息 标志位
+    versionFlag bool // 显示版本
+    cpOption    string // classpath
+    class       string // 类名
+    args        []string // 给main的参数
+}
+
+func parseCmd() *Cmd {
+    cmd := &amp;Cmd{}
+
+    flag.Usage = printUsage
+    flag.BoolVar(&amp;cmd.helpFlag,&quot;help&quot;,false,&quot;print help message&quot;)
+    flag.BoolVar(&amp;cmd.helpFlag,&quot;?&quot;,false,&quot;print help message&quot;)
+    flag.BoolVar(&amp;cmd.versionFlag,&quot;version&quot;,false,&quot;print version and exit&quot;)
+    flag.StringVar(&amp;cmd.cpOption,&quot;classpath&quot;,&quot;&quot;,&quot;classpath&quot;)
+    flag.StringVar(&amp;cmd.cpOption,&quot;cp&quot;,&quot;&quot;,&quot;classpath&quot;)
+    //定义好命令行 flag 参数后，需要通过调用 flag.Parse() 来对命令行参数进行解析
+    flag.Parse()
+
+    args := flag.Args()
+    if len(args) &gt; 0 {
+        cmd.class = args[0]
+        cmd.args = args[1:]
+    }
+
+    return cmd
+}
+
+func printUsage() {
+    fmt.Printf(&quot;Usage: ·%s [-options] class [args...]\n&quot;,os.Args[0])
+}
+</code></pre>
+<p>main.go</p>
+<pre><code class="language-go">package main
+
+import (
+   &quot;fmt&quot;
+)
+
+func main() {
+   cmd := parseCmd()
+   if cmd.versionFlag {
+      fmt.Println(&quot;Version 0.0.1&quot;)
+
+   } else if cmd.helpFlag || cmd.class == &quot;&quot; {
+      printUsage()
+   } else {
+      startJVM(cmd)
+   }
+}
+/**
+运行虚拟机
+ */
+func startJVM(cmd *Cmd) {
+   fmt.Printf(&quot;classpath: %s class: %s args:%v\n&quot;, cmd.cpOption, cmd.class, cmd.args)
+}
+</code></pre>
+<p><strong>测试</strong>：</p>
+<p>go install 之后在bin运行</p>
+<pre><code class="language-shell">D:\go\workspace\bin&gt;main.exe -help
+Usage: ·main.exe [-options] class [args...]
+
+D:\go\workspace\bin&gt;main.exe -version
+Version 0.0.1
+
+D:\go\workspace\bin&gt;main.exe -cp foo/bar myApp arg1 arg2
+classpath: foo/bar class: myApp args:[arg1 arg2]
+</code></pre>
+<h2 id="二、搜索class文件">二、搜索class文件</h2>
+<p>目录：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211013125824.png" alt="image-20211013125824834"></p>
+<p>如Oracle的虚拟机：</p>
+<ul>
+<li>启动类路径：jre\lib</li>
+<li>扩展类路径：jre\lib\ext</li>
+<li>用户类路径</li>
+</ul>
+<p>用户类路径默认&quot;.&quot;。可以通过CLASSPATH环境变量设置，也可以通过-classpath/-cp覆盖。可以指定目录、jar、zip，或者多个目录、文件（分隔符分开）。</p>
+<p>指定<code>jre</code>路径：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211012143120.png" alt="image-20211012143120225"></p>
+<h3 id="实现类路径">实现类路径</h3>
+<p>由启动类路径、扩展类路径、用户类路径组成，三者又可以由更细的路径组成。</p>
+<p>当输入一条语句，如：</p>
+<pre><code class="language-shell">D:\go\workspace\bin&gt;main.exe -Xjre &quot;C:\Program Files\Java\jdk1.8.0_181\jre&quot; java.lang.Object
+</code></pre>
+<p>运行过程：</p>
+<pre><code class="language-go">/**
+运行虚拟机
+ */
+// lll
+func startJVM(cmd *Cmd) {
+   cp:= classpath.Parse(cmd.XjreOption,cmd.cpOption)
+   fmt.Printf(&quot;classpath:%v class:%v args:%v\n&quot;,
+      cp,cmd.class,cmd.args)
+   className := strings.Replace(cmd.class,&quot;.&quot;,&quot;/&quot;,-1)
+   classData,_,err:=cp.ReadClass(className)
+   if err!=nil {
+      fmt.Printf(&quot;could not find or reload main class %s\n&quot;,cmd.class)
+      return
+   }
+   fmt.Printf(&quot;class data:%v\n&quot;,classData)
+}
+</code></pre>
+<p><code>parse</code>解析<code>jre</code>路径和用户<code>classpath</code>路径。<code>ReadClass</code>从三个路径寻找类，找到返回。路径抽象为一个接口。</p>
+<p>Entry.go:</p>
+<pre><code class="language-go">package classpath
+
+import (
+    &quot;os&quot;
+    &quot;strings&quot;
+)
+
+// 系统路径分隔符
+const pathListSeparator = string(os.PathListSeparator)
+
+type Entry interface {
+    // 寻找和加载class，如java/lang/Object.class
+    readClass(className string) ([]byte, Entry, error)
+    // String 返回变量的字符串形式
+    String() string
+}
+
+// 统一的newEntry类，具体实现内部细分
+func newEntry(path string) Entry {
+    if strings.Contains(path,pathListSeparator) {
+        // 由分割符分隔的多个路径组合
+        return newCompositeEntry(path)
+    }
+    if strings.HasSuffix(path,&quot;*&quot;) {
+        return newWildcardEntry(path)
+    }
+    if strings.HasSuffix(path,&quot;.jar&quot;) || strings.HasSuffix(path,&quot;.JAR&quot;) ||
+        strings.HasSuffix(path,&quot;.zip&quot;) || strings.HasSuffix(path,&quot;.ZIP&quot;) {
+        return newZipEntry(path)
+    }
+    return newDirEntry(path)
+}
+</code></pre>
+<p>一个结构体<code>Classpath</code>管理三个<code>entry</code></p>
+<p>其中，classpath.go:</p>
+<pre><code class="language-go">package classpath
+
+import (
+   &quot;os&quot;
+   &quot;path/filepath&quot;
+)
+
+type ClassPath struct {
+   bootClasspath Entry // 启动类路径：jre\lib
+   extClassPath  Entry // 扩展类路径：jre\lib\ext
+   userClasspath Entry // 用户类路径
+}
+
+func Parse(jreOption, cpOption string) *ClassPath {
+   cp := &amp;ClassPath{}
+   cp.parseBootAndExtClasspath(jreOption)
+   cp.parseUserClasspath(cpOption)
+   return cp
+}
+
+func (self *ClassPath) ReadClass(className string) ([]byte, Entry, error) {
+   className = className+&quot;.class&quot;
+   if data,entry,err:=self.bootClasspath.readClass(className);err==nil {
+      return data,entry,err
+   }
+   if data,entry,err:=self.extClassPath.readClass(className);err==nil {
+      return data,entry,err
+   }
+   return self.userClasspath.readClass(className)
+}
+
+func (self *ClassPath) String() string {
+   return self.userClasspath.String()
+}
+
+// 新建通配符entry
+func (self *ClassPath) parseBootAndExtClasspath(jreOption string) {
+   jreDir := getJreDir(jreOption)
+
+   // jre/lib/*
+   jreLibPath := filepath.Join(jreDir, &quot;lib&quot;, &quot;*&quot;)
+   self.bootClasspath = newWildcardEntry(jreLibPath)
+
+   // jre/lib/ext/*
+   jreExtPath := filepath.Join(jreDir, &quot;lib&quot;, &quot;ext&quot;, &quot;*&quot;)
+   self.extClassPath = newWildcardEntry(jreExtPath)
+}
+
+func getJreDir(option string) string {
+   if option != &quot;&quot; &amp;&amp; exists(option) {
+      return option
+   }
+   if exists(&quot;./jre&quot;) {
+      return &quot;./jre&quot;
+   }
+   if jh := os.Getenv(&quot;JAVA_HOME&quot;); jh != &quot;&quot; {
+      return filepath.Join(&quot;jh&quot;, &quot;jre&quot;)
+   }
+   panic(&quot;Can not find jre folder!&quot;)
+}
+
+// 判断目录是否存在
+func exists(path string) bool {
+   if _, err := os.Stat(path); err != nil {
+      if os.IsNotExist(err) {
+         return false
+      }
+   }
+   return true
+
+}
+
+func (self *ClassPath) parseUserClasspath(option string) {
+   if option == &quot;&quot; {
+      option = &quot;.&quot;
+   }
+   self.userClasspath = newEntry(option)
+}
+</code></pre>
+<p>go语言结构体不需要显示实现接口，只要方法匹配即可，Go没有专门的构造函数。</p>
+<p>其中：</p>
+<pre><code class="language-go">// jre/lib/*
+jreLibPath := filepath.Join(jreDir, &quot;lib&quot;, &quot;*&quot;)
+self.bootClasspath = newWildcardEntry(jreLibPath)
+
+// jre/lib/ext/*
+jreExtPath := filepath.Join(jreDir, &quot;lib&quot;, &quot;ext&quot;, &quot;*&quot;)
+self.extClassPath = newWildcardEntry(jreExtPath)
+</code></pre>
+<p><code>newWildcardEntry</code>新建一个通配符entry。</p>
+<p>entry_wildcard.go:</p>
+<pre><code class="language-go">// 通配符类路径不能递归匹配子目录下的JAR文件
+func newWildcardEntry(path string) CompositeEntry {
+    baseDir:=path[:len(path)-1] //去掉*
+    compositeEntry := []Entry{}
+    walkFn:= func(path string,info os.FileInfo,err error) error {
+        if err!=nil {
+            return err
+        }
+        if info.IsDir() &amp;&amp; path !=baseDir {
+            return filepath.SkipDir
+        }
+        if strings.HasSuffix(path,&quot;.jar&quot;) || strings.HasSuffix(path,&quot;.JAR&quot;) {
+            jarEntry := newZipEntry(path)
+            compositeEntry = append(compositeEntry,jarEntry)
+        }
+        return nil
+    }
+    err := filepath.Walk(baseDir, walkFn)
+    if err != nil {
+        return nil
+    }
+    return compositeEntry
+}
+</code></pre>
+<blockquote>
+<p>JAR 文件格式以流行的 ZIP 文件格式为基础。JAR 格式允许您压缩文件以提高存储效率。与 ZIP 文件不同的是，JAR 文件不仅用于压缩和发布，而且还用于部署和封装库、组件和插件程序，并可被像编译器和 JVM 这样的工具直接使用。在 JAR 中包含特殊的文件，如 manifests 和部署描述符，用来指示工具如何处理特定的 JAR。</p>
+</blockquote>
+<p>其中，<code>newZipEntry</code>用来新建jar包实体。</p>
+<p>entry_zip.go</p>
+<pre><code class="language-go">package classpath
+
+import (
+   &quot;archive/zip&quot;
+   &quot;errors&quot;
+   &quot;io/ioutil&quot;
+   &quot;path/filepath&quot;
+)
+
+type ZipEntry struct {
+   absPath string
+}
+
+func newZipEntry(path string) *ZipEntry {
+   absPath, err := filepath.Abs(path)
+   if err != nil {
+      panic(err)
+   }
+   return &amp;ZipEntry{absPath: absPath}
+}
+
+// 返回目录路径
+func (self *ZipEntry) String() string {
+   return self.absPath
+}
+
+func (self *ZipEntry) readClass(className string) ([]byte,Entry,error) {
+   // 下图
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211013124403.png" alt="image-20211013124356224"></p>
+<p>在扫描用户路径时，会根据后缀新建composite、wildcard、zipentry或者direntry。</p>
+<p>其中，entry_composite.go:</p>
+<pre><code class="language-go">package classpath
+
+import (
+    &quot;errors&quot;
+    &quot;strings&quot;
+)
+
+type CompositeEntry []Entry
+
+func newCompositeEntry(pathList string) CompositeEntry {
+    compositeEntry := []Entry{}
+    for _, path := range strings.Split(pathList, pathListSeparator) {
+        entry := newEntry(path)
+        compositeEntry = append(compositeEntry, entry)
+    }
+    return compositeEntry
+}
+
+func (c CompositeEntry) readClass(className string) ([]byte, Entry, error) {
+    for _, entry := range c {
+        data, from, err := entry.readClass(className)
+        if err == nil {
+            return data, from, nil
+        }
+    }
+    return nil, nil, errors.New(&quot;class not found: &quot; + className)
+}
+
+func (c CompositeEntry) String() string {
+    strs := make([]string, len(c))
+    for i, entry := range c {
+        strs[i] = entry.String()
+    }
+    return strings.Join(strs, pathListSeparator)
+}
+</code></pre>
+<p>对每个entry，单独调用。</p>
+<p>给目录的话就直接根据目录和classname绝对路径读class。</p>
+<p>entry_dir.go:</p>
+<pre><code class="language-go">package classpath
+
+import (
+   &quot;io/ioutil&quot;
+   &quot;path/filepath&quot;
+)
+
+type DirEntry struct {
+   absDir string // 绝对路径
+}
+
+// 返回目录路径
+func (self *DirEntry) String() string {
+   return self.absDir
+}
+
+// 创建结构体实例
+func newDirEntry(path string) *DirEntry {
+   absDir, err := filepath.Abs(path)
+   if err != nil {
+      panic(err)
+   }
+   return &amp;DirEntry{absDir: absDir}
+}
+
+func (self *DirEntry) readClass(className string) ([]byte,Entry,error) {
+   fileName := filepath.Join(self.absDir,className)
+   data,err:=ioutil.ReadFile(fileName)
+   return data,self,err
+
+}
+</code></pre>
+<p><strong>总体图</strong>：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211013131131.png" alt="image-20211013131131079"></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"hand-java-vm1-2.html";
+			document.getElementById("blogaddr-a").innerHTML="《动手实现java虚拟机》1、2章";
+			</script></body></html> 

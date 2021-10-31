@@ -1,0 +1,685 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>模拟一个简单的tomcat
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>模拟一个简单的tomcat</h1><hr>
+<h2 id="简单处理">简单处理</h2>
+<pre><code class="language-java">// 客户端和服务器的通信，说到底就是两个数据的传输，
+// 客户端发送inputStream给服务器，服务器回复
+// outputStream给客户端。
+public class TomcatServerV1 {
+    public static void main(String[] args) throws IOException {
+        ServerSocket serverSocket = new ServerSocket(8080);
+        while (true) {//一直监听，直到受到停止的命令
+            Socket socket = null;
+            try {
+                socket = serverSocket.accept();//如果没有请求，会一直hold在这里等待，有客户端请求的时候才会继续往下执行
+                // log
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));//获取输入流(请求)
+                StringBuilder stringBuilder = new StringBuilder();
+                String line = null;
+                while ((line = bufferedReader.readLine()) != null &amp;&amp; !line.equals(&quot;&quot;)) {//得到请求的内容，注意这里作两个判断非空和&quot;&quot;都要，只判断null会有问题
+                    stringBuilder.append(line).append(&quot;&lt;br&gt;&quot;);
+                }
+                String result = stringBuilder.toString();
+                System.out.println(result);
+                // echo
+                PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);//这里第二个参数表示自动刷新缓存
+                printWriter.println(&quot;HTTP/1.1 200 OK&quot;);
+                printWriter.println(&quot;Content-Type:text/html;charset=utf-8&quot;);
+                printWriter.println();
+
+                printWriter.println(&quot;&lt;h5&gt;你刚才发送的请求数据是：&lt;br&gt;&quot;);
+                printWriter.write(result);//将日志输出到浏览器
+                printWriter.println(&quot;&lt;/h5&gt;&quot;);
+                // release
+                printWriter.close();
+                bufferedReader.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210926182413.png" alt="image-20210926182411888"></p>
+<h2 id="每个请求一个线程">每个请求一个线程</h2>
+<pre><code class="language-java">class RequestHandler implements Runnable{
+    private Socket socket;
+
+    public RequestHandler(Socket socket) {
+        this.socket = socket;
+    }
+
+    @Override
+    public void run() {
+        // log
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));//获取输入流(请求)
+            StringBuilder stringBuilder = new StringBuilder();
+            String line = null;
+            while ((line = bufferedReader.readLine()) != null &amp;&amp; !line.equals(&quot;&quot;)) {
+                stringBuilder.append(line).append(&quot;&lt;br&gt;&quot;);
+            }
+            String result = stringBuilder.toString();
+            System.out.println(result);
+            // echo
+            PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);//这里第二个参数表示自动刷新缓存
+            printWriter.println(&quot;HTTP/1.1 200 OK&quot;);
+            printWriter.println(&quot;Content-Type:text/html;charset=utf-8&quot;);
+            printWriter.println();
+
+            printWriter.println(&quot;&lt;h5&gt;你刚才发送的请求数据是：&lt;br&gt;&quot;);
+            printWriter.write(result);//将日志输出到浏览器
+            printWriter.println(&quot;&lt;/h5&gt;&quot;);
+            // release
+            printWriter.close();
+            bufferedReader.close();
+            socket.close();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+public class TomcatServerV2 {
+    public static void main(String[] args) throws IOException {
+        ServerSocket serverSocket = new ServerSocket(8888);
+        while (true) {//一直监听，直到受到停止的命令
+            Socket socket = null;
+            socket = serverSocket.accept();//如果没有请求，会一直hold在这里等待，有客户端请求的时候才会继续往下执行
+            RequestHandler requestHandler = new RequestHandler(socket);
+            new Thread(requestHandler).start();
+        }
+    }
+}
+</code></pre>
+<h2 id="模拟tomcat">模拟tomcat</h2>
+<p>正如前面的博客：<a href="https://orzlinux.cn/blog/javaservlet20210915.html">Servlet笔记</a>中记录：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210926205933.png" alt="image-20210926205932056"></p>
+<p>首先建一个MyServlet接口，然后创建一个抽象类MyHttpServlet继承接口，最后建一个UserServlet实现具体的doGet，doPost等方法。</p>
+<p>pom依赖添加<code>servlet</code>和<code>dom4j</code>。DOM4J是dom4j.org出品的一个开源<code>XML</code>解析包。</p>
+<p>项目目录：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210926212537.png" alt="image-20210926212535405"></p>
+<p>原理图：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210926214300.png" alt="image-20210926214259219"></p>
+<p>Request.java</p>
+<pre><code class="language-java">package cn.orzlinux.Bean.mytomcat.http;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+public class Request {
+    // 如/usr
+    private String uri;
+    // 请求方法
+    private String method;
+    public Request(InputStream inputStream) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader((inputStream)));
+            //取HTTP请求响应的第一行，GET /user HTTP/1.1，按空格隔开
+            String[] data = reader.readLine().split(&quot; &quot;);
+            this.uri = data[1];
+            this.method = data[0];
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+}
+</code></pre>
+<p>response</p>
+<pre><code class="language-java">package cn.orzlinux.Bean.mytomcat.http;
+
+import java.io.OutputStream;
+
+public class Response {
+    public OutputStream outputStream;
+
+    public static final String responsebody=&quot;HTTP/1.1 200+\r\n&quot;+&quot;Content-Type：text/html+\r\n&quot;
+            +&quot;\r\n&quot;;
+    public Response(OutputStream outputStream){
+        this.outputStream=outputStream;
+    }
+}
+</code></pre>
+<p>MyServlet</p>
+<pre><code class="language-java">package cn.orzlinux.Bean.mytomcat.servlet;
+
+import cn.orzlinux.Bean.mytomcat.http.Request;
+import cn.orzlinux.Bean.mytomcat.http.Response;
+
+public interface MyServlet {
+    void init() throws Exception;
+    void service(Request request, Response response) throws Exception;
+    void destroy();
+}
+</code></pre>
+<p>MyHttpServlet</p>
+<pre><code class="language-java">package cn.orzlinux.Bean.mytomcat.servlet;
+
+import cn.orzlinux.Bean.mytomcat.http.Request;
+import cn.orzlinux.Bean.mytomcat.http.Response;
+
+public abstract class MyHttpServlet implements MyServlet {
+    public void init() throws Exception {
+
+    }
+
+    public void service(Request request, Response response) throws Exception {
+        if(&quot;get&quot;.equalsIgnoreCase(request.getMethod())) {
+            this.doGet(request,response);
+        } else {
+            this.doPost(request,response);
+        }
+    }
+
+    public abstract void doGet(Request request,Response response);
+
+    public abstract void doPost(Request request,Response response);
+
+
+    public void destroy() {
+
+    }
+}
+</code></pre>
+<p>userServlet</p>
+<pre><code class="language-java">package cn.orzlinux.Bean.mytomcat.servlet;
+
+import cn.orzlinux.Bean.mytomcat.http.Request;
+import cn.orzlinux.Bean.mytomcat.http.Response;
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+public class UserServlet extends MyHttpServlet {
+    public void doGet(Request request, Response response) {
+        System.out.println(&quot;doget&quot;);
+        this.doPost(request,response);
+    }
+
+    public void doPost(Request request, Response response){
+        OutputStream outputStream = response.outputStream;
+        String result = Response.responsebody+&quot;user handle successful&quot;;
+        try {
+            outputStream.write(result.getBytes());
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+}
+</code></pre>
+<p>RequestHandler</p>
+<pre><code class="language-java">package cn.orzlinux.Bean.mytomcat.socket;
+
+import cn.orzlinux.Bean.mytomcat.http.Request;
+import cn.orzlinux.Bean.mytomcat.http.Response;
+import cn.orzlinux.Bean.mytomcat.servlet.MyHttpServlet;
+
+import java.io.*;
+import java.net.Socket;
+
+public class RequestHandler implements Runnable{
+    private Socket socket;
+
+    public RequestHandler(Socket socket) {
+        this.socket = socket;
+    }
+
+
+    public void run() {
+        // log
+        try {
+            Request request = new Request(socket.getInputStream());
+            Response response = new Response(socket.getOutputStream());
+            String uri = request.getUri();
+            System.out.println(uri);
+
+            String servletName = TomcatServerV3.urlmapping.get(uri);
+            MyHttpServlet servlet = TomcatServerV3.servletMapping.get(servletName);
+
+            if(servlet!=null) {
+                servlet.service(request,response);
+            }else{
+                String resp=Response.responsebody+&quot;can not find servlet&quot;;
+                OutputStream outputStream=socket.getOutputStream();
+                System.out.println(resp);
+                outputStream.write(resp.getBytes());
+                outputStream.flush();
+                outputStream.close();
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                socket.close();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+</code></pre>
+<p>TomcatServerV3</p>
+<pre><code class="language-java">package cn.orzlinux.Bean.mytomcat.socket;
+
+
+import cn.orzlinux.Bean.mytomcat.servlet.MyHttpServlet;
+import cn.orzlinux.Bean.mytomcat.socket.RequestHandler;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.List;
+
+public class TomcatServerV3 {
+    public static final int port = 8080;
+    // 定义mytomcat.xml中的两个映射
+    public static final HashMap&lt;String, MyHttpServlet&gt; servletMapping = new HashMap&lt;String, MyHttpServlet&gt;();
+
+    public static final HashMap&lt;String,String&gt; urlmapping=new HashMap&lt;String, String&gt;();
+
+    public static void main(String[] args) throws IOException {
+        TomcatServerV3 tomcatServerV3 = new TomcatServerV3();
+        tomcatServerV3.init();
+        tomcatServerV3.run();
+
+    }
+
+    // 初始化，加载xml里面的servlet信息
+    private void init() {
+        try {
+            String path = TomcatServerV3.class.getResource(&quot;/&quot;).getPath();
+            SAXReader reader = new SAXReader();
+            Document document = reader.read(new File(path+&quot;mytomcat.xml&quot;));
+
+            Element rootelement = document.getRootElement();
+            List&lt;Element&gt; elements = rootelement.elements();
+            for(Element element:elements) {
+                if (&quot;servlet&quot;.equalsIgnoreCase(element.getName())){
+                    Element servletname=element.element(&quot;servlet-name&quot;);
+                    Element servletclass=element.element(&quot;servlet-class&quot;);
+                    System.out.println(servletname.getText()+&quot;==&gt;&quot;+servletclass.getText());
+                    //需要注意的是servletMapping映射的第二个参数，要通过反射的方式进行实例化
+                    servletMapping.put(servletname.getText(),
+                            (MyHttpServlet) Class.forName(servletclass.getText().trim()).newInstance());
+                }else if (&quot;servlet-mapping&quot;.equalsIgnoreCase(element.getName())){
+                    Element servletname=element.element(&quot;servlet-name&quot;);
+                    Element urlpattern=element.element(&quot;url-pattern&quot;);
+                    System.out.println(servletname.getText()+&quot;==&gt;&quot;+urlpattern.getText());
+                    urlmapping.put(urlpattern.getText(),servletname.getText());
+                }
+            }
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void run() {
+        ServerSocket serverSocket= null;
+        try {
+            serverSocket = new ServerSocket(port);
+            System.out.println(&quot;====服务启动====&quot;);
+            while(!serverSocket.isClosed()){
+                Socket socket=serverSocket.accept();
+                RequestHandler requestHandler=new RequestHandler(socket);
+                new Thread(requestHandler).start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<p><strong>输出</strong>：</p>
+<pre><code class="language-shell">userServlet==&gt;cn.orzlinux.Bean.mytomcat.servlet.UserServlet
+userServlet==&gt;/user
+====服务启动====
+/
+HTTP/1.1 200+
+Content-Type：text/html+
+
+can not find servlet
+/user
+doget
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210926212452.png" alt="image-20210926212451062"></p>
+<p>最后再回顾一下原理图：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210926214300.png" alt="image-20210926214259219"></p>
+<h2 id="参考">参考</h2>
+<p><a href="https://blog.csdn.net/liuchaoxuan/article/details/81592040">java基于Socket实现的一个简单的HTTP服务器</a></p>
+<p><a href="https://javayz.blog.csdn.net/article/details/102712793">从零开始手写Tomcat，一文彻底搞懂Tomcat运行流程（附源码）</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"tomcat20210926.html";
+			document.getElementById("blogaddr-a").innerHTML="模拟一个简单的tomcat";
+			</script></body></html> 

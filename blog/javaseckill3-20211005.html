@@ -1,0 +1,943 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>秒杀系统web层
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>秒杀系统web层</h1><hr>
+<blockquote>
+<p>本文为<a href="https://www.imooc.com/learn/630">Java高并发秒杀API之web层</a>课程笔记。</p>
+</blockquote>
+<p>编辑器：IDEA</p>
+<p>java版本：java8</p>
+<p>前文：</p>
+<p>一、<a href="https://orzlinux.cn/blog/javaseckill1-20211004.html">秒杀系统环境搭建与DAO层设计</a></p>
+<p>二、 <a href="https://orzlinux.cn/blog/javaseckill2-20211005.html">秒杀系统Service层</a></p>
+<h2 id="设计restful接口">设计Restful接口</h2>
+<p>根据需求设计前端交互流程。</p>
+<p>三个职位：</p>
+<ul>
+<li>产品：解读用户需求，搞出需求文档</li>
+<li>前端：不同平台的页面展示</li>
+<li>后端：存储、展示、处理数据</li>
+</ul>
+<p>前端页面流程：</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211005214607.png" alt="image-20211005214607039" style="zoom:80%;" />
+
+<p>详情页流程逻辑：</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211005214858.png" alt="image-20211005214858360" style="zoom:80%;" />
+
+<p>标准系统时间从服务器获取。</p>
+<p>Restful：一种优雅的URI表述方式、资源的状态和状态转移。</p>
+<p>Restful规范：</p>
+<ul>
+<li>GET 查询操作</li>
+<li>POST 添加/修改操作（非幂等）</li>
+<li>PUT 修改操作（幂等，没有太严格区分）</li>
+<li>DELETE 删除操作</li>
+</ul>
+<p>URL设计：</p>
+<pre><code class="language-shell">/模块/资源/{标示}/集合/...
+/user/{uid}/friends -&gt; 好友列表
+/user/{uid}/followers -&gt; 关注者列表
+</code></pre>
+<p>秒杀API的URL设计</p>
+<pre><code class="language-shell">GET /seckill/list 秒杀列表
+GET /seckill/{id}/detail 详情页
+GET /seckill/time/now 系统时间
+POST /seckill/{id}/exposer 暴露秒杀
+POST /seckill/{id}/{md5}/execution 执行秒杀
+</code></pre>
+<p>下一步就是如何实现这些URL接口。</p>
+<h2 id="springmvc">SpringMVC</h2>
+<h3 id="理论">理论</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211005234650.png" alt="image-20211005234650630"></p>
+<p><strong>适配器模式（Adapter Pattern），把一个类的接口变换成客户端所期待的另一种接口， Adapter模式使原本因接口不匹配（或者不兼容）而无法在一起工作的两个类能够在一起工作。</strong></p>
+<p>SpringMVC的<code>handler</code>（<code>Controller</code>，<code>HttpRequestHandler</code>，<code>Servlet</code>等）有多种实现方式，例如继承<code>Controller</code>的，基于注解控制器方式的，<code>HttpRequestHandler</code>方式的。由于实现方式不一样，调用方式就不确定了。</p>
+<p>看HandlerAdapter接口有三个方法：</p>
+<pre><code class="language-java">// 判断该适配器是否支持这个HandlerMethod
+boolean supports(Object handler);
+// 用来执行控制器处理函数，获取ModelAndView 。就是根据该适配器调用规则执行handler方法。
+ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception;
+long getLastModified(HttpServletRequest request, Object handler);
+</code></pre>
+<p>访问流程如上图，用户访问一个请求，首先经过<code>DispatcherServlet</code>转发。利用<code>HandlerMapping</code>得到想要的<code>HandlerExecutionChain</code>（里面包含<code>handler</code>和一堆拦截器）。然后利用<code>handler</code>，得到<code>HandlerAdapter</code>，遍历所有注入的<code>HandlerAdapter</code>，依次使用<code>supports</code>方法寻找适合这个<code>handler</code>的适配器子类。最后通过这个获取的适配器子类运用<code>handle</code>方法调用控制器函数，返回ModelAndView。</p>
+<p><strong>注解映射技巧</strong></p>
+<ul>
+<li>支持标准的URL</li>
+<li>？和*和**等字符，如<code>/usr/*/creation</code>会匹配<code>/usr/AAA/creation</code>和<code>/usr/BBB/creation</code>等。<code>/usr/**/creation</code>会匹配<code>/usr/creation</code>和<code>/usr/AAA/BBB/creation</code>等URL。</li>
+<li>带{xxx}占位符的URL。如<code>/usr/{userid}</code>匹配<code>/usr/123</code>、<code>/usr/abc</code>等URL.</li>
+</ul>
+<p><strong>请求方法细节处理</strong></p>
+<ul>
+<li><p>请求参数绑定</p>
+</li>
+<li><p>请求方式限制</p>
+</li>
+<li><p>请求转发和重定向</p>
+</li>
+<li><p>数据模型赋值</p>
+</li>
+<li><p>返回json数据</p>
+</li>
+<li><p>cookie访问</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211006002757.png" alt="image-20211006002757781"></p>
+<p><strong>返回json数据</strong></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211006002918.png" alt="image-20211006002918369"></p>
+<p><strong>cookie访问</strong>：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211006002952.png" alt="image-20211006002952177"></p>
+<h3 id="项目整合springmvc">项目整合SpringMVC</h3>
+<p>web.xml下配置springmvc需要加载的配置文件：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee
+                      http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd&quot;
+         version=&quot;3.1&quot; metadata-complete=&quot;true&quot;&gt;
+  &lt;!--修改servlet版本为3.1--&gt;
+
+  &lt;!--配置DispatcherServlet--&gt;
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;seckill-dispatcher&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;!--配置springmvc需要加载的配置文件
+        spring-dao.xml spring-service.xml spring-web.xml--&gt;
+    &lt;!--整合：mybatis -&gt; spring -&gt; springmvc--&gt;
+    &lt;init-param&gt;
+      &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+      &lt;param-value&gt;classpath:spring/spring-*.xml&lt;/param-value&gt;
+    &lt;/init-param&gt;
+  &lt;/servlet&gt;
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;seckill-dispatcher&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
+<p>在resources文件夹下的spring文件夹添加spring-web.xml文件：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot; xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd&quot;&gt;
+&lt;!--配置springmvc--&gt;
+    &lt;!--1. 开启springmvc注解模式--&gt;
+    &lt;!-- 简化配置，
+        自动注册handlermapping,handleradapter
+        默认提供了一系列功能：数据绑定，数字和日期的format,xml和json的读写支持
+     --&gt;
+    &lt;mvc:annotation-driven/&gt;
+
+     &lt;!--servlet-mapping 映射路径：&quot;/&quot;--&gt;
+    &lt;!--2. 静态资源默认servlet配置
+        静态资源处理：js,gif,png..
+        允许使用/做整体映射
+    --&gt;
+    &lt;mvc:default-servlet-handler/&gt;
+
+    &lt;!--3. jsp的显示viewResolver--&gt;
+    &lt;bean class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;
+        &lt;property name=&quot;viewClass&quot; value=&quot;org.springframework.web.servlet.view.JstlView&quot;/&gt;
+        &lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/jsp&quot;/&gt;
+        &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--4. 扫描web相关的bean--&gt;
+    &lt;context:component-scan base-package=&quot;cn.orzlinux.web&quot;/&gt;
+&lt;/beans&gt;
+</code></pre>
+<h2 id="使用springmvc实现restful接口">使用SpringMVC实现Restful接口</h2>
+<p>新建文件：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211006161515.png" alt="image-20211006161515136"></p>
+<p>首先是SeckillResult.java，这个保存controller的返回结果，做一个封装。</p>
+<pre><code class="language-java">// 所有ajax请求返回类型，封装json结果
+public class SeckillResult&lt;T&gt; {
+    private boolean success; //是否执行成功
+    private T data; // 携带数据
+    private String error; // 错误信息
+    // getter setter contructor
+}
+</code></pre>
+<p>在Seckillcontroller.java中，实现了我们之前定义的几个URL：</p>
+<pre><code class="language-shell">GET /seckill/list 秒杀列表
+GET /seckill/{id}/detail 详情页
+GET /seckill/time/now 系统时间
+POST /seckill/{id}/exposer 暴露秒杀
+POST /seckill/{id}/{md5}/execution 执行秒杀
+</code></pre>
+<p>具体代码如下：</p>
+<pre><code class="language-java">@Controller // @Service @Component放入spring容器
+@RequestMapping(&quot;/seckill&quot;) // url:模块/资源/{id}/细分
+public class SeckillController {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private SecKillService secKillService;
+    @RequestMapping(value = &quot;/list&quot;,method = RequestMethod.GET)
+    public String list(Model model) {
+        // list.jsp + model = modelandview
+        List&lt;SecKill&gt; list = secKillService.getSecKillList();
+        model.addAttribute(&quot;list&quot;,list);
+        return &quot;list&quot;;
+    }
+
+    @RequestMapping(value = &quot;/{seckillId}/detail&quot;, method = RequestMethod.GET)
+    public String detail(@PathVariable(&quot;seckillId&quot;) Long seckillId, Model model) {
+        if (seckillId == null) {
+            // 0. 不存在就重定向到list
+            // 1. 重定向访问服务器两次
+            // 2. 重定向可以重定义到任意资源路径。
+            // 3. 重定向会产生一个新的request，不能共享request域信息与请求参数
+            return &quot;redrict:/seckill/list&quot;;
+
+        }
+        SecKill secKill = secKillService.getById(seckillId);
+        if (secKill == null) {
+            // 0. 为了展示效果用forward
+            // 1. 转发只访问服务器一次。
+            // 2. 转发只能转发到自己的web应用内
+            // 3. 转发相当于服务器跳转，相当于方法调用，在执行当前文件的过程中转向执行目标文件，
+            //      两个文件(当前文件和目标文件)属于同一次请求，前后页 共用一个request，可以通
+            //      过此来传递一些数据或者session信息
+            return &quot;forward:/seckill/list&quot;;
+        }
+        model.addAttribute(&quot;seckill&quot;,secKill);
+        return &quot;detail&quot;;
+    }
+
+    // ajax json
+    @RequestMapping(value = &quot;/{seckillId}/exposer&quot;,
+            method = RequestMethod.POST,
+            produces = {&quot;application/json;charset=UTF8&quot;})
+    @ResponseBody
+    public SeckillResult&lt;Exposer&gt; exposer(Long seckillId) {
+        SeckillResult&lt;Exposer&gt; result;
+        try {
+            Exposer exposer = secKillService.exportSecKillUrl(seckillId);
+            result = new SeckillResult&lt;Exposer&gt;(true,exposer);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            result = new SeckillResult&lt;&gt;(false,e.getMessage());
+        }
+        return result;
+    }
+
+    @RequestMapping(value = &quot;/{seckillId}/{md5}/execution&quot;,
+        method = RequestMethod.POST,
+        produces = {&quot;application/json;charset=UTF8&quot;})
+    public SeckillResult&lt;SeckillExecution&gt; execute(
+            @PathVariable(&quot;seckillId&quot;) Long seckillId,
+            // required = false表示cookie逻辑由我们程序处理，springmvc不要报错
+            @CookieValue(value = &quot;killPhone&quot;,required = false) Long userPhone,
+            @PathVariable(&quot;md5&quot;) String md5) {
+        if (userPhone == null) {
+            return new SeckillResult&lt;SeckillExecution&gt;(false, &quot;未注册&quot;);
+        }
+        SeckillResult&lt;SeckillExecution&gt; result;
+        try {
+            SeckillExecution execution = secKillService.executeSeckill(seckillId, userPhone, md5);
+            result = new SeckillResult&lt;SeckillExecution&gt;(true, execution);
+            return result;
+        } catch (SeckillCloseException e) { // 秒杀关闭
+            SeckillExecution execution = new SeckillExecution(seckillId, SecKillStatEnum.END);
+            return new SeckillResult&lt;SeckillExecution&gt;(false,execution);
+        } catch (RepeatKillException e) { // 重复秒杀
+            SeckillExecution execution = new SeckillExecution(seckillId, SecKillStatEnum.REPEAT_KILL);
+            return new SeckillResult&lt;SeckillExecution&gt;(false,execution);
+        } catch (Exception e) {
+            // 不是重复秒杀或秒杀结束，就返回内部错误
+            logger.error(e.getMessage(), e);
+            SeckillExecution execution = new SeckillExecution(seckillId, SecKillStatEnum.INNER_ERROR);
+            return new SeckillResult&lt;SeckillExecution&gt;(false,execution);
+        }
+
+    }
+
+    @RequestMapping(value = &quot;/time/now&quot;,method = RequestMethod.GET)
+    @ResponseBody
+    public SeckillResult&lt;Long&gt; time() {
+        Date now = new Date();
+        return new SeckillResult&lt;Long&gt;(true,now.getTime());
+    }
+}
+</code></pre>
+<h2 id="页面">页面</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211006182314.png" alt="image-20211006182314439"></p>
+<p>这里修改数据库为合适的时间来测试我们的代码。</p>
+<p>点击后跳转到详情页。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211006173025.png" alt="image-20211006173025166"></p>
+<p>详情页涉及到比较多的交互逻辑，如cookie，秒杀成功失败等等。放到<strong>逻辑交互</strong>一节来说。</p>
+<p>运行时发现jackson版本出现问题，pom.xml修改为:</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+  &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+  &lt;version&gt;2.10.2&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>list.jsp代码为：</p>
+<pre><code class="language-html">&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;%--引入jstl--%&gt;
+&lt;%--标签通用头，写在一个具体文件，直接静态包含--%&gt;
+&lt;%@include file=&quot;common/tag.jsp&quot;%&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Bootstrap 模板&lt;/title&gt;
+    &lt;%--静态包含：会合并过来放到这，和当前文件一起作为整个输出--%&gt;
+    &lt;%@include file=&quot;common/head.jsp&quot;%&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;%--页面显示部分--%&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;div class=&quot;panel panel-default&quot;&gt;
+            &lt;div class=&quot;panel panel-heading text-center&quot;&gt;
+                &lt;h1&gt;秒杀列表&lt;/h1&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;panel-body&quot;&gt;
+                &lt;table class=&quot;table table-hover&quot; &gt;
+                    &lt;thead&gt;
+                        &lt;tr&gt;
+                            &lt;th&gt;名称&lt;/th&gt;
+                            &lt;th&gt;库存&lt;/th&gt;
+                            &lt;th&gt;开始时间&lt;/th&gt;
+                            &lt;th&gt;结束时间&lt;/th&gt;
+                            &lt;th&gt;创建时间&lt;/th&gt;
+                            &lt;th&gt;详情页&lt;/th&gt;
+                        &lt;/tr&gt;
+                    &lt;/thead&gt;
+                    &lt;tbody&gt;
+                        &lt;c:forEach var=&quot;sk&quot; items=&quot;${list}&quot;&gt;
+                            &lt;tr&gt;
+                                &lt;td&gt;${sk.name}&lt;/td&gt;
+                                &lt;td&gt;${sk.number}&lt;/td&gt;
+                                &lt;td&gt;
+                                    &lt;fmt:formatDate value=&quot;${sk.startTime}&quot; pattern=&quot;yyyy-MM-dd HH:mm:ss&quot;/&gt;
+                                &lt;/td&gt;
+                                &lt;td&gt;
+                                    &lt;fmt:formatDate value=&quot;${sk.endTime}&quot; pattern=&quot;yyyy-MM-dd HH:mm:ss&quot;/&gt;
+                                &lt;/td&gt;
+                                &lt;td&gt;
+                                    &lt;fmt:formatDate value=&quot;${sk.createTime}&quot; pattern=&quot;yyyy-MM-dd HH:mm:ss&quot;/&gt;
+                                &lt;/td&gt;
+                                &lt;td&gt;
+                                    &lt;a class=&quot;btn btn-info&quot; href=&quot;/seckill/${sk.seckillId}/detail&quot; target=&quot;_blank&quot;&gt;
+                                        link
+                                    &lt;/a&gt;
+                                &lt;/td&gt;
+                            &lt;/tr&gt;
+                        &lt;/c:forEach&gt;
+                    &lt;/tbody&gt;
+                &lt;/table&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+&lt;!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) --&gt;
+&lt;script src=&quot;https://code.jquery.com/jquery.js&quot;&gt;&lt;/script&gt;
+&lt;!-- 包括所有已编译的插件 --&gt;
+&lt;script src=&quot;js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211006172715.png" alt="image-20211006172715018"></p>
+<h2 id="逻辑交互">逻辑交互</h2>
+<h3 id="身份认证">身份认证</h3>
+<p>cookie中没有手机号要弹窗，手机号不正确（11位数字）要提示错误：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211006191323.png" alt="image-20211006191323525"></p>
+<p>选择提交之后要能够在cookie中看到：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211006191309.png" alt="image-20211006191309641"></p>
+<p>目前为止detail.jsp:</p>
+<pre><code class="language-html">&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;秒杀详情页&lt;/title&gt;
+    &lt;%--静态包含：会合并过来放到这，和当前文件一起作为整个输出--%&gt;
+    &lt;%@include file=&quot;common/head.jsp&quot;%&gt;
+    &lt;link href=&quot;https://cdn.bootcdn.net/ajax/libs/jquery-countdown/2.1.0/css/jquery.countdown.css&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;%--&lt;input type=&quot;hidden&quot; id=&quot;basePath&quot; value=&quot;${basePath}&quot; /&gt;--%&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;div class=&quot;panel panel-default text-center&quot;&gt;
+            &lt;h1&gt;
+                &lt;div class=&quot;panel-heading&quot;&gt;${seckill.name}&lt;/div&gt;
+            &lt;/h1&gt;
+
+        &lt;/div&gt;
+        &lt;div class=&quot;panel-body&quot;&gt;
+            &lt;h2 class=&quot;text-danger&quot;&gt;
+                &lt;!-- 显示time图标 --&gt;
+                &lt;span class=&quot;glyphicon glyphicon-time&quot;&gt;&lt;/span&gt;
+                &lt;!-- 展示倒计时 --&gt;
+                &lt;span class=&quot;glyphicon&quot; id=&quot;seckillBox&quot;&gt;&lt;/span&gt;
+            &lt;/h2&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;!-- 登录弹出层，输入电话 bootstrap里面的--&gt;
+    &lt;div id=&quot;killPhoneModal&quot; class=&quot;modal fade bs-example-modal-lg&quot;&gt;
+        &lt;div class=&quot;modal-dialog&quot;&gt;
+            &lt;div class=&quot;modal-content&quot;&gt;
+                &lt;div class=&quot;modal-header&quot;&gt;
+                    &lt;h3 class=&quot;modal-title text-center&quot;&gt;
+                        &lt;span class=&quot;glyphicon glyphicon-phone&quot;&gt;&lt;/span&gt;秒杀电话：
+                    &lt;/h3&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;modal-body&quot;&gt;
+                    &lt;div class=&quot;row&quot;&gt;
+                        &lt;div class=&quot;col-xs-8 col-xs-offset-2&quot;&gt;
+                            &lt;input type=&quot;text&quot; name=&quot;killphone&quot; id=&quot;killphoneKey&quot;
+                                   placeholder=&quot;填手机号^O^&quot; class=&quot;form-control&quot; /&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;modal-footer&quot;&gt;
+                    &lt;span id=&quot;killphoneMessage&quot; class=&quot;glyphicon&quot;&gt;&lt;/span&gt;
+                    &lt;button type=&quot;button&quot; id=&quot;killPhoneBtn&quot; class=&quot;btn btn-success&quot;&gt;
+                        &lt;span class=&quot;glyphicon glyphicon-phone&quot;&gt;&lt;/span&gt; Submit
+                    &lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+
+    &lt;!-- jQuery文件。务必在bootstrap.min.js 之前引入 --&gt;
+    &lt;script src=&quot;//cdn.bootcss.com/jquery/1.11.3/jquery.min.js&quot;&gt;&lt;/script&gt;
+    &lt;!-- 最新的 Bootstrap 核心 JavaScript 文件 --&gt;
+    &lt;script src=&quot;//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
+    &lt;!-- jQuery cookie操作插件 --&gt;
+    &lt;script src=&quot;//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js&quot;&gt;&lt;/script&gt;
+    &lt;!-- jQery countDonw倒计时插件  --&gt;
+    &lt;script src=&quot;//cdn.bootcss.com/jquery.countdown/2.1.0/jquery.countdown.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;%--开始写交互逻辑--%&gt;
+&lt;script src=&quot;/resources/script/seckill.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    $(function () {
+        seckill.detail.init({
+            seckillId: ${seckill.seckillId},
+            startTime: ${seckill.startTime.time}, // 转化为毫秒，方便比较
+            endTime: ${seckill.endTime.time},
+        });
+    });
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>我们的逻辑主要写在另外的js文件中：</p>
+<p>seckill.js</p>
+<pre><code class="language-javascript">// 存放主要交互逻辑js
+// javascript 模块化
+var seckill={
+    // 封装秒杀相关ajax的URL
+    URL:{
+
+    },
+    // 验证手机号
+    validatePhone: function (phone) {
+        if(phone &amp;&amp; phone.length==11 &amp;&amp; !isNaN(phone)) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    // 详情页秒杀逻辑
+    detail: {
+        // 详情页初始化
+        init: function (params) {
+            // 手机验证和登录，计时交互
+            // 规划交互流程
+            // 在cookie中查找手机号
+            var killPhone = $.cookie(&#39;killPhone&#39;);
+            var startTime = params[&#39;startTime&#39;];
+            var endTime = params[&#39;endTime&#39;];
+            var seckillId = params[&#39;seckillId&#39;];
+            // 验证手机号
+            if(!seckill.validatePhone(killPhone)) {
+                // 绑定手机号，获取弹窗输入手机号的div id
+                var killPhoneModal = $(&#39;#killPhoneModal&#39;);
+                killPhoneModal.modal({
+                    show: true, //显示弹出层
+                    backdrop: &#39;static&#39;,//禁止位置关闭
+                    keyboard: false, //关闭键盘事件
+                });
+                $(&#39;#killPhoneBtn&#39;).click(function () {
+                    var inputPhone = $(&#39;#killphoneKey&#39;).val();
+                    // 输入格式什么的ok了就刷新页面
+                    if(seckill.validatePhone(inputPhone)) {
+                        // 将电话写入cookie
+                        $.cookie(&#39;killPhone&#39;,inputPhone,{expires:7,path:&#39;/seckill&#39;});
+                        window.location.reload();
+                    } else {
+                        // 更好的方式是把字符串写入字典再用
+                        $(&#39;#killphoneMessage&#39;).hide().html(&#39;&lt;label class=&quot;label label-danger&quot;&gt;手机号格式错误&lt;/label&gt;&#39;).show(500);
+                    }
+                });
+            }
+            // 已经登录
+
+        }
+    }
+}
+</code></pre>
+<h3 id="计时面板">计时面板</h3>
+<p>在登录完成后，处理计时操作：</p>
+<pre><code class="language-javascript">// 已经登录
+// 计时交互
+$.get(seckill.URL.now(),{},function (result) {
+    if(result &amp;&amp; result[&#39;success&#39;]) {
+        var nowTime = result[&#39;data&#39;];
+        // 写到函数里处理
+        seckill.countdown(seckillId,nowTime,startTime,endTime);
+    } else {
+        console.log(&#39;result: &#39;+result);
+    }
+});
+</code></pre>
+<p>在countdown函数里，有三个判断，未开始、已经开始、结束。</p>
+<pre><code class="language-javascript">URL:{
+    now: function () {
+        return &#39;/seckill/time/now&#39;;
+    }
+},
+
+handleSeckill: function () {
+    // 处理秒杀逻辑
+},
+
+countdown: function (seckillId,nowTime,startTime,endTime) {
+    var seckillBox = $(&#39;#seckillBox&#39;);
+    if(nowTime&gt;endTime) {
+        seckillBox.html(&#39;秒杀结束！&#39;);
+    } else  if(nowTime&lt;startTime) {
+        // 秒杀未开始，计时
+        var killTime = new Date(startTime + 1000);
+        seckillBox.countdown(killTime,function (event) {
+            // 控制时间格式
+            var format = event.strftime(&#39;秒杀开始倒计时：%D天 %H时 %M分 %S秒&#39;);
+            seckillBox.html(format);
+            // 时间完成后回调事件
+        }).on(&#39;finish.countdown&#39;, function () {
+            // 获取秒杀地址，控制显示逻辑，执行秒杀
+            seckill.handleSeckill();
+        })
+    } else {
+        // 秒杀开始
+        seckill.handleSeckill();
+    }
+},
+</code></pre>
+<p>总体就是一个显示操作，用了jquery的countdown倒计时插件。</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211006194407.png" alt="image-20211006194407145" style="zoom:67%;" />
+
+<h3 id="秒杀交互">秒杀交互</h3>
+<p>秒杀之前：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211006202253.png" alt="image-20211006202253376"></p>
+<p>详情页：</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211006201149.png" alt="image-20211006201149488" style="zoom:80%;" />
+
+<p>点击开始秒杀：</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211006202320.png" alt="image-20211006202320137" style="zoom:80%;" />
+
+<p>列表页刷新：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211006202306.png" alt="image-20211006202306300"></p>
+<p>运行时发现controller忘了写<code>@ResponseBody</code>了，这里返回的不是jsp是json，需要加上。</p>
+<pre><code class="language-java">@ResponseBody
+public SeckillResult&lt;SeckillExecution&gt; execute(
+        @PathVariable(&quot;seckillId&quot;) Long seckillId,
+        // required = false表示cookie逻辑由我们程序处理，springmvc不要报错
+        @CookieValue(value = &quot;killPhone&quot;,required = false) Long userPhone,
+        @PathVariable(&quot;md5&quot;) String md5)
+</code></pre>
+<p>在seckill.js中，补全秒杀逻辑：</p>
+<pre><code class="language-javascript">// 封装秒杀相关ajax的URL
+URL:{
+    now: function () {
+        return &#39;/seckill/time/now&#39;;
+    },
+    exposer: function(seckillId) {
+        return &#39;/seckill/&#39;+seckillId+&#39;/exposer&#39;;
+    },
+
+    execution: function (seckillId,md5) {
+        return &#39;/seckill/&#39;+seckillId+&#39;/&#39;+md5+&#39;/execution&#39;;
+    }
+},
+
+
+// id和显示计时的那个模块
+handleSeckill: function (seckillId,node) {
+    // 处理秒杀逻辑
+    // 在计时的地方显示一个秒杀按钮
+    node.hide()
+        .html(&#39;&lt;button class=&quot;btn btn-primary btn-lg&quot; id=&quot;killBtn&quot;&gt;开始秒杀&lt;/button&gt;&#39;);
+    // 获取秒杀地址
+    $.post(seckill.URL.exposer(),{seckillId},function (result) {
+        if(result &amp;&amp; result[&#39;success&#39;]) {
+            var exposer = result[&#39;data&#39;];
+            if(exposer[&#39;exposed&#39;]) {
+                // 如果开启了秒杀
+                // 获取秒杀地址
+                var md5 = exposer[&#39;md5&#39;];
+                var killUrl = seckill.URL.execution(seckillId,md5);
+                console.log(&quot;killurl: &quot;+killUrl);
+               // click永远绑定，one只绑定一次
+                $(&#39;#killBtn&#39;).one(&#39;click&#39;,function () {
+                    // 执行秒杀请求操作
+                    // 先禁用按钮
+                    $(this).addClass(&#39;disabled&#39;);
+                    // 发送秒杀请求
+                    $.post(killUrl,{},function (result) {
+                        if(result) {
+
+                            var killResult = result[&#39;data&#39;];
+                            var state = killResult[&#39;state&#39;];
+                            var stateInfo = killResult[&#39;stateInfo&#39;];
+                            // 显示秒杀结果
+                            if(result[&#39;success&#39;]) {
+                                node.html(&#39;&lt;span class=&quot;label label-success&quot;&gt;&#39;+stateInfo+&#39;&lt;/span&gt;&#39;);
+                            } else {
+                                node.html(&#39;&lt;span class=&quot;label label-danger&quot;&gt;&#39;+stateInfo+&#39;&lt;/span&gt;&#39;);
+                            }
+
+
+                        }
+                        console.log(result);
+                    })
+                });
+                node.show();
+            } else {
+                // 未开始秒杀，这里是因为本机显示时间和服务器时间不一致
+                // 可能浏览器认为开始了，服务器其实还没开始
+                var now = exposer[&#39;now&#39;];
+                var start = exposer[&#39;start&#39;];
+                var end = exposer[&#39;end&#39;];
+                // 重新进入倒计时逻辑
+                seckill.countdown(seckillId,now,start,end);
+            }
+        } else {
+            console.log(&#39;result=&#39;+result);
+        }
+    })
+},
+</code></pre>
+<p>秒杀成功后再次进行秒杀则不成功：</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211006203710.png" alt="image-20211006203710505" style="zoom:80%;" />
+
+<p>输出：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211006203126.png" alt="image-20211006203126546"></p>
+<p>在库存不够时也返回秒杀结束：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211006203238.png" alt="image-20211006203238807"></p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211006203736.png" alt="image-20211006203736790" style="zoom:80%;" />
+
+
+
+<p>至此，功能方面已经实现了，后面还剩下优化部分。</p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"javaseckill3-20211005.html";
+			document.getElementById("blogaddr-a").innerHTML="秒杀系统web层";
+			</script></body></html> 

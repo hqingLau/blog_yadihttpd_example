@@ -1,0 +1,594 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>Java线程池Executor、Semaphore、CountDownLatch、CyclicBarrier
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>Java线程池Executor、Semaphore、CountDownLatch、CyclicBarrier</h1><hr>
+<h2 id="this-逃逸"><code>This</code> 逃逸</h2>
+<p>只有当构造函数返回时，<code>this</code>引用才应该从线程中逸出。构造函数可以将<code>this</code>引用保存到某个地方，只要其他线程不会在构造函数完成之前使用它。</p>
+<h2 id="future"><code>Future</code></h2>
+<p>Future代表的是异步执行的结果，意思是当异步执行结束之后，返回的结果将会保存在Future中。</p>
+<p>一般来说，当我们执行一个长时间运行的任务时，使用Future就可以让我们暂时去处理其他的任务，等长任务执行完毕再返回其结果。</p>
+<p>经常会使用到Future的场景有：1. 计算密集场景。2. 处理大数据量。3. 远程方法调用等。</p>
+<pre><code class="language-java">public class Demo {
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    public Future&lt;Integer&gt; calculate(Integer integer) {
+        return executorService.submit(()-&gt;{
+            System.out.println(&quot;Calculating...&quot;+integer);
+            Thread.sleep(1000);
+            return integer*integer;
+        });
+    }
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        Demo demo = new Demo();
+        Future&lt;Integer&gt; result = demo.calculate(20);
+        //do something
+        Thread.sleep(300);
+        while(!result.isDone()) {
+            System.out.println(&quot;Calculating...&quot;);
+            //do something
+            Thread.sleep(300);
+        }
+        // 阻塞操作，会一直等待异步执行完毕才返回结果
+        Integer ret = result.get();
+        System.out.println(ret);
+    }
+}
+/**
+ * Calculating...20
+ * Calculating...
+ * Calculating...
+ * Calculating...
+ * 400
+ */
+</code></pre>
+<h2 id="线程池">线程池</h2>
+<p><strong>使用线程池的好处</strong>：</p>
+<ul>
+<li><strong>降低资源消耗</strong>。通过重复利用已创建的线程降低线程创建和销毁造成的消耗。</li>
+<li><strong>提高响应速度</strong>。当任务到达时，任务可以不需要的等到线程创建就能立即执行。</li>
+<li><strong>提高线程的可管理性</strong>。线程是稀缺资源，如果无限制的创建，不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一的分配，调优和监控。</li>
+</ul>
+<h3 id="executor-框架"><code>Executor</code> 框架</h3>
+<p>易于管理，效率高，避免 this 逃逸问题。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210914101730.png" alt="image-20210914101730813"></p>
+<p><code>Runnable</code> 接口或 <code>Callable</code> 接口 实现类都可以被 <code>ThreadPoolExecutor</code> 或 <code>ScheduledThreadPoolExecutor</code> 执行。</p>
+<p><strong>需要更多关注的是 <code>ThreadPoolExecutor</code> 这个类，这个类在实际使用线程池的过程中，使用频率非常高。</strong></p>
+<p> <code>ScheduledThreadPoolExecutor</code> 实际上是继承了 <code>ThreadPoolExecutor</code> 并实现了 ScheduledExecutorService ，而 <code>ScheduledExecutorService</code> 又继承了 <code>ExecutorService</code>。</p>
+<pre><code class="language-java">public class ScheduledThreadPoolExecutor
+        extends ThreadPoolExecutor
+        implements ScheduledExecutorService
+</code></pre>
+<p>调用<code>submit()</code>返回一个<code>Future</code>对象：</p>
+<pre><code class="language-java">public abstract java.util.concurrent.Future&lt;?&gt; submit(@NotNull Runnable task)
+</code></pre>
+<p><strong>Executor 框架使用示意图</strong></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210914103608.png" alt="image-20210914103608678"></p>
+<h3 id="threadpoolexecutor"><code>ThreadPoolExecutor</code></h3>
+<p>这个在之前的《<a href="https://orzlinux.cn/blog/javaMultiThread20210913.html">Java多线程volatile、ThreadLocal、线程池、atomic</a>》写过了，这里再归纳一遍。</p>
+<pre><code class="language-java">/**
+* 用给定的初始参数创建一个新的ThreadPoolExecutor。
+*/
+public ThreadPoolExecutor(int corePoolSize,//线程池的核心线程数量
+                          int maximumPoolSize,//线程池的最大线程数
+                          long keepAliveTime,//当线程数大于核心线程数时，多余的空闲线程存活的最长时间
+                          TimeUnit unit,//时间单位
+                          BlockingQueue&lt;Runnable&gt; workQueue,//任务队列，用来储存等待执行任务的队列
+                          ThreadFactory threadFactory,//线程工厂，用来创建线程，一般默认即可
+                          RejectedExecutionHandler handler//拒绝策略，当提交的任务过多而不能及时处理时，我们可以定制策略来处理任务
+                         ) 
+</code></pre>
+<p><strong><code>ThreadPoolExecutor</code> 3 个最重要的参数：</strong></p>
+<ul>
+<li><code>corePoolSize</code> : 核心线程数线程数定义了最小可以同时运行的线程数量。</li>
+<li><code>maximumPoolSize</code> : 当队列中存放的任务达到队列容量的时候，当前可以同时运行的线程数量变为最大线程数。</li>
+<li><code>workQueue</code>: 当新任务来的时候会先判断当前运行的线程数量是否达到核心线程数，如果达到的话，新任务就会被存放在队列中。</li>
+</ul>
+<p><code>ThreadPoolExecutor</code><strong>其他常见参数</strong>:</p>
+<ol>
+<li><code>keepAliveTime</code>:当线程池中的线程数量大于 <code>corePoolSize</code> 的时候，如果这时没有新的任务提交，核心线程外的线程不会立即销毁，而是会等待，直到等待的时间超过了 <code>keepAliveTime</code>才会被回收销毁；</li>
+<li><code>unit</code> : <code>keepAliveTime</code> 参数的时间单位。</li>
+<li><code>threadFactory</code> :executor 创建新线程的时候会用到。</li>
+<li><code>handler</code> :饱和策略。</li>
+</ol>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20210914104332.png" alt="image-20210914104332278" style="zoom:80%;" />
+
+<h3 id="几个对比">几个对比</h3>
+<p><code>Runnable</code> 接口不会返回结果或抛出<strong>检查异常</strong>，但是 <code>Callable</code> 接口可以。所以，如果任务不需要返回结果或抛出异常推荐使用 <code>Runnable</code> 接口，这样代码看起来会更加简洁。</p>
+<p><code>execute()</code>方法用于<strong>提交不需要返回值的任务</strong>，所以无法判断任务是否被线程池执行成功与否。</p>
+<p><code>submit()</code>方法用于提交需要返回值的任务。线程池会返回一个 <code>Future</code> 类型的对象，通过这个 <code>Future</code> 对象可以判断任务是否执行成功 ，并且可以通过 <code>Future</code> 的 <code>get()</code>方法来获取返回值，<code>get()</code>方法会阻塞当前线程直到任务完成，而使用 <code>get（long timeout，TimeUnit unit）</code>方法则会阻塞当前线程一段时间后立即返回，这时候有可能任务没有执行完。</p>
+<pre><code class="language-java">public abstract void execute(@NotNull Runnable command);
+public abstract java.util.concurrent.Future&lt;?&gt; submit(@NotNull Runnable task);
+</code></pre>
+<p><code>shutdown（）</code> : <strong>关闭线程池</strong>，线程池的状态变为 <code>SHUTDOWN</code>。线程池不再接受新任务了，但是队列里的任务得执行完毕。</p>
+<p><code>shutdownNow（）</code> : 关闭线程池，线程的状态变为 <code>STOP</code>。线程池会终止当前正在运行的任务，并停止处理排队的任务并返回正在等待执行的 List。</p>
+<p><code>isShutDown</code> 当调用 <code>shutdown()</code> 方法后返回为 true。</p>
+<p><code>isTerminated</code> 当调用 <code>shutdown()</code> 方法后，并且<strong>所有提交的任务完成后返回为 true</strong>。</p>
+<h3 id="scheduledthreadpoolexecutor"><code>ScheduledThreadPoolExecutor</code></h3>
+<blockquote>
+<p>Quartz 是一个由 java 编写的任务调度库。在实际项目开发中使用 Quartz 的还是居多，比较推荐使用 Quartz。因为 Quartz 理论上能够同时对上万个任务进行调度，拥有丰富的功能特性，包括任务调度、任务持久化、可集群化、插件等等。</p>
+</blockquote>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20210914110727.png" alt="image-20210914110727933" style="zoom:80%;" />
+
+<p>周期任务：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210914110800.png" alt="image-20210914110800860"></p>
+<h2 id="semaphore"><code>Semaphore</code></h2>
+<pre><code class="language-java">public class Yadi {
+    private static final int threadCount = 550;
+
+    public static void main(String[] args) {
+        ExecutorService threadPool =  Executors.newFixedThreadPool(300);
+        final Semaphore semaphore = new Semaphore(5);
+        for (int i = 0; i &lt; threadCount; i++) {
+            final int threadnum = i;
+            threadPool.execute(()-&gt;{
+                try {
+                    // 获取不到就阻塞
+                    // Semaphore 只是维持了一个可获得许可证的数量。 
+                    // Semaphore 经常用于限制获取某种资源的线程数量。
+                    semaphore.acquire();
+                    test(threadnum);
+                    semaphore.release();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        threadPool.shutdown();
+        System.out.println(&quot;finish&quot;);
+    }
+
+    public static void test(int threadnum) throws InterruptedException {
+        Thread.sleep(1000);// 模拟请求的耗时操作
+        System.out.println(&quot;threadnum:&quot; + threadnum);
+        Thread.sleep(1000);// 模拟请求的耗时操作
+    }
+}
+</code></pre>
+<p>默认抢占式：</p>
+<pre><code class="language-java">finish
+threadnum:0
+threadnum:1
+threadnum:2
+threadnum:4
+threadnum:3
+threadnum:300
+threadnum:301
+threadnum:234
+threadnum:304
+</code></pre>
+<p>可以改成公平式，FIFO</p>
+<pre><code class="language-java">// public Semaphore(int permits, boolean fair)
+
+threadnum:0
+threadnum:3
+threadnum:2
+threadnum:1
+threadnum:4
+threadnum:9
+threadnum:5
+threadnum:7
+threadnum:8
+</code></pre>
+<blockquote>
+<p><code>Semaphore</code> 与 <code>CountDownLatch</code> 一样，也是共享锁的一种实现。它默认构造 AQS 的 state 为 <code>permits</code>。当执行任务的线程数量超出 <code>permits</code>，那么多余的线程将会被放入阻塞队列 Park,并自旋判断 state 是否大于 0。只有当 state 大于 0 的时候，阻塞的线程才能继续执行,此时先前执行任务的线程继续执行 <code>release()</code> 方法，<code>release()</code> 方法使得 state 的变量会加 1，那么自旋的线程便会判断成功。 如此，每次只有最多不超过 <code>permits</code> 数量的线程能自旋成功，便限制了执行任务线程的数量。</p>
+</blockquote>
+<h2 id="countdownlatch"><code>CountDownLatch</code></h2>
+<p><code>CountDownLatch</code> 允许 <code>count</code> 个线程阻塞在一个地方，直至所有线程的任务都执行完毕。</p>
+<p><code>CountDownLatch</code> 是共享锁的一种实现,它默认构造 AQS 的 <code>state</code> 值为 <code>count</code>。当线程使用 <code>countDown()</code> 方法时,其实使用了<code>tryReleaseShared</code>方法以 CAS 的操作来减少 <code>state</code>,直至 <code>state</code> 为 0 。当调用 <code>await()</code> 方法的时候，如果 <code>state</code> 不为 0，那就证明任务还没有执行完毕，<code>await()</code> 方法就会一直阻塞，也就是说 <code>await()</code> 方法之后的语句不会被执行。然后，<code>CountDownLatch</code> 会自旋 CAS 判断 <code>state == 0</code>，如果 <code>state == 0</code> 的话，就会释放所有等待的线程，<code>await()</code> 方法之后的语句得到执行。</p>
+<p><strong>两种用法</strong>：</p>
+<ul>
+<li>等待n个线程执行完毕，如加载组件。</li>
+<li>作为信号枪，同时开始线程。先创建一个<code>CountDownLatch</code>对象，初始化为1，多个线程执行前都<code>await()</code>，主线程调用<code>countDown</code>时，多个线程同时被唤醒。</li>
+</ul>
+<pre><code class="language-java">public class CountDownLathDemo {
+    private static final int threadCount = 550;
+
+    public static void main(String[] args) throws InterruptedException {
+        ExecutorService threadPool =  Executors.newFixedThreadPool(300);
+        final CountDownLatch countDownLatch = new CountDownLatch(threadCount);
+        for (int i = 0; i &lt; threadCount; i++) {
+            final int threadnum = i;
+            threadPool.execute(()-&gt;{
+                try {
+                    test(threadnum);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    countDownLatch.countDown();
+                }
+            });
+        }
+        countDownLatch.await();
+        threadPool.shutdown();
+        System.out.println(&quot;finish&quot;);
+    }
+
+    public static void test(int threadnum) throws InterruptedException {
+        Thread.sleep(1000);// 模拟请求的耗时操作
+        System.out.println(&quot;threadnum:&quot; + threadnum);
+        Thread.sleep(1000);// 模拟请求的耗时操作
+    }
+}
+
+/**
+ * ...
+ * threadnum:477
+ * threadnum:478
+ * threadnum:481
+ * threadnum:458
+ * finish
+ */
+</code></pre>
+<blockquote>
+<p><code>CountDownLatch</code> 是一次性的，计数器的值只能在构造方法中初始化一次，之后没有任何机制再次对其设置值，当 <code>CountDownLatch</code> 使用完毕后，它不能再次被使用。</p>
+</blockquote>
+<h2 id="cyclicbarrier"><code>CyclicBarrier</code></h2>
+<p><code>CyclicBarrier</code> 可以用于多线程计算数据。让一组线程到达一个屏障（也可以叫同步点）时被阻塞，直到最后一个线程到达屏障时，屏障才会开门，所有被屏障拦截的线程才会继续干活。</p>
+<pre><code class="language-java">public class CyclicBarrierDemo {
+    private static final int threadCount = 550;
+    private static final CyclicBarrier cyclicBarrier = new CyclicBarrier(5);
+    public static void main(String[] args) throws InterruptedException {
+        ExecutorService threadPool =  Executors.newFixedThreadPool(10);
+
+        for (int i = 0; i &lt; threadCount; i++) {
+            final int threadnum = i;
+            threadPool.execute(()-&gt;{
+                try {
+                    test(threadnum);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (BrokenBarrierException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        threadPool.shutdown();
+        System.out.println(&quot;finish&quot;);
+    }
+
+    public static void test(int threadnum) throws InterruptedException, BrokenBarrierException, TimeoutException {
+        System.out.println(&quot;threadnum:&quot; + threadnum+&quot; is ready&quot;);
+        //等到来了5个才放行
+        cyclicBarrier.await(60, TimeUnit.SECONDS);
+        System.out.println(&quot;threadnum:&quot; + threadnum+&quot; is finish&quot;);
+    }
+}
+
+// threadnum:5 is ready
+// threadnum:3 is ready
+// threadnum:1 is ready
+// threadnum:2 is ready
+// threadnum:4 is ready
+// threadnum:0 is ready
+// threadnum:4 is finish
+// threadnum:2 is finish
+// ...
+</code></pre>
+<p>可以指定屏障可以打开时要首先执行的函数：</p>
+<pre><code class="language-java">// public CyclicBarrier(int parties, Runnable barrierAction)
+private static final CyclicBarrier cyclicBarrier = new CyclicBarrier(5, () -&gt; {
+    System.out.println(&quot;屏障可以打开了&quot;);
+});
+    
+// threadnum:0 is ready
+// threadnum:1 is ready
+// threadnum:2 is ready
+// threadnum:3 is ready
+// threadnum:4 is ready
+// 屏障可以打开了
+</code></pre>
+<p>对于 <code>CountDownLatch</code> 来说，重点是“一个线程（多个线程）等待”，而其他的 N 个线程在完成“某件事情”之后，可以终止，也可以等待。而对于 <code>CyclicBarrier</code>，重点是多个线程，在任意一个线程没有完成，所有的线程都必须等待。</p>
+<p><code>CountDownLatch</code> 是计数器，线程完成一个记录一个，只不过计数不是递增而是递减，而 <code>CyclicBarrier</code> 更像是一个阀门，需要所有线程都到达，阀门才能打开，然后继续执行。</p>
+<h2 id="参考">参考</h2>
+<p><a href="https://snailclimb.gitee.io/javaguide/#/./docs/java/multi-thread/java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93">java线程池学习总结</a></p>
+<p><a href="https://www.cnblogs.com/whatisjava/archive/2013/05/29/3106336.html">this引用逸出</a></p>
+<p><a href="https://www.cnblogs.com/flydean/p/12680281.html">java中Future的使用</a></p>
+<p><a href="https://snailclimb.gitee.io/javaguide/#/docs/java/multi-thread/AQS%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8AAQS%E5%90%8C%E6%AD%A5%E7%BB%84%E4%BB%B6%E6%80%BB%E7%BB%93">AQS 原理以及 AQS 同步组件总结</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"javaMultiThread20210914.html";
+			document.getElementById("blogaddr-a").innerHTML="Java线程池Executor、Semaphore、CountDownLatch、CyclicBarrier";
+			</script></body></html> 

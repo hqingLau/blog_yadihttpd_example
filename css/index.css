@@ -53,8 +53,15 @@ a {
 	text-decoration:none;
 }
 strong{
-    color: #5b6bfa;
+    color: #6196cc;
+    margin-left: 2px;
+    margin-right: 2px;
 
+}
+
+a:hover {
+    color: #49b1f5;
+    cursor: pointer;
 }
 #body-wrap {
   height: 100%;

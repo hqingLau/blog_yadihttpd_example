@@ -1,0 +1,382 @@
+<!DOCTYPE html><html lang="zh"><head><style> </style><title>
+分类列表
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<p><a href="/blog/category_Algorighm.html" class=categorybutton id="category_Algorighm">Algorighm</a>
+<a href="/blog/category_C_C++.html" class=categorybutton id="category_C_C++">C/C++</a>
+<a href="/blog/category_Concurrency.html" class=categorybutton id="category_Concurrency">Concurrency</a>
+<a href="/blog/category_else.html" class=categorybutton id="category_else">else</a>
+<a href="/blog/category_framework.html" class=categorybutton id="category_framework">framework</a>
+<a href="/blog/category_go.html" class=categorybutton id="category_go">go</a>
+<a href="/blog/category_Java.html" class=categorybutton id="category_Java">Java</a>
+<a href="/blog/category_leetcode.html" class=categorybutton id="category_leetcode">leetcode</a>
+<a href="/blog/category_Linux.html" class=categorybutton id="category_Linux">Linux</a>
+<a href="/blog/category_OS.html" class=categorybutton id="category_OS">OS</a>
+<a href="/blog/category_SQL.html" class=categorybutton id="category_SQL">SQL</a>
+<a href="/blog/category_yadihttpd.html" class=categorybutton id="category_yadihttpd">yadihttpd</a></p>
+<p>2021-10-24 &nbsp;&nbsp;
+<a href="/blog/yadichat1.html">yadiChat-step1-登陆注册</a></p>
+<p>2021-10-20 &nbsp;&nbsp;
+<a href="/blog/tree-20211020.html">数据结构-树</a></p>
+<p>2021-10-19 &nbsp;&nbsp;
+<a href="/blog/hackerrank_java3.html">Java练习Hackerrank又又二十道</a></p>
+<p>2021-10-14 &nbsp;&nbsp;
+<a href="/blog/hackerrank_java2.html">Java练习Hackerrank另外二十道</a></p>
+<p>2021-10-13 &nbsp;&nbsp;
+<a href="/blog/hand-java-vm1-2.html">《动手实现java虚拟机》1、2章</a></p>
+<p>2021-10-12 &nbsp;&nbsp;
+<a href="/blog/hackerrank_java1.html">Java练习Hackerrank二十道</a></p>
+<p>2021-10-07 &nbsp;&nbsp;
+<a href="/blog/javaseckill4-20211006.html">秒杀系统高并发优化</a></p>
+<p>2021-10-06 &nbsp;&nbsp;
+<a href="/blog/javaseckill3-20211005.html">秒杀系统web层</a></p>
+<p>2021-10-05 &nbsp;&nbsp;
+<a href="/blog/javaseckill2-20211005.html">秒杀系统Service层</a></p>
+<p>2021-10-05 &nbsp;&nbsp;
+<a href="/blog/javaseckill1-20211004.html">秒杀系统环境搭建与DAO层设计</a></p>
+<p>2021-10-01 &nbsp;&nbsp;
+<a href="/blog/javaAOP20211001.html">动态代理、IoC、AOP</a></p>
+<p>2021-09-29 &nbsp;&nbsp;
+<a href="/blog/springboot20210929.html">SpringBoot二、Thymeleaf</a></p>
+<p>2021-09-28 &nbsp;&nbsp;
+<a href="/blog/springboot20210928.html">SpringBoot一</a></p>
+<p>2021-09-27 &nbsp;&nbsp;
+<a href="/blog/javaframe20210927.html">SpringMVC和SSM</a></p>
+<p>2021-09-26 &nbsp;&nbsp;
+<a href="/blog/tomcat20210926.html">模拟一个简单的tomcat</a></p>
+<p>2021-09-26 &nbsp;&nbsp;
+<a href="/blog/spring20210926.html">spring一</a></p>
+<p>2021-09-24 &nbsp;&nbsp;
+<a href="/blog/javaweb20210924.html">J2EE</a></p>
+<p>2021-09-23 &nbsp;&nbsp;
+<a href="/blog/java8_20210923.html">Java8特性二</a></p>
+<p>2021-09-22 &nbsp;&nbsp;
+<a href="/blog/java8_20210922.html">Java8特性一</a></p>
+<p>2021-09-19 &nbsp;&nbsp;
+<a href="/blog/javareflect20210919.html">Java反射三四例</a></p>
+<p>2021-09-18 &nbsp;&nbsp;
+<a href="/blog/javaclass20210918.html">Java监控和class文件</a></p>
+<p>2021-09-17 &nbsp;&nbsp;
+<a href="/blog/javajvmgc20210917.html">Java垃圾回收</a></p>
+<p>2021-09-16 &nbsp;&nbsp;
+<a href="/blog/jvm20210916.html">Java虚拟机概述</a></p>
+<p>2021-09-15 &nbsp;&nbsp;
+<a href="/blog/javaservlet20210915.html">Servlet笔记</a></p>
+<p>2021-09-14 &nbsp;&nbsp;
+<a href="/blog/javaMultiThread20210914.html">Java线程池Executor、Semaphore、CountDownLatch、CyclicBarrier</a></p>
+<p>2021-09-13 &nbsp;&nbsp;
+<a href="/blog/heap20210913.html">数据结构-堆</a></p>
+<p>2021-09-13 &nbsp;&nbsp;
+<a href="/blog/javaMultiThread20210913.html">Java多线程volatile、ThreadLocal、线程池、atomic</a></p>
+<p>2021-09-11 &nbsp;&nbsp;
+<a href="/blog/javaMultiThread20210911.html">Java多线程概述、synchronized</a></p>
+<p>2021-09-10 &nbsp;&nbsp;
+<a href="/blog/Java_rmi_jmx20210910.html">RMI和JMX</a></p>
+<p>2021-09-09 &nbsp;&nbsp;
+<a href="/blog/javaajax20210909.html">Java练习AJAX输入提示框</a></p>
+<p>2021-09-08 &nbsp;&nbsp;
+<a href="/blog/javacontainer20210908.html">Java容器概述</a></p>
+<p>2021-09-07 &nbsp;&nbsp;
+<a href="/blog/javabase20210907.html">Java基础笔记二</a></p>
+<p>2021-09-06 &nbsp;&nbsp;
+<a href="/blog/javabase20210906.html">Java基础笔记一</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script><script language="javascript">
+	document.getElementById("category_Java").style.color="#6196cc";
+	</script></body></html> 

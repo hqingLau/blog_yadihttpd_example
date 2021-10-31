@@ -1,0 +1,670 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>Java8特性一
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>Java8特性一</h1><hr>
+<h2 id="接口的default虚拟扩展方法">接口的<code>default</code>(虚拟扩展方法)</h2>
+<pre><code class="language-java">interface Calculate {
+    double cal(int a);
+
+    // 通过使用 default 关键字向接口添加非抽象方法实现。
+    default double sqrt(int a) {
+        return Math.sqrt(a);
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        // 匿名内部类方式
+        Calculate calculate = new Calculate() {
+            @Override
+            public double cal(int a) {
+                return sqrt(a*100);
+            }
+        };
+
+        System.out.println(calculate.cal(100));  // 100.0
+        System.out.println(calculate.sqrt(100)); // 10.0
+    }
+}
+</code></pre>
+<h2 id="lambda">Lambda</h2>
+<pre><code class="language-java">public class Demo {
+    public static void main(String[] args) {
+        List&lt;String&gt; names = Arrays.asList(&quot;lei&quot;,&quot;ya&quot;,&quot;di&quot;);
+        names.sort(new Comparator&lt;String&gt;() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        System.out.println(names); // [di, lei, ya]
+    }
+}
+</code></pre>
+<p>在IDEA中，会自动提示用lambda替换：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210922185715.png" alt="image-20210922185715344"></p>
+<pre><code class="language-java">public class Demo {
+    public static void main(String[] args) {
+        List&lt;String&gt; names = Arrays.asList(&quot;lei&quot;,&quot;ya&quot;,&quot;di&quot;);
+        names.sort((o1, o2) -&gt; o1.compareTo(o2));
+        System.out.println(names); // [di, lei, ya]
+    }
+}
+</code></pre>
+<p>仍提示可以替换：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210922185854.png" alt="image-20210922185854183"></p>
+<pre><code class="language-java">public class Demo {
+    public static void main(String[] args) {
+        List&lt;String&gt; names = Arrays.asList(&quot;lei&quot;,&quot;ya&quot;,&quot;di&quot;);
+        names.sort(String::compareTo);
+        System.out.println(names); // [di, lei, ya]
+    }
+}
+</code></pre>
+<blockquote>
+<p>用 lambda 表达式创建匿名方法，有时候， lambda 表达式仅用于调用现有方法而不做其他事，就可以用方法引用来调用方法</p>
+</blockquote>
+<h3 id="lambda作用域">Lambda作用域</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210922203238.png" alt="image-20210922203238487"></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210922203232.png" alt="image-20210922203232734"></p>
+<p><strong>对lambda表达式中的实例字段和静态变量都有读写访问权限。无法从 lambda 表达式中访问默认方法。</strong></p>
+<h2 id="方法引用">方法引用</h2>
+<pre><code class="language-java">public class Demo {
+    public interface Say {
+        void run();
+    }
+
+    public void invoke(Say say) {
+        System.out.println(say.getClass().getName());
+    }
+
+    public static void main(String[] args) {
+        Demo demo = new Demo();
+        System.out.println(&quot;==== new SayHello() =====&quot;);
+        demo.invoke(new SayHello()); // 接口实现类
+        System.out.println(&quot;\n==== lambda =====&quot;);
+        demo.invoke(()-&gt; System.out.println(&quot;Hello&quot;)); // lambda
+        System.out.println(&quot;\n==== new SayHello()::run =====&quot;);
+        demo.invoke(new SayHello()::run); // 引用方法
+        System.out.println(&quot;\n==== SayHello::new =====&quot;);
+        demo.invoke(SayHello::new); // SayHello::new 引用的是构造函数
+    }
+}
+
+class SayHello implements Demo.Say {
+    public SayHello() {
+        System.out.println(&quot;SayHello 构造方法&quot;);
+    }
+    @Override
+    public void run() {
+        System.out.println(&quot;hello&quot;);
+    }
+}
+</code></pre>
+<p>输出：</p>
+<pre><code class="language-shell">==== new SayHello() =====
+SayHello 构造方法
+java8.SayHello
+
+==== lambda =====
+java8.Demo$$Lambda$1/1078694789
+
+==== new SayHello()::run =====
+SayHello 构造方法
+java8.Demo$$Lambda$2/1149319664
+
+==== SayHello::new =====
+java8.Demo$$Lambda$3/999966131
+
+Process finished with exit code 0
+</code></pre>
+<p>后三个都是匿名方法，而且，只有<code>new</code>了才会调用构造函数。</p>
+<p>更改<code>invoke</code>函数：</p>
+<pre><code class="language-java">public void invoke(Say say) {
+    System.out.println(say.getClass().getName());
+    say.run();
+}
+</code></pre>
+<p>得到：</p>
+<pre><code class="language-shell">==== new SayHello() =====
+SayHello 构造方法
+java8.SayHello
+hello
+
+==== lambda =====
+java8.Demo$$Lambda$1/1078694789
+Hello
+
+==== new SayHello()::run =====
+SayHello 构造方法
+java8.Demo$$Lambda$2/1149319664
+hello
+
+==== SayHello::new =====
+java8.Demo$$Lambda$3/999966131
+SayHello 构造方法
+
+Process finished with exit code 0
+</code></pre>
+<h3 id="一个不错的例子：对象工厂">一个不错的例子：对象工厂</h3>
+<pre><code class="language-java">class Person {
+    String name;
+    int age;
+    public Person() {
+
+    }
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;Person{&quot; + &quot;name=&#39;&quot; + name + &#39;\&#39;&#39; + &quot;, age=&quot; + age + &#39;}&#39;;
+    }
+}
+
+interface PersonFactory&lt;P extends Person&gt; {
+    P create(String name,int age);
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        // 方法引用，这里的create就指向了Person的构造函数
+        // 具体哪个根据参数来选择
+        PersonFactory&lt;Person&gt; personFactory = Person::new;
+        Person person = personFactory.create(&quot;aa&quot;,13);
+        System.out.println(person); // Person{name=&#39;aa&#39;, age=13}
+    }
+}
+</code></pre>
+<h2 id="函数式接口">函数式接口</h2>
+<p>仅仅包含一个抽象方法，但是可以有多个非抽象方法（default）。</p>
+<pre><code class="language-java">public class Demo {
+
+    // 不必须，函数式接口，只包含一个抽象方法
+    @FunctionalInterface
+    public interface Say {
+        void run();
+    }
+
+    public static void main(String[] args) {
+        Say say = () -&gt; System.out.println(&quot;hi&quot;);
+        say.run(); // hi
+    }
+}
+</code></pre>
+<h3 id="supplier接口"><code>Supplier</code>接口</h3>
+<pre><code class="language-java">public class Demo {
+    // Supplier接口指定什么泛型，就可以使用get方法，生产什么类型的数据
+    public static int getMax(Supplier&lt;Integer&gt; supplier) {
+        return supplier.get();
+    }
+    public static void main(String[] args) {
+        int[] arr = {1,5555,999,-90,1314};
+        int max = getMax(()-&gt;{
+            int m = arr[0];
+            for (int i = 1; i &lt; arr.length; i++) {
+                if(arr[i] &gt;m) {
+                    m = arr[i];
+                }
+            }
+            return m;
+        });
+        System.out.println(max); // 5555
+    }
+}
+</code></pre>
+<h3 id="consumer接口"><code>Consumer</code>接口</h3>
+<p>这个是给一个参数到 lambda类的函数去处理，可以和<code>andThen</code>连用。</p>
+<pre><code class="language-java">public class Demo {
+    public static void print(String s, Consumer&lt;String&gt; consumer1,Consumer&lt;String&gt; consumer2) {
+        consumer1.andThen(consumer2).accept(s);
+    }
+    public static void main(String[] args) {
+        print(&quot;di&quot;,s -&gt; {
+            System.out.println(s+&quot;run&quot;);
+        },s -&gt; {
+            System.out.println(s+&quot;eat&quot;);
+        });
+        // dirun
+        //dieat
+    }
+}
+</code></pre>
+<h3 id="function接口"><code>Function</code>接口</h3>
+<pre><code class="language-java">public class Demo {
+    public static int cal(String s, Function&lt;String,Integer&gt; f1,
+                          Function&lt;Integer,Integer&gt; f2) {
+        return f1.andThen(f2).apply(s);
+    }
+    public static void main(String[] args) {
+        System.out.println(cal(&quot;66&quot;, Integer::parseInt,
+                integer -&gt; integer*2+1)); // 133
+    }
+}
+</code></pre>
+<h3 id="predicate接口"><code>Predicate</code>接口</h3>
+<pre><code class="language-java">import java.util.function.Predicate;
+
+public class Demo {
+    public static void check(String s, Predicate&lt;String&gt; predicate) {
+        System.out.println(predicate.test(s));
+    }
+    public static void main(String[] args) {
+        check(&quot;abc&quot;,s-&gt; s.contains(&quot;a&quot;)); // true
+    }
+}
+</code></pre>
+<h2 id="streams"><code>Streams</code></h2>
+<pre><code class="language-java">package java8;
+
+
+import java.util.*;
+
+public class Demo {
+    public static void main(String[] args) {
+        List&lt;String&gt; stringList = new ArrayList&lt;&gt;();
+        stringList.add(&quot;ddd2&quot;);
+        stringList.add(&quot;aaa2&quot;);
+        stringList.add(&quot;bbb1&quot;);
+        stringList.add(&quot;aaa1&quot;);
+        stringList.add(&quot;bbb3&quot;);
+        stringList.add(&quot;ccc&quot;);
+        stringList.add(&quot;bbb2&quot;);
+        stringList.add(&quot;ddd1&quot;);
+
+        stringList
+                .stream()
+                .filter(s-&gt;s.startsWith(&quot;a&quot;))
+                .forEach(System.out::println);
+        // aaa2
+        // aaa1
+
+        // 排序是一个 中间操作，返回的是排序好后的 Stream。如果你不指定一个自定义的 Comparator 则会使用默认排序。
+        stringList
+                .stream()
+                .sorted()
+                .filter(s-&gt;s.startsWith(&quot;a&quot;))
+                .forEach(System.out::println);
+        // aaa1
+        // aaa2
+
+        // 中间操作 map 会将元素根据指定的 Function 接口来依次将元素转成另外的对象。
+        stringList
+                .stream()
+                .map(String::toUpperCase)
+                .sorted(Comparator.reverseOrder())
+                .forEach(System.out::println);
+        // DDD2
+        // DDD1
+        // CCC
+        // ...
+
+        // Stream提供了多种匹配操作，允许检测指定的Predicate是否匹配整个Stream。
+        // 所有的匹配操作都是 最终操作 ，并返回一个 boolean 类型的值。
+        System.out.println(
+                stringList
+                    .stream()
+                    .anyMatch(s -&gt; s.startsWith(&quot;a&quot;))); // true
+
+        System.out.println(
+                stringList
+                    .stream()
+                    .allMatch(s -&gt; s.startsWith(&quot;a&quot;))); //false
+
+        System.out.println(
+                stringList
+                    .stream()
+                    .noneMatch(s -&gt; s.startsWith(&quot;a&quot;))); //false
+
+        // count最终操作，返回个数
+        System.out.println(
+                stringList
+                        .stream()
+                        .filter(s -&gt; s.startsWith(&quot;a&quot;))
+                        .count()); //2
+        // reduce 这是一个 最终操作 ，允许通过指定的函数来将stream中的多个元素规约为一个元素
+        System.out.println(
+                stringList
+                        .stream()
+                        .sorted()
+                        .reduce(((s, s2) -&gt; s+&quot;#&quot;+s2)));
+        // Optional[aaa1#aaa2#bbb1#bbb2#bbb3#ccc#ddd1#ddd2]
+
+        int[] ints = {1,4,2,5,6,3,2,10,9};
+        Optional&lt;Integer&gt;  res = Arrays.stream(ints).boxed()
+                        .reduce(Math::max);
+        res.ifPresent(System.out::println); //10
+    }
+}
+</code></pre>
+<p><strong><code>parallelStream()</code>并行排序，默认<code>stream</code>是串行的。</strong></p>
+<h2 id="maps">Maps</h2>
+<pre><code class="language-java">public class Demo {
+    public static void main(String[] args) {
+        Map&lt;Integer, String&gt; map = new HashMap&lt;&gt;();
+        for (int i = 0; i &lt; 10; i++) {
+            map.putIfAbsent(i, &quot;val&quot; + i); //没有就放，有就返回值
+        }
+        map.forEach((id, val) -&gt; System.out.println(val));
+        map.computeIfPresent(3,(num,val)-&gt;val+num); //val33
+        System.out.println(map.get(3));
+    }
+}
+</code></pre>
+<h2 id="optional">Optional</h2>
+<p>解决空指针异常。就不用加一堆判断了。</p>
+<p>具体看这篇文章：<a href="https://www.cnblogs.com/zhangboyu/p/7580262.html">理解、学习与使用 JAVA 中的 OPTIONAL</a></p>
+<h2 id="参考">参考</h2>
+<p><a href="https://snailclimb.gitee.io/javaguide/#/docs/java/new-features/Java8%E6%96%B0%E7%89%B9%E6%80%A7%E6%80%BB%E7%BB%93">Java 8 新特性总结</a></p>
+<p><a href="https://blog.csdn.net/wuxianjiezh/article/details/90477483">Java Lambda 表达式（四）：方法引用（Method Reference）</a></p>
+<p><a href="https://blog.csdn.net/Sakuraaaaaaa/article/details/104260379">Java学习日志(十四): 函数式接口详解，四种常见函数式接口</a></p>
+<p><a href="https://www.cnblogs.com/zhangboyu/p/7580262.html">理解、学习与使用 JAVA 中的 OPTIONAL</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"java8_20210922.html";
+			document.getElementById("blogaddr-a").innerHTML="Java8特性一";
+			</script></body></html> 

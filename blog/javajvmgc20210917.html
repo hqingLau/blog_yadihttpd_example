@@ -1,0 +1,457 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>Java垃圾回收
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>Java垃圾回收</h1><hr>
+<h2 id="jvm-内存分配和回收">JVM 内存分配和回收</h2>
+<p>概述见《<a href="https://orzlinux.cn/blog/jvm20210916.html">Java虚拟机概述</a>》<strong>分代</strong>一节。</p>
+<p>Hotspot 遍历所有对象时，按照年龄从小到大对其所占用的大小进行累积，当累积的某个年龄大小超过了 <code>survivor</code> 区的一半时，取这个年龄和 <code>MaxTenuringThreshold</code> 中更小的一个值，作为新的晋升年龄阈值。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210917111244.png" alt="image-20210917111244752"></p>
+<p><strong>示例</strong></p>
+<p>参数配置：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210917110925.png" alt="image-20210917110924993"></p>
+<p>详见注释：</p>
+<pre><code class="language-java">public class GCTest {
+    public static void main(String[] args) {
+        // 空main eden space 40960K,  10% used
+        // from space 5120K,   0% used
+        //  to  space 5120K,   0% used
+        byte[] byte1m_1 = new byte[1 * 1024 * 1024];
+        byte[] byte1m_2 = new byte[1 * 1024 * 1024];
+        byte[] byte1m_3 = new byte[1 * 1024 * 1024];
+
+        // eden又多了3M
+
+        makeMyGarbage(33);
+        // eden又多了33M
+
+        byte[] byteArr = new byte[10*1024*1024];
+
+        // eden放不下了，触发GC
+        // 一次GC之后，前面三个数组引用还活着，进入from survivor区
+        // 但是from区只有5M，这里占了3M，到了60%，重新计算对象晋升的age，1
+        // 新的数组进入eden, eden 10M
+
+        // 2021-09-17T10:47:43.971+0800: [GC (Allocation Failure) 2021-09-17T10:47:43.971+0800: [ParNew
+        //Desired survivor size 3145728 bytes, new threshold 1 (max 3)
+        //- age   1:    3931960 bytes,    3931960 total
+        //: 40168K-&gt;3852K(46080K), 0.0021462 secs] 40168K-&gt;3852K(199680K), 0.0022156 secs]
+        //   [Times: user=0.00 sys=0.00, real=0.00 secs]
+
+        makeMyGarbage(33);
+
+        // 最前面三个数组age-&gt;2, 进入老年代
+        // byteArr放survivor放不下，直接进入老年代
+        // Heap
+        // par new generation   total 46080K, used 34611K
+
+
+        // 2021-09-17T10:48:32.848+0800: [GC (Allocation Failure) 2021-09-17T10:48:32.848+0800: [ParNew
+        //Desired survivor size 3145728 bytes, new threshold 3 (max 3)
+        //: 14912K-&gt;0K(46080K), 0.0070790 secs] 14912K-&gt;14055K(199680K), 0.0071117 secs] [Times:
+        //   user=0.06 sys=0.00, real=0.01 secs]
+    }
+
+    private static void makeMyGarbage(int size) {
+        byte[] byteArrTemp = new byte[size * 1024 * 1024];
+    }
+}
+</code></pre>
+<p>针对 HotSpot VM 的实现，它里面的 <strong>GC</strong> 其实准确分类只有两大种：</p>
+<p>部分收集 (<strong>Partial GC</strong>)：</p>
+<ul>
+<li>新生代收集（Minor GC / Young GC）：只对新生代进行垃圾收集；</li>
+<li>老年代收集（Major GC / Old GC）：只对老年代进行垃圾收集。需要注意的是 Major GC 在有的语境中也用于指代整堆收集；</li>
+<li>混合收集（Mixed GC）：对整个新生代和部分老年代进行垃圾收集。</li>
+</ul>
+<p>整堆收集 (<strong>Full GC</strong>)：收集整个 Java 堆和方法区。</p>
+<p><strong>空间分配担保</strong>是为了确保在 Minor GC 之前老年代本身还有容纳新生代所有对象的剩余空间。JDK 6 Update 24之后的规则变为只要老年代的连续空间大于新生代对象总大小或者历次晋升的平均大小，就会进行 Minor GC，否则将进行 Full GC。</p>
+<h2 id="判断对象死亡">判断对象死亡</h2>
+<h3 id="引用计数">引用计数</h3>
+<p>简单高效，难解决循环引用问题。（两个对象相互引用，但是除此之外是废弃的）。</p>
+<h3 id="可达性分析">可达性分析</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210917123213.png" alt="image-20210917123213717"></p>
+<p>可作为 GC Roots 的对象包括下面几种:</p>
+<ul>
+<li>虚拟机栈(栈帧中的本地变量表)中引用的对象</li>
+<li>本地方法栈(Native 方法)中引用的对象</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中常量引用的对象</li>
+<li>所有被同步锁持有的对象</li>
+</ul>
+<h3 id="引用分类">引用分类</h3>
+<p><strong>强引用</strong></p>
+<p><strong>软引用</strong>：可用来实现内存敏感的高速缓存。内存够就不回收，不够就回收它。</p>
+<p><strong>弱引用</strong>：GC 发现它就回收</p>
+<p><strong>虚引用</strong>：如同没有引用，任何时候可回收。主要用来跟踪对象被垃圾回收的活动。必须和引用队列联合使用，当垃圾回收器准备回收一个对象时，如果发现它还有虚引用，就会在回收对象的内存之前，把这个虚引用加入到与之关联的引用队列中。程序可以通过判断引用队列中是否已经加入了虚引用，来了解被引用的对象是否将要被垃圾回收。程序如果发现某个虚引用已经被加入到引用队列，那么就可以在所引用的对象的内存被回收之前采取必要的行动。</p>
+<h3 id="不可达对象处死">不可达对象处死</h3>
+<p>第一次标记并筛选，看是否有必要执行 finalize 方法，需要执行的话放在队列进行第二次标记，除非和其它的对象建立关联，否则真回收。</p>
+<h3 id="废弃常量">废弃常量</h3>
+<p>运行时常量池主要回收的是废弃的常量。</p>
+<p><strong>JDK1.8 hotspot 移除了永久代用元空间(Metaspace)取而代之, 这时候字符串常量池还在堆, 运行时常量池还在方法区, 只不过方法区的实现从永久代变成了元空间(Metaspace)</strong></p>
+<h3 id="无用类判别">无用类判别</h3>
+<p>类需要同时满足下面 3 个条件才能算是 <strong>无用的类</strong> ：</p>
+<ul>
+<li>该类所有的实例都已经被回收，也就是 Java 堆中不存在该类的任何实例。</li>
+<li>加载该类的 <code>ClassLoader</code> 已经被回收。</li>
+<li>该类对应的 <code>java.lang.Class</code> 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。</li>
+</ul>
+<p>虚拟机可以对满足上述 3 个条件的无用类进行回收，这里说的仅仅是可以，而并不是和对象一样不使用了就会必然被回收。</p>
+<h2 id="垃圾收集算法">垃圾收集算法</h2>
+<h3 id="标记-清除算法">标记-清除算法</h3>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20210917131358.png" alt="image-20210917131358891" style="zoom:80%;" />
+
+<p>标记所以不需要回收的，然后统一回收。效率问题、空间 碎片问题。</p>
+<h3 id="标记-复制算法">标记-复制算法</h3>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20210917131534.png" alt="image-20210917131534797" style="zoom:80%;" />
+
+<p>活着的移动到另一半。</p>
+<h3 id="标记-整理算法">标记-整理算法</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210917131634.png" alt="image-20210917131634179"></p>
+<h3 id="分代收集算法">分代收集算法</h3>
+<p>每个年代可以采用合适的垃圾收集算法。</p>
+<p>比如在新生代中，每次收集都会有大量对象死去，所以可以选择<strong>标记-复制算法</strong>，只需要付出少量对象的复制成本就可以完成每次垃圾收集。而老年代对象存活几率是比较高的，而且没有额外的空间对它进行分配担保，所以我们必须选择<strong>标记-清除</strong>或<strong>标记-整理</strong>算法进行垃圾收集。</p>
+<h2 id="垃圾收集器">垃圾收集器</h2>
+<p><strong>Serial收集器</strong>：最基本、历史最悠久，单线程收集器。<strong>新生代采用标记-复制算法，老年代采用标记-整理算法。</strong></p>
+<p><strong>ParNew 收集器</strong>：其实就是 Serial 收集器的多线程版本，除了使用多线程进行垃圾收集外，其余行为（控制参数、收集算法、回收策略等等）和 Serial 收集器完全一样。</p>
+<p><strong>Parallel Scavenge 收集器</strong>：关注点是吞吐量（高效率的利用 CPU）。CMS 等垃圾收集器的关注点更多的是用户线程的停顿时间（提高用户体验）。所谓吞吐量就是 CPU 中用于运行用户代码的时间与 CPU 总消耗时间的比值。 Parallel Scavenge 收集器提供了很多参数供用户找到最合适的停顿时间或最大吞吐量，如果对于收集器运作不太了解，手工优化存在困难的时候，使用 Parallel Scavenge 收集器配合自适应调节策略，把内存管理优化交给虚拟机去完成也是一个不错的选择。<strong>这是 JDK1.8 默认收集器</strong></p>
+<p><strong>Serial Old 收集器</strong>：老年代版本</p>
+<p>Parallel Old：</p>
+<p><strong>CMS（Concurrent Mark Sweep）收集器</strong>：是一种以获取最短回收停顿时间为目标的收集器。它非常符合在注重用户体验的应用上使用。是 HotSpot 虚拟机第一款真正意义上的并发收集器，它第一次实现了让垃圾收集线程与用户线程（基本上）同时工作。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210917132842.png" alt="image-20210917132842873"></p>
+<p>整个过程分为四个步骤：</p>
+<ul>
+<li><strong>初始标记：</strong> 暂停所有的其他线程，并记录下直接与 root 相连的对象，速度很快 ；</li>
+<li><strong>并发标记：</strong> 同时开启 GC 和用户线程，用一个闭包结构去记录可达对象。但在这个阶段结束，这个闭包结构并不能保证包含当前所有的可达对象。因为用户线程可能会不断的更新引用域，所以 GC 线程无法保证可达性分析的实时性。所以这个算法里会跟踪记录这些发生引用更新的地方。</li>
+<li><strong>重新标记：</strong> 重新标记阶段就是为了修正并发标记期间因为用户程序继续运行而导致标记产生变动的那一部分对象的标记记录，这个阶段的停顿时间一般会比初始标记阶段的时间稍长，远远比并发标记阶段时间短</li>
+<li><strong>并发清除：</strong> 开启用户线程，同时 GC 线程开始对未标记的区域做清扫。</li>
+</ul>
+<p>主要优点：<strong>并发收集、低停顿</strong>。但是它有下面三个明显的缺点：</p>
+<ul>
+<li>对 CPU 资源敏感；</li>
+<li>无法处理浮动垃圾；</li>
+<li>它使用的回收算法-“标记-清除”算法会导致收集结束时会有大量空间碎片产生。</li>
+</ul>
+<p><strong>G1 收集器</strong>：Garbage first。G1 的主要关注点在于达到可控的停顿时间，在这个基础上尽可能提高吞吐量，这一点非常重要。</p>
+<p>G1 被设计用来长期取代 CMS 收集器，和 CMS 相同的地方在于，它们都属于并发收集器，在大部分的收集阶段都不需要挂起应用程序。区别在于，G1 没有 CMS 的碎片化问题（或者说不那么严重），同时提供了更加可控的停顿时间。</p>
+<p>如果你的应用使用了较大的堆（如 6GB 及以上）而且还要求有较低的垃圾收集停顿时间（如 0.5 秒），那么 G1 是不错的选择。</p>
+<p>之前介绍的分代收集器将整个堆分为年轻代、老年代和永久代，每个代的空间是确定的。</p>
+<p><strong>而 G1 将整个堆划分为一个个大小相等的小块（每一块称为一个 region），每一块的内存是连续的</strong>。和分代算法一样，G1 中每个块也会充当 Eden、Survivor、Old 三种角色，但是它们不是固定的，这使得内存使用更加地灵活。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210917133543.png" alt="image-20210917133543717"></p>
+<p> G1 不是一个实时收集器，它会尽力满足我们的停顿时间要求，但也不是绝对的，它基于之前垃圾收集的数据统计，估计出在用户指定的停顿时间内能收集多少个区块。</p>
+<h2 id="ps">PS</h2>
+<p>IDEA设置运行时 Java 参数：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210917103510.png" alt="image-20210917103503254"></p>
+<h2 id="参考">参考</h2>
+<p><a href="https://www.cnblogs.com/liugh/p/7645135.html">Intellij IDEA设置运行时Java参数</a></p>
+<p><a href="https://snailclimb.gitee.io/javaguide/#/docs/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6?id=jvm-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6">JVM 垃圾回收</a></p>
+<p><a href="https://orzlinux.cn/blog/jvm20210916.html">Java虚拟机概述</a></p>
+<p><a href="https://www.zhihu.com/question/41922036/answer/93079526">Major GC和Full GC的区别是什么？触发条件呢？ - RednaxelaFX的回答 - 知乎</a></p>
+<p><a href="https://blog.csdn.net/qq_41999455/article/details/102608447">可达性算法中不可达的对象是否一定会死亡（不一定）</a></p>
+<p><a href="https://www.itqiankun.com/article/jvm-g1-memory-management-model">大白话讲解Jvm的G1垃圾收集器</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"javajvmgc20210917.html";
+			document.getElementById("blogaddr-a").innerHTML="Java垃圾回收";
+			</script></body></html> 

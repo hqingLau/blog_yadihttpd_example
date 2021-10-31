@@ -1,0 +1,1052 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>C语言hackerrank的一些练习
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>C语言hackerrank的一些练习</h1><hr>
+<h2 id="第一关：hello-world-c">第一关：Hello World C</h2>
+<p>输入一行字符串（可能含空格），输出hello world\n，字符串</p>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">Welcome to C programming.
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">Hello, World!
+Welcome to C programming.
+</code></pre>
+<p><strong>解决方案</strong>：</p>
+<pre><code class="language-c">int main() 
+{
+    char s[100];
+    // *符: 用以表示该输入项读入后不赋予相应的变量，即跳过该输入值。
+    // %[] 扫描字符集合 
+    scanf(&quot;%[^\n]%*c&quot;, &amp;s);  
+    printf(&quot;%s\n%s\n&quot;,&quot;Hello, World!&quot;,s);
+    return 0;
+}
+</code></pre>
+<p><strong>知识点</strong>：</p>
+<p>空格问题：</p>
+<pre><code class="language-c">char s[20];
+scanf(&quot;%s&quot;,s);
+printf(&quot;%s\n&quot;,s);
+// 输入：i love you
+// 输出：
+// i
+</code></pre>
+<p>解决空格问题：</p>
+<pre><code class="language-c">char s[20];
+// 读取非换行字符串，%*c表示读取换行，但不赋值
+scanf(&quot;%[^\n]%*c&quot;,s);
+printf(&quot;%s\n&quot;,s);
+// 测试如下：
+// i love you
+// i love you
+</code></pre>
+<h2 id="第二关：读取字符，字符串，句子">第二关：读取字符，字符串，句子</h2>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">C
+Language
+Welcome To C!!
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">C
+Language
+Welcome To C!!
+</code></pre>
+<p><strong>解决方案</strong>：</p>
+<pre><code class="language-c">char ch;
+char str[100];
+char sentence[100];
+
+scanf(&quot;%c&quot;,&amp;ch);
+printf(&quot;%c\n&quot;,ch);
+
+// 这里加个%*c，把结尾的换行消耗了，因为下一个scanf读到换行结束，而
+// scanf(&quot;%s&quot;,s);
+// printf(&quot;%s\n&quot;,s);
+// 结果：
+//           ccc
+// ccc
+// 是会跨过前面的空白符的
+
+scanf(&quot;%s%*c&quot;,str);
+printf(&quot;%s\n&quot;,str);
+
+scanf(&quot;%[^\n]&quot;,sentence);
+printf(&quot;%s\n&quot;,sentence);
+</code></pre>
+<h2 id="第三关：两数加减">第三关：两数加减</h2>
+<p>前两个int，后两个float，输出和and差。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">10 4
+4.0 2.0
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">14 6
+6.0 2.0
+</code></pre>
+<p><strong>解决方案</strong>：</p>
+<pre><code class="language-c">int a,b;
+float c,d;
+scanf(&quot;%d%d&quot;,&amp;a,&amp;b);
+printf(&quot;%d %d\n&quot;,a+b,a-b);
+scanf(&quot;%f%f&quot;,&amp;c,&amp;d);
+printf(&quot;%.1f %.1f\n&quot;,c+d,c-d);
+</code></pre>
+<p><strong>知识点</strong>：</p>
+<p>还是在<code>stdin</code>和<code>stdout</code>的输入输出上面。</p>
+<h2 id="第四关：函数">第四关：函数</h2>
+<p>读取输入四个数字，一个数字一行，输出最大的数字。int类型。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">3
+4
+6
+5
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">6
+</code></pre>
+<p><strong>解决方案</strong>：</p>
+<pre><code class="language-c">int max_of_four(int a,int b,int c,int d)
+{
+    int maxNum = a&gt;b?a:b;
+    maxNum = c&gt;maxNum?c:maxNum;
+    maxNum = d&gt;maxNum?d:maxNum;
+    return maxNum;
+}
+
+int main() {
+    int a, b, c, d;
+    scanf(&quot;%d %d %d %d&quot;, &amp;a, &amp;b, &amp;c, &amp;d);
+    int ans = max_of_four(a, b, c, d);
+    printf(&quot;%d&quot;, ans);
+    return 0;
+}
+</code></pre>
+<h2 id="第五关：指针">第五关：指针</h2>
+<p>输入两个数a和b，将更改为a+b, | a-b |。</p>
+<p><code>void update(int *a,int *b)</code></p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">4
+5
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">9
+1
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+void update(int *a,int *b) {
+    int sum = *a + *b;
+    int dif = *a - *b;
+    dif = dif&gt;0?dif:-dif;
+    *a = sum;
+    *b = dif; 
+}
+
+int main() {
+    int a, b;
+    int *pa = &amp;a, *pb = &amp;b;
+    
+    scanf(&quot;%d %d&quot;, &amp;a, &amp;b);
+    update(pa, pb);
+    printf(&quot;%d\n%d&quot;, a, b);
+
+    return 0;
+}
+</code></pre>
+<h2 id="第六关：条件判断">第六关：条件判断</h2>
+<p>Given a positive integer denoting , do the following:</p>
+<ul>
+<li>If  1-9, print the lowercase English word corresponding to the number (e.g., <code>one</code> for , <code>two</code> for , etc.).</li>
+<li>If &gt; 9, print <code>Greater than 9</code>.</li>
+</ul>
+<p><strong>Sample Input #01</strong></p>
+<pre><code class="language-shell">8
+</code></pre>
+<p><strong>Sample Output #01</strong></p>
+<pre><code class="language-shell">eight
+</code></pre>
+<p><strong>Sample Input #02</strong></p>
+<pre><code class="language-shell">44
+</code></pre>
+<p><strong>Sample Output #02</strong></p>
+<pre><code class="language-shell">Greater than 9
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-c">char* readline();
+
+int main()
+{
+    char* n_endptr;
+    // 这里的readline是系统定义的，可以自动分配内存
+    // 在这里实际并不需要。
+    // 也可直接写为：
+    // char* n_endptr = malloc(1024);
+    // char* n_str = fgets(n_endptr,1023,stdin);
+    char* n_str = readline();
+    int n = strtol(n_str, &amp;n_endptr, 10);
+    // 没读到整数字符串，或者不止有整数字符，退出
+    if (n_endptr == n_str || *n_endptr != &#39;\0&#39;) { exit(EXIT_FAILURE); }
+
+    char *numStr[10]={&quot;zero&quot;,&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;,
+                        &quot;seven&quot;,&quot;eight&quot;,&quot;nine&quot;};
+    if(n&lt;9) printf(&quot;%s\n&quot;,numStr[n]);
+    else printf(&quot;Greater than 9\n&quot;);
+    return 0;
+}
+
+char* readline() {
+    size_t alloc_length = 1024;
+    size_t data_length = 0;
+    char* data = malloc(alloc_length);
+
+    while (true) {
+        char* cursor = data + data_length;
+        char* line = fgets(cursor, alloc_length - data_length, stdin);
+
+        if (!line) { break; }
+
+        data_length += strlen(cursor);
+
+        if (data_length &lt; alloc_length - 1 || data[data_length - 1] == &#39;\n&#39;) { break; }
+
+        size_t new_length = alloc_length &lt;&lt; 1;
+        data = realloc(data, new_length);
+
+        if (!data) { break; }
+
+        alloc_length = new_length;
+    }
+
+    if (data[data_length - 1] == &#39;\n&#39;) {
+        data[data_length - 1] = &#39;\0&#39;;
+    }
+
+    data = realloc(data, data_length);
+
+    return data;
+}
+</code></pre>
+<p><strong>知识点：</strong></p>
+<p>strtol：字符串转long</p>
+<pre><code class="language-c">char str[30] = &quot;Hoi 2030300 This is test&quot;; // 0, ptr:Hoi ...
+//char str[30] = &quot;2030300 This is test&quot;; // 2030300, ptr: This is test
+char *ptr; // 整数结束的字符串
+long ret; // 长整数
+
+// 10表示十进制。如二进制
+// char str[30] = &quot;10010 This is test&quot;;
+// ret = strtol(str, &amp;ptr,2); // 18
+ret = strtol(str, &amp;ptr, 10);
+printf(&quot;数字（无符号长整数）是 %ld\n&quot;, ret);
+printf(&quot;字符串部分是 |%s|\n&quot;, ptr);
+</code></pre>
+<h2 id="第七关：for循环">第七关：for循环</h2>
+<p>给两个整数，输出区间内的数字英文。1-9，输出对应英文，&gt; 9，输出even还是odd。</p>
+<p><strong>Sample Input</strong></p>
+<pre><code class="language-shell">8
+11
+</code></pre>
+<p><strong>Sample Output</strong></p>
+<pre><code class="language-shell">eight
+nine
+even
+odd
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-c">int main() 
+{
+    char *numStr[10]={&quot;zero&quot;,&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;,
+                        &quot;seven&quot;,&quot;eight&quot;,&quot;nine&quot;};
+    int a, b;
+    scanf(&quot;%d\n%d&quot;, &amp;a, &amp;b);
+      for(int i=a;i&lt;=b;i++) 
+    {
+        if(i&lt;=9)
+        {
+            printf(&quot;%s\n&quot;,numStr[i]);
+            continue;
+        }
+        if(i%2==0) printf(&quot;even\n&quot;);
+        else printf(&quot;odd\n&quot;);
+    }
+
+    return 0;
+}
+</code></pre>
+<h2 id="第八关：五数之和">第八关：五数之和</h2>
+<p>输入数字：10000-99999</p>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">10564
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">16
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-c">int main() {
+    int n;
+    int sum = 0;
+    int tmp;
+    scanf(&quot;%d&quot;, &amp;n);
+    while(n!=0)
+    {
+        tmp = n%10;
+        n /= 10;
+        sum+=tmp;
+    }
+    printf(&quot;%d\n&quot;,sum);
+    return 0;
+}
+</code></pre>
+<h2 id="第九关：位运算">第九关：位运算</h2>
+<p>给两个整数，n：一个整数，k：阈值（小于n）。输出i=1 ~ n和i+1 ~ n的and, or, xor的小于k的最大值。</p>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">5 4
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">2
+3
+3
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-c">void calculate_the_maximum(int n, int k) {
+    int maxAnd = 0;
+    int maxOr = 0;
+    int maxEx = 0;
+    int tmp;
+    for(int i=1;i&lt;n;i++)
+    {
+        for(int j=i+1;j&lt;=n;j++)
+        {
+            tmp = i &amp; j;
+            tmp = tmp &lt; k ? tmp:0;
+            maxAnd = maxAnd &lt; tmp ? tmp : maxAnd; 
+            
+            tmp = i | j;
+            tmp = tmp &lt; k ? tmp:0;
+            maxOr = maxOr &lt; tmp ? tmp : maxOr; 
+            
+            tmp = i ^ j;
+            tmp = tmp &lt; k ? tmp:0;
+            maxEx = maxEx &lt; tmp ? tmp : maxEx; 
+        }
+    }
+    printf(&quot;%d\n%d\n%d\n&quot;,maxAnd,maxOr,maxEx);
+}
+
+int main() {
+    int n, k;
+  
+    scanf(&quot;%d %d&quot;, &amp;n, &amp;k);
+    calculate_the_maximum(n, k);
+ 
+    return 0;
+}
+</code></pre>
+<h2 id="第十关：打印模式字符串">第十关：打印模式字符串</h2>
+<p><strong>Sample Input 1</strong></p>
+<pre><code class="language-shell">5
+</code></pre>
+<p><strong>Sample Output 1</strong></p>
+<pre><code class="language-shell">5 5 5 5 5 5 5 5 5 
+5 4 4 4 4 4 4 4 5 
+5 4 3 3 3 3 3 4 5 
+5 4 3 2 2 2 3 4 5 
+5 4 3 2 1 2 3 4 5 
+5 4 3 2 2 2 3 4 5 
+5 4 3 3 3 3 3 4 5 
+5 4 4 4 4 4 4 4 5 
+5 5 5 5 5 5 5 5 5
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-c">int min(int a,int b)
+{
+    return a&gt;b?b:a;
+}
+
+int minDistance(int a,int b,int n)
+{
+    return min(min(min(a,b),2*n-2-a),2*n-2-b);
+}
+
+int main() 
+{
+    int n;
+    scanf(&quot;%d&quot;, &amp;n);
+      // 2 * n - 1 lines
+    for(int i=0;i&lt;2*n-1;i++)
+    {
+        for(int j=0;j&lt;2*n-2;j++)
+        {
+            printf(&quot;%d &quot;,n - minDistance(i,j,n));
+        }
+        printf(&quot;%d\n&quot;,n);
+    }
+    return 0;
+}
+</code></pre>
+<p>知识点：</p>
+<blockquote>
+<p>这一题关键是要找出距离外围的最小距离。</p>
+</blockquote>
+<h2 id="第十一关：运盒子">第十一关：运盒子</h2>
+<p>输入盒子个数n，接着n行：长、宽、高</p>
+<p>通道高度只有41。输出能过通道的盒子体积（41不能过）。</p>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">4
+5 5 5
+1 2 40
+10 5 41
+7 2 42
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">125
+80
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#define MAX_HEIGHT 41
+
+typedef struct box
+{
+    int width;
+    int height;
+    int length;
+}box;
+
+
+int get_volume(box b) {
+    return b.width * b.height * b.length;
+}
+
+int is_lower_than_max_height(box b) {
+    return b.height &lt; MAX_HEIGHT?1:0;
+}
+
+int main()
+{
+    int n;
+    scanf(&quot;%d&quot;, &amp;n);
+    box *boxes = malloc(n * sizeof(box));
+    for (int i = 0; i &lt; n; i++) {
+        scanf(&quot;%d%d%d&quot;, &amp;boxes[i].length, &amp;boxes[i].width, &amp;boxes[i].height);
+    }
+    for (int i = 0; i &lt; n; i++) {
+        if (is_lower_than_max_height(boxes[i])) {
+            printf(&quot;%d\n&quot;, get_volume(boxes[i]));
+        }
+    }
+    return 0;
+}
+</code></pre>
+<blockquote>
+<p>知识点：结构体。</p>
+</blockquote>
+<h2 id="第十一关：按三角形面积排序">第十一关：按三角形面积排序</h2>
+<p>面积公式：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211002170437.png" alt="image-20211002170435806"></p>
+<p>输入三角形个数，和对应的三条边。</p>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">3
+7 24 25
+5 12 13
+3 4 5
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">3 4 5
+5 12 13
+7 24 25
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;math.h&gt;
+
+struct triangle
+{
+    int a;
+    int b;
+    int c;
+};
+
+typedef struct triangle triangle;
+
+float areaSquare(const triangle *t)
+{
+    float p = (t-&gt;a + t-&gt;b + t-&gt;c)/2.0;
+    return p*(p - t-&gt;a)*(p - t-&gt;b)*(p - t-&gt;c);
+}
+
+int mycmp(const void *a, const void *b)
+{
+    triangle *ta = (triangle *)a;
+    triangle *tb = (triangle *)b;
+    return areaSquare(ta)&gt;areaSquare(tb);
+}
+
+void sort_by_area(triangle* tr, int n) {
+    qsort(tr,n,sizeof(triangle),mycmp);
+}
+
+int main()
+{
+    int n;
+    scanf(&quot;%d&quot;, &amp;n);
+    triangle *tr = malloc(n * sizeof(triangle));
+    for (int i = 0; i &lt; n; i++) {
+        scanf(&quot;%d%d%d&quot;, &amp;tr[i].a, &amp;tr[i].b, &amp;tr[i].c);
+    }
+    sort_by_area(tr, n);
+    for (int i = 0; i &lt; n; i++) {
+        printf(&quot;%d %d %d\n&quot;, tr[i].a, tr[i].b, tr[i].c);
+    }
+    return 0;
+}
+</code></pre>
+<p><strong>知识点：</strong></p>
+<pre><code class="language-c">void qsort(void *base, size_t nmemb, size_t size,
+              int (*compar)(const void *, const void *));
+</code></pre>
+<p>结构体快排。</p>
+<h2 id="第十二关：反转字符串">第十二关：反转字符串</h2>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">6
+16 13 7 2 1 12 
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">12 1 2 7 13 16 
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+void swap(int *a,int *b)
+{
+    int tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+int main()
+{
+    int num, *arr, i;
+    scanf(&quot;%d&quot;, &amp;num);
+    arr = (int*) malloc(num * sizeof(int));
+    for(i = 0; i &lt; num; i++) {
+        scanf(&quot;%d&quot;, arr + i);
+    }
+
+    for(i = 0;i&lt;(num+1)/2;i++)
+    {
+        swap(&amp;arr[i],&amp;arr[num-1-i]);
+    }
+
+    for(i = 0; i &lt; num; i++)
+        printf(&quot;%d &quot;, *(arr + i));
+    return 0;
+}
+</code></pre>
+<h2 id="第十三关：分词">第十三关：分词</h2>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">This is C 
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">This
+is
+C
+</code></pre>
+<p><strong>解决方案</strong>：</p>
+<pre><code class="language-c">int main() {
+    char *s;
+    s = malloc(1024 * sizeof(char));
+    scanf(&quot;%[^\n]&quot;, s);
+    s = realloc(s, strlen(s) + 1);
+    char *token = strtok(s,&quot; &quot;);
+    while(token!=NULL)
+    {
+        printf(&quot;%s\n&quot;,token);
+        token = strtok(NULL,&quot; &quot;);
+    }
+    return 0;
+}
+</code></pre>
+<p><strong>知识点：</strong></p>
+<p>strtok，该函数返回被分解的一个子字符串，如果没有可检索的字符串，则返回一个空指针。</p>
+<p>使用方法：</p>
+<ul>
+<li><p>第1次调用时，第1个参数要传入1个C的字符串，作为要分割的字符串</p>
+</li>
+<li><p>后续调用时，第1个参数设置为空指针NULL</p>
+</li>
+<li><p>上一个被分割的子字符串的位置会被函数内部记住，所以后续调用时，第1个参数设置为NULL</p>
+</li>
+</ul>
+<h2 id="第十四关：数字频率">第十四关：数字频率</h2>
+<p>字符串中0-9数字频率，如1出现了两次，output的第二个位置就是2</p>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">a11472o5t6
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">0 2 1 0 1 1 1 1 0 0 
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-c">int main() {
+    char str[1024];
+    char numCount[10] = {0};
+    scanf(&quot;%s&quot;,str);
+    for(int i=0;i&lt;strlen(str);i++)
+    {
+        if(str[i]&gt;=&#39;0&#39;&amp;&amp;str[i]&lt;=&#39;9&#39;)
+        {
+            numCount[str[i]-&#39;0&#39;]++;
+        }
+    }
+    for(int i=0;i&lt;10;i++) 
+        printf(&quot;%d &quot;,numCount[i]);
+    return 0;
+}
+</code></pre>
+<p><strong>知识点：</strong></p>
+<p>数组map的思想。</p>
+<h2 id="第十五关：字符串排序">第十五关：字符串排序</h2>
+<p>词典排序、词典逆序、不同字母的个数排序（相同按字典排序）、长度排序（相同按字典排序）。</p>
+<p><strong>Sample Input 0</strong></p>
+<pre><code class="language-shell">4
+wkue
+qoi
+sbv
+fekls
+</code></pre>
+<p><strong>Sample Output 0</strong></p>
+<pre><code class="language-shell">fekls
+qoi
+sbv
+wkue
+
+wkue
+sbv
+qoi
+fekls
+
+qoi
+sbv
+wkue
+fekls
+
+qoi
+sbv
+wkue
+fekls
+</code></pre>
+<p><strong>解决方案：</strong></p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+int lexicographic_sort(const void* aa, const void* bb) {
+    char *a = *(char **)aa;
+    char *b = *(char **)bb;
+    int alen = strlen(a);
+    int blen = strlen(b);
+    int minlen = alen&gt;blen?blen:alen;
+    for(int i=0;i&lt;minlen;i++)
+    {
+        if(a[i]!=b[i]) return a[i]-b[i];
+    }
+    if(alen&gt;blen) return 1;
+    return -1;
+}
+
+int lexicographic_sort_reverse(const void* aa, const void* bb) {
+    char *a = *(char **)aa;
+    char *b = *(char **)bb;
+    int alen = strlen(a);
+    int blen = strlen(b);
+    int minlen = alen&gt;blen?blen:alen;
+    for(int i=0;i&lt;minlen;i++)
+    {
+        if(a[i]!=b[i]) return b[i]-a[i];
+    }
+    if(alen&gt;blen) return -1;
+    return 1;
+}
+
+int distinctChars(const char *a)
+{
+    int sum = 0;
+    int chrCount[256] = {0};
+    for(int i=0;i&lt;strlen(a);i++)
+    {
+        chrCount[a[i]]++;
+    }
+    for(int i=0;i&lt;256;i++) 
+    {
+        if(chrCount[i]!=0) sum++;
+    }
+    return sum;
+}
+
+int sort_by_number_of_distinct_characters(const void* aa, const void* bb) {
+    char *a = *(char **)aa;
+    char *b = *(char **)bb;
+    int na = distinctChars(a);
+    int nb = distinctChars(b);
+    if(na==nb) return lexicographic_sort(aa,bb);
+    return na - nb;
+    
+}
+
+int sort_by_length(const void* aa, const void* bb) {
+    char *a = *(char **)aa;
+    char *b = *(char **)bb;
+    if(strlen(a)==strlen(b)) return lexicographic_sort(aa, bb);
+    return strlen(a)-strlen(b);
+}
+
+void string_sort(char** arr,const int len,int (*cmp_func)(const void* a, const void* b)){
+    qsort(arr,len,sizeof(char *), cmp_func);
+}
+
+
+int main() 
+{
+    int n;
+    scanf(&quot;%d&quot;, &amp;n);
+  
+    char** arr;
+    arr = (char**)malloc(n * sizeof(char*));
+  
+    for(int i = 0; i &lt; n; i++){
+        *(arr + i) = malloc(1024 * sizeof(char));
+        scanf(&quot;%s&quot;, *(arr + i));
+        *(arr + i) = realloc(*(arr + i), strlen(*(arr + i)) + 1);
+    }
+  
+    string_sort(arr, n, lexicographic_sort);
+    for(int i = 0; i &lt; n; i++)
+        printf(&quot;%s\n&quot;, arr[i]);
+    printf(&quot;\n&quot;);
+
+    string_sort(arr, n, lexicographic_sort_reverse);
+    for(int i = 0; i &lt; n; i++)
+        printf(&quot;%s\n&quot;, arr[i]); 
+    printf(&quot;\n&quot;);
+
+    string_sort(arr, n, sort_by_length);
+    for(int i = 0; i &lt; n; i++)
+        printf(&quot;%s\n&quot;, arr[i]);    
+    printf(&quot;\n&quot;);
+
+    string_sort(arr, n, sort_by_number_of_distinct_characters);
+    for(int i = 0; i &lt; n; i++)
+        printf(&quot;%s\n&quot;, arr[i]); 
+    printf(&quot;\n&quot;);
+}
+</code></pre>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"hackerrankC.html";
+			document.getElementById("blogaddr-a").innerHTML="C语言hackerrank的一些练习";
+			</script></body></html> 

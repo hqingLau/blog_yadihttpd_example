@@ -1,0 +1,443 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>Java监控和class文件
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>Java监控和class文件</h1><hr>
+<h2 id="jdk-监控和故障处理工具">JDK 监控和故障处理工具</h2>
+<h3 id="命令行工具">命令行工具</h3>
+<blockquote>
+<p> 混个眼熟就行了，有可视化工具这些一般不用，用的时候一堆指令也记不住，还得再查。</p>
+</blockquote>
+<h4 id="jps：查看所有-java-进程"><code>jps</code>：查看所有 Java 进程</h4>
+<p>JVM process status，类似于 UNIX 的 <code>ps</code>。</p>
+<pre><code class="language-shell">$ jps
+10492 RemoteMavenServer36
+11340 Launcher
+7340
+8252 Jps
+</code></pre>
+<p>参数</p>
+<pre><code class="language-shell"># 列出详细的主类全名，如果是 Jar 包，输出 Jar 路径
+$ jps -l
+12152 jdk.jcmd/sun.tools.jps.Jps
+10492 org.jetbrains.idea.maven.server.RemoteMavenServer36
+11340 org.jetbrains.jps.cmdline.Launcher
+7340
+
+# 虚拟机启动时 JVM 参数
+$ jps -v
+10492 RemoteMavenServer36 -Djava.awt.headless=true -Dmaven.defaultProjectBuilder.disableGlobalModelCache=true -Xmx768m -Didea.maven.embedder.version=3.6.1 -Dmaven.ext.class.path=C:\Program Files\JetBrains\IntelliJ IDEA 2019.3.1\plugins\maven\lib\maven-event-listener.jar -Dfile.encoding=GBK
+...
+
+# 传递给 Java 进程 main() 函数的参数
+$ jps -m
+11340 Launcher C:/Program Files/JetBrains/IntelliJ IDEA 2019.3.1/plugins/java/lib/javac2.jar;C:/Program Files/JetBrains/IntelliJ IDEA 2019.3.1/plugins/java/lib/aether-api-1.1.0.jar;
+...
+</code></pre>
+<h4 id="jstat：监视虚拟机运行状态信息"><code>jstat</code>：监视虚拟机运行状态信息</h4>
+<p>JVM statistics monitoring tool</p>
+<pre><code class="language-shell"># 分析进程 id 为 31736 的 gc 情况，每隔 1000ms 打印一次记录，打印 10 次停止，每 3 行后打印指标头部。
+$ jstat -gc -h3 9904 1000 3
+</code></pre>
+<h4 id="jinfo-实时地查看和调整虚拟机各项参数"><code>jinfo</code>: 实时地查看和调整虚拟机各项参数</h4>
+<pre><code class="language-shell">$ jinfo 10492
+Java System Properties:
+#Sat Sep 18 17:51:59 CST 2021
+sun.desktop=windows
+awt.toolkit=sun.awt.windows.WToolkit
+java.specification.version=11
+sun.cpu.isalist=amd64
+sun.jnu.encoding=GBK
+java.class.path=C\:\\Progr...
+</code></pre>
+<p>使用 <code>jinfo</code> 可以在不重启虚拟机的情况下，可以动态的修改 JVM  的参数。尤其在线上的环境特别有用。</p>
+<h4 id="jmap：生成堆转储快照"><code>jmap</code>：生成堆转储快照</h4>
+<p>并不仅仅是为了获取 dump 文件，它还可以查询 finalizer 执行队列、Java 堆和永久代的详细信息，如空间使用率、当前使用的是哪种收集器等。</p>
+<h4 id="jhat-分析-heapdump-文件"><code>jhat</code>: 分析 heapdump 文件</h4>
+<p><strong><code>jhat</code></strong> 用于分析 heapdump 文件，它会建立一个 HTTP/HTML 服务器，让用户可以在浏览器上查看分析结果。</p>
+<h4 id="jstack-生成虚拟机当前时刻的线程快照"><code>jstack</code> :生成虚拟机当前时刻的线程快照</h4>
+<p><code>jstack</code>（Stack Trace for Java）命令用于生成虚拟机当前时刻的线程快照。线程快照就是当前虚拟机内每一条线程正在执行的方法堆栈的集合。</p>
+<h3 id="jdk-可视化工具分析">JDK 可视化工具分析</h3>
+<h4 id="jconsole">JConsole</h4>
+<p>JConsole 是基于 JMX 的可视化监视、管理工具。可以很方便的监视本地及远程服务器的 Java 进程的内存使用情况。可以在控制台输出<code>console</code>命令启动或者在 JDK 目录下的 bin 目录找到<code>jconsole.exe</code>然后双击启动。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210918175759.png" alt="image-20210918175757128"></p>
+<p>继续看一下<code>RemoteMavenServer36</code>：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210918180311.png" alt="image-20210918180308161"></p>
+<h4 id="visual-vm">Visual VM</h4>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210918180547.png" alt="image-20210918180546206"></p>
+<h2 id="class文件结构">class文件结构</h2>
+<pre><code class="language-java">ClassFile {
+    u4             magic; //Class 文件的标志
+    u2             minor_version;//Class 的小版本号
+    u2             major_version;//Class 的大版本号
+    u2             constant_pool_count;//常量池的数量
+// （常量池计数器是从 1 开始计数的，将第 0 项常量空出来是有特殊考虑
+// 的，索引值为 0 代表“不引用任何一个常量池项”）。
+    
+    cp_info        constant_pool[constant_pool_count-1];//常量池
+    u2             access_flags;//Class 的访问标记
+// 这个标志用于识别一些类或者接口层次的访问信息，包括：这个 Class 是类
+// 还是接口，是否为 public 或者 abstract 类型，如果是类的话是否声明为 final 等等。
+    
+    u2             this_class;//当前类
+    u2             super_class;//父类
+    u2             interfaces_count;//接口
+    u2             interfaces[interfaces_count];//一个类可以实现多个接口
+    u2             fields_count;//Class 文件的字段属性
+    
+    field_info     fields[fields_count];//一个类会可以有多个字段
+// 字段表（field info）用于描述接口或类中声明的变量。字段包括类级变量
+// 以及实例变量，但不包括在方法内部声明的局部变量。
+    
+    u2             methods_count;//Class 文件的方法数量
+    method_info    methods[methods_count];//一个类可以有个多个方法
+    u2             attributes_count;//此类的属性表中的属性数
+    attribute_info attributes[attributes_count];//属性表集合
+// 如：max_stack代表了操作数栈深度的最大值，虚拟机会根据这个值来分配栈帧中的操栈深度，
+// max_locals代表了局部变量所需的存储空间，
+}
+</code></pre>
+<p><strong>常量池</strong>主要存放两大常量：字面量和符号引用。字面量比较接近于 Java 语言层面的的常量概念，如文本字符串、声明为 final 的常量值等。而符号引用则属于编译原理方面的概念。包括下面三类常量：</p>
+<ul>
+<li>类和接口的全限定名</li>
+<li>字段的名称和描述符</li>
+<li>方法的名称和描述符</li>
+</ul>
+<p>使用 <code>jclasslib</code> 不光可以直观地查看某个类对应的字节码文件，还可以查看类的基本信息、常量池、接口、属性、函数等信息。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210918181815.png" alt="image-20210918181813648"></p>
+<h2 id="类的加载过程">类的加载过程</h2>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20210918182659.png" alt="image-20210918182657583" style="zoom:80%;" />
+
+<p>在加载阶段，虚拟机需要完成以下三件事情：</p>
+<ul>
+<li><p>通过一个类的全限定名来获取其定义的二进制字节流。</p>
+</li>
+<li><p>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构。</p>
+</li>
+<li><p>在Java堆中生成一个代表这个类的java.lang.Class对象，作为对方法区中这些数据的访问入口。</p>
+</li>
+</ul>
+<p><strong>方法区</strong></p>
+<p>保存在着被加载过的每一个类的信息；这些信息由类加载器在加载类的时候，从类的源文件中抽取出来；static变量信息也保存在方法区中；</p>
+<p><strong>可以看做是将类（Class）的元数据，保存在方法区里；</strong></p>
+<p>方法区是线程共享的；当有多个线程都用到一个类的时候，而这个类还未被加载，则应该只有一个线程去加载类，让其他线程等待；</p>
+<p>方法区的大小不必是固定的，jvm可以根据应用的需要动态调整。jvm也可以允许用户和程序指定方法区的初始大小，最小和最大限制；</p>
+<p>方法区同样存在垃圾收集，因为通过用户定义的类加载器可以动态扩展Java程序，这样可能会导致一些类，不再被使用，变为垃圾。这时候需要进行垃圾清理。</p>
+<p><strong>类型的常量池 （即运行时常量池）</strong></p>
+<p>每一个Class文件中，都维护着一个常量池（这个保存在类文件里面，不要与方法区的运行时常量池搞混），里面存放着编译时期生成的各种字面值和符号引用；这个常量池的内容，在类加载的时候，被复制到方法区的运行时常量池 ；</p>
+<p>字面值：就是像string, 基本数据类型，以及它们的包装类的值，以及final修饰的变量，简单说就是在编译期间，就可以确定下来的值；</p>
+<p>符号引用：不同于我们常说的引用，它们是对类型，域和方法的引用，类似于面向过程语言使用的前期绑定，对方法调用产生的引用；</p>
+<p>存在这里面的数据，类似于保存在数组中，外部根据索引来获得它们 。</p>
+<h2 id="参考">参考</h2>
+<p><a href="https://snailclimb.gitee.io/javaguide/#/docs/java/jvm/JDK%E7%9B%91%E6%8E%A7%E5%92%8C%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93?id=jdk-%E7%9B%91%E6%8E%A7%E5%92%8C%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93">JDK 监控和故障处理工具总结</a></p>
+<p><a href="https://snailclimb.gitee.io/javaguide/#/docs/java/jvm/%E7%B1%BB%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84?id=%E7%B1%BB%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84">类文件结构</a></p>
+<p><a href="https://www.jianshu.com/p/dd39654231e0">【Java基础】类加载过程</a></p>
+<p><a href="https://snailclimb.gitee.io/javaguide/#/docs/java/jvm/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8?id=%E5%9B%9E%E9%A1%BE%E4%B8%80%E4%B8%8B%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B">回顾一下类加载过程</a></p>
+<p><a href="https://www.cnblogs.com/tangliMeiMei/p/13033572.html">IDEA字节码学习查看神器jclasslib bytecode viewer介绍</a></p>
+<p><a href="https://blog.csdn.net/youngyouth/article/details/79933612">方法区（关于java虚拟机内存的那些事）</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"javaclass20210918.html";
+			document.getElementById("blogaddr-a").innerHTML="Java监控和class文件";
+			</script></body></html> 

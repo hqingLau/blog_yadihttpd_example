@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+	<url>
+		<loc>https://orzlinux.cn/</loc>
+		<priority>1.00</priority>
+	</url>
+
+		<url>
+			<loc>https://orzlinux.cn/blog/how-does-a-relational-database-work.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/yadichat1.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/netty20211021.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/tree-20211020.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/hackerrank_java3.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/hackerrank_java2.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/hand-java-vm1-2.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/hackerrank_java1.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/attention20211010.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javaseckill4-20211006.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javaseckill3-20211005.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javaseckill2-20211005.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javaseckill1-20211004.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/hackerrankShell.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/hackerrankC.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javaAOP20211001.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/springboot20210929.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/springboot20210928.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javaframe20210927.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/tomcat20210926.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/spring20210926.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javaweb20210924.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/java8_20210923.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/java8_20210922.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javareflect20210919.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javaclass20210918.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javajvmgc20210917.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/jvm20210916.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/deviceDriver20210915.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javaservlet20210915.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javaMultiThread20210914.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/heap20210913.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javaMultiThread20210913.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javaMultiThread20210911.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/Java_rmi_jmx20210910.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javaajax20210909.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javacontainer20210908.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javabase20210907.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/leetcode-jzoffer09.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/javabase20210906.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/cshellpipe.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/20210902233755.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/filesystem20210902.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/addUploadBlog.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/filesystem20210830.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/linuxfiledirapi.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/iodiskraid.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/threadsemconevent.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/jsthings.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/concurrencyLock.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/dimalloc.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/swapspace.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/virtualmemory.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/yadihttpdv0_1summary.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/simpleshell.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/file_stat.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/ostep_proj2.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/ostep_proj1.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/77manghe.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/blog2https.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/md_generate_html.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/linux_notes.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+</urlset>

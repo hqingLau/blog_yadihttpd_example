@@ -1,0 +1,629 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>Java反射三四例
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>Java反射三四例</h1><hr>
+<p><strong>注解提供了一种安全的类似注释的机制，用来将任何的信息或元数据（metadata）与程序元素（类、方法、成员变量等）进行关联。</strong></p>
+<p><strong>JDK中预定义的一些注解</strong></p>
+<p><code>@Override</code>：检测被该注解标注的方法是否是继承自父类（接口）的</p>
+<p><code>@Deprecated</code>：该注解标注的方法表示该方法已过时</p>
+<p><code>@SuppressWarnings</code>: 压制警告的注解,一般传递的参数为all，如：@SuppressWarnings(&quot;all&quot;)</p>
+<p><strong>自定义注解</strong></p>
+<p>格式：</p>
+<pre><code class="language-java">public @interface 注解名称{
+     属性列表;
+}
+</code></pre>
+<p>本质：注解本质上使用一个接口，该接口默认继承Annotation接口</p>
+<p><strong>属性：接口中的抽象方法</strong></p>
+<p>要求：</p>
+<p>属性（抽象方法）的返回值类型需要是以下几种类型</p>
+<ul>
+<li>基本数据类型</li>
+<li>String</li>
+<li>枚举</li>
+<li>注解</li>
+<li>以上类型的数组</li>
+</ul>
+<p>定义了属性，在使用时需要给属性进行赋值：</p>
+<ul>
+<li><p>如果定义属性时，使用default关键字给属性默认的初始值，则使用注解时，可以不进行属性的赋值</p>
+</li>
+<li><p>如果只有一个属性需要赋值，且属性的名称是value，则value可以省略，直接定义值即可。</p>
+</li>
+<li><p>数组赋值时，值使用{}包裹，如果数组汇总只有一个值，则{}可以省略</p>
+</li>
+</ul>
+<p><strong>元注解：用于描述注解的注解</strong></p>
+<pre><code class="language-java">@Target：描述注解能够作用的位置，如：类、方法等
+    ElementType取值：
+        TYPE:可以作用在类上
+        METHOD:可以作用在方法上
+        FIELD:可以作用在成员变量上
+@Retention：描述注解被保留的阶段
+    RetentionPolicy取值
+        @Retention(RetentionPolicy.RUNTIME)
+        （1）RUNTIME:一般自定义的注解取RUNTIME即可，表示表描述的注解作用于运行时阶段
+@Documented:描述注解是否被抽取到api文档中
+@Inherited:描述注解是否会被子类继承
+</code></pre>
+<blockquote>
+<p> <strong>注解的常见用途</strong>：</p>
+<p>生成文档的注解，如@author，@param。</p>
+<p>跟踪代码依赖性，实现替代配置文件功能，如spring mvc的注解。</p>
+<p>编译时进行格式检查，如@override。</p>
+<p>编译时进行代码生成补全，如lombok插件的@Data。</p>
+</blockquote>
+<h2 id="自定义注解代替配置文件">自定义注解代替配置文件</h2>
+<p><strong>创建一个普通类：</strong></p>
+<pre><code class="language-java">package com.lhq.annotation;
+
+public class Person {
+    private String name;
+    private int age;
+
+    ...
+
+    public void eat(){
+        System.out.println(&quot;调用eat方法！&quot;);
+    }
+}
+</code></pre>
+<p><strong>创建注解：</strong></p>
+<pre><code class="language-java">@Target(ElementType.TYPE) // 只作用在类上
+@Retention(RetentionPolicy.RUNTIME)
+public @interface pro {
+    String className();
+    String methodName();
+}
+</code></pre>
+<p><strong>使用一：</strong></p>
+<pre><code class="language-java">@pro(className = &quot;com.lhq.annotation.Person&quot;,methodName = &quot;eat&quot;)
+public class Demo {
+    public static void main(String[] args) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        // 获取该类的字节码文件
+        Class demoClass = Demo.class;
+        pro p = (pro)demoClass.getAnnotation(pro.class);
+        // 这行代码相当于在内存中生产了一个注解接口的子类实现对象，相当于如下代码：
+
+    /*class proImpl implements pro{
+        @Override
+        public String className() {
+            return &quot;com.lhq.annotation.Person&quot;;
+        }
+        @Override
+        public String methodName() {
+            return &quot;eat&quot;;
+        }
+     */
+        String className = p.className();
+        String methodName = p.methodName();
+
+        // 根据反射机制类名获取类对象
+        Class cls = Class.forName(className);
+        // 根据类对象创建对象
+        Object o = cls.newInstance();
+        Method method = cls.getMethod(methodName);
+        //调用invoke方法执行对象中的method方法
+        method.invoke(o); // output :调用eat方法！
+    }
+}
+</code></pre>
+<p><strong>使用二：配置文件</strong></p>
+<pre><code class="language-java">// yadi.properties
+// className=com.lhq.annotation.Person
+// methodName=eat
+
+public class Demo2 {
+    public static void main(String[] args) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, IOException {
+        // 创建Properties对象
+        Properties pro = new Properties();
+
+        //通过本类的类加载器将properties文件中的内容加载到pro对象中
+        ClassLoader classLoader = Demo2.class.getClassLoader();
+        InputStream is = classLoader.getResourceAsStream(&quot;com/lhq/annotation/yadi.properties&quot;);
+        pro.load(is);
+
+        //利用properties对象中getProperty方法利用key获取value
+        String className = pro.getProperty(&quot;className&quot;);
+        String methodName = pro.getProperty(&quot;methodName&quot;);
+
+        // 根据反射机制类名获取类对象
+        Class cls = Class.forName(className);
+        // 根据类对象创建对象
+        Object o = cls.newInstance();
+        Method method = cls.getMethod(methodName);
+        //调用invoke方法执行对象中的method方法
+        method.invoke(o); //output: 调用eat方法！
+    }
+}
+</code></pre>
+<h2 id="通过注解进行赋值和校验">通过注解进行赋值和校验</h2>
+<p><strong>赋值注解：</strong></p>
+<pre><code class="language-java">@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD,ElementType.METHOD})
+@Inherited
+public @interface InitSex {
+    enum SEX_TYPE {MAN,WOMAN};
+    SEX_TYPE sex() default SEX_TYPE.MAN;
+}
+</code></pre>
+<p><strong>校验注解：</strong></p>
+<pre><code class="language-java">@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD,ElementType.METHOD})
+@Inherited
+public @interface ValidateAge {
+    int min() default 18;
+    int max() default 99;
+    int value() default 20;
+}
+</code></pre>
+<p><strong>普通类：</strong>使用注解</p>
+<pre><code class="language-java">public class User {
+    private String username;
+    @ValidateAge(min = 20,max = 35,value = 22)
+    private int age;
+    @InitSex(sex = InitSex.SEX_TYPE.MAN)
+    private String sex;
+    ...
+}
+</code></pre>
+<p><strong>测试：</strong></p>
+<pre><code class="language-java">public class Test {
+    public static void main(String[] args) throws IllegalAccessException {
+        User user = new User();
+        initUser(user);
+        // 年龄为0，校验为通过情况
+        // output: 完成属性值的修改，修改值为:MAN
+        boolean checkResult = checkUser(user);
+        // output: 年龄值不符合条件
+        printResult(checkResult);
+        // output: 校验未通过
+        // 重新设置年龄，校验通过情况
+        user.setAge(22);
+        checkResult = checkUser(user);
+        printResult(checkResult);
+        // output: 校验通过
+    }
+
+    static void initUser(User user) throws IllegalAccessException {
+        // 获取User类中所有的属性(getFields无法获得private属性: )
+        // getFields: reflecting all the accessible public fields of the class
+        // getDeclaredFields: objects reflecting all the fields declared by the class or interface
+        Field[] fields = User.class.getDeclaredFields();
+        for(Field field:fields) {
+            if(field.isAnnotationPresent(InitSex.class)) {
+                InitSex init = field.getAnnotation(InitSex.class);
+                field.setAccessible(true);
+                // 设置属性性别
+                field.set(user,init.sex().toString());
+                System.out.println(&quot;完成属性值的修改，修改值为:&quot; + init.sex().toString());
+            }
+        }
+    }
+
+    static boolean checkUser(User user) throws IllegalAccessException {
+        // 获取User类中所有的属性(getFields无法获得private属性)
+        Field[] fields = User.class.getDeclaredFields();
+        boolean result = true;
+        // 遍历所有属性
+        for (Field field : fields) {
+            // 如果属性上有此注解，则进行赋值操作
+            if (field.isAnnotationPresent(ValidateAge.class)) {
+                ValidateAge validateAge = field.getAnnotation(ValidateAge.class);
+                field.setAccessible(true);
+                int age = (Integer) field.get(user);
+                if (age &lt; validateAge.min() || age &gt; validateAge.max()) {
+                    result = false;
+                    System.out.println(&quot;年龄值不符合条件&quot;);
+                }
+            }
+        }
+        return result;
+    }
+
+    static void printResult(boolean checkResult) {
+        if (checkResult) {
+            System.out.println(&quot;校验通过&quot;);
+        } else {
+            System.out.println(&quot;校验未通过&quot;);
+        }
+    }
+}
+</code></pre>
+<h2 id="给private属性赋值">给private属性赋值</h2>
+<pre><code class="language-java">public class PrivateSet {
+    private String read;
+    public String getReadOnly() {
+        return read;
+    }
+
+    public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
+        PrivateSet t = new PrivateSet();
+        Field f = t.getClass().getDeclaredField(&quot;read&quot;);
+        f.setAccessible(true);
+        f.set(t,&quot;write something...&quot;);
+        System.out.println(t.getReadOnly());
+        // output: write something...
+    }
+}
+</code></pre>
+<h2 id="为啥都说慢">为啥都说慢</h2>
+<p><code>invoke</code>源码如下：</p>
+<pre><code class="language-java">public final class Method extends Executable {
+    
+    ...
+        
+    @CallerSensitive
+    public Object invoke(Object obj, Object... args)
+        throws IllegalAccessException, IllegalArgumentException,
+           InvocationTargetException
+    {
+        // 权限检查
+        if (!override) {
+            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                Class&lt;?&gt; caller = Reflection.getCallerClass();
+                checkAccess(caller, clazz, obj, modifiers);
+            }
+        }
+        // ============================================
+        MethodAccessor ma = methodAccessor;             // read volatile
+        if (ma == null) {
+            ma = acquireMethodAccessor();
+        }
+        return ma.invoke(obj, args);
+        // ============================================
+    }
+}
+</code></pre>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210919214741.png" alt="image-20210919214739409"></p>
+<p>其实在<code>Method</code>对象内部维护了一个接口<code>MethodAccessor</code>，该接口有二个实现类，其中<code>NativeMethodAccessorImpl</code>用来实现本地<code>native</code>调用。而<code>DelegatingMethodAccessorImpl</code>顾名思义，是一个委派实现类，该方法将<code>invoke</code>操作委派给了<code>native</code>方法。</p>
+<pre><code class="language-java">public class ReflectSlow {
+    public static void target(int i) {
+        new Exception(&quot;#&quot;+i).printStackTrace();
+    }
+
+    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Class&lt;?&gt; kclass = Class.forName(&quot;com.lhq.annotation2.ReflectSlow&quot;);
+        // 首先Class.forName属于native方法，native方法就要经过语言执行层面转换。也就是java到c再到java的切换。
+        Method method = kclass.getMethod(&quot;target&quot;, int.class);
+        // 而getMethod这个操作则会遍历该类的公有方法，如果没有命中，则还要去父类中查找。并且返回该
+        // method对象的一份copy。在查找成功之后，这份copy对象，则会占用堆空间，而无法进行内联优化，
+        // 相反还会引起gc频率的提高。对性能也是一份影响。
+        method.invoke(null,0);
+    }
+}
+</code></pre>
+<p>输出：</p>
+<pre><code class="language-java">/** output:
+* java.lang.Exception: #0
+*     at com.lhq.annotation2.ReflectSlow.target(ReflectSlow.java:8)
+*     at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+*     at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+*     at sun.reflect.DelegatingMethodAccessorImpl. invoke(DelegatingMethodAccessorImpl.java:43)
+*     at java.lang.reflect.Method.invoke(Method.java:498)
+*     at com.lhq.annotation2.ReflectSlow.main(ReflectSlow.java:14)
+*/
+</code></pre>
+<p>换成循环多次<code>method.invoke(null,i);</code>：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20210919215205.png" alt="image-20210919215203623"></p>
+<p>在程序调用第16次的时候，调用栈更改成了<code>GeneratedMethodAccessor1</code>，而不再是<code>native</code>方法。这是因为 Jvm 维护了一个阈值<code>-Dsun.reflect.inflationThreshold</code>，默认为15。当反射<code>native</code>调用超过15次就会触发 Jvm 的动态生成字节码，之后的操作，全部都会调用该动态实现。</p>
+<p>动态实现与<code>native</code>实现相比，动态实现的效率要快的多，这是因为<code>native</code>的实现要在 Java 语言层面切换到 C 语言，然后再次切换到 Java 语言。但是，因为动态实现第一次生成的时候要生成字节码，而这个操作是比较耗时的。所以相比较起来单独一次调用的时候<code>native</code>反而要比动态实现快的多。</p>
+<blockquote>
+<p>总结一下就是 委派实现，用的少了就直接 native 。虽然 native 方法要切换，但是生成字节码更慢，invoke用的多了生成字节码就值的了，就生成字节码，省去了切换，就快了。二者都是：慢。</p>
+</blockquote>
+<p>还有<strong>注解处理器</strong>，另开一篇吧。</p>
+<h2 id="参考">参考</h2>
+<p><a href="https://zhuanlan.zhihu.com/p/60730622">一篇文章，全面掌握Java自定义注解（Annontation）</a></p>
+<p><a href="https://juejin.cn/post/6844903773060464654">Java注解之自定义</a></p>
+<p><a href="https://blog.csdn.net/guanmao4322/article/details/106043794">Java 使用自定义注解替代配置文件案例（注解介绍）</a></p>
+<p><a href="https://blog.csdn.net/xqlovetyj/article/details/82798864">反射为什么慢</a></p>
+<p><a href="https://blog.csdn.net/zhang6622056/article/details/98950855">反射调用为什么慢？细推反射细节！</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"javareflect20210919.html";
+			document.getElementById("blogaddr-a").innerHTML="Java反射三四例";
+			</script></body></html> 
