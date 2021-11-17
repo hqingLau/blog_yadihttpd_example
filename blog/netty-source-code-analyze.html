@@ -1,0 +1,924 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>netty源码分析一
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="referrer" content="no-referrer" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>netty源码分析一</h1><hr>
+<blockquote>
+<p>javadoop源码分析系列的笔记，建议查看原文：<a href="https://www.javadoop.com/post/netty-part-1%E3%80%82">https://www.javadoop.com/post/netty-part-1。</a></p>
+</blockquote>
+<h2 id="零、概述">零、概述</h2>
+<p>概述详见：<a href="https://orzlinux.cn/blog/netty20211021.html">Netty概述</a></p>
+<h2 id="一、环境配置">一、环境配置</h2>
+<p>准备环境maven、springboot、netty-example（相比netty-all简单，在解决依赖的同时，有一些小例子来学习）。</p>
+<p>pom.xml</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.netty&lt;/groupId&gt;
+    &lt;artifactId&gt;netty-example&lt;/artifactId&gt;
+    &lt;version&gt;4.1.69.Final&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>然后就可以在jar下面找到对应的例子源码：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115104909.png" alt="image-20211115104909315"></p>
+<p>echo例子：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115110308.png" alt="image-20211115110308211"></p>
+<h2 id="二、netty的channel">二、netty的channel</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115111018.png" alt="image-20211115111018253"></p>
+<p>服务端和客户端启动过程都会调用<code>channel()</code>方法。</p>
+<p>进入查看源码：</p>
+<pre><code class="language-java">private volatile ChannelFactory&lt;? extends C&gt; channelFactory;
+
+public B channel(Class&lt;? extends C&gt; channelClass) {
+    return channelFactory(new ReflectiveChannelFactory&lt;C&gt;(
+            ObjectUtil.checkNotNull(channelClass, &quot;channelClass&quot;) // 判空
+    ));
+}
+
+@Deprecated
+public B channelFactory(ChannelFactory&lt;? extends C&gt; channelFactory) {
+    ObjectUtil.checkNotNull(channelFactory, &quot;channelFactory&quot;);
+    if (this.channelFactory != null) {
+        throw new IllegalStateException(&quot;channelFactory set already&quot;);
+    }
+
+    this.channelFactory = channelFactory;
+    return self();
+}
+</code></pre>
+<p>这里只是设置了<code>channelFactory</code>为<code>ReflectiveChannelFactory</code>的一个实例。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115112102.png" alt="image-20211115112102354"></p>
+<p><code>newChannel()</code>方法只有在<code>initAndRegister()</code>中才会用到。</p>
+<p><img src="../AppData/Roaming/Typora/typora-user-images/image-20211115112414285.png" alt="image-20211115112414285"></p>
+<p>而<code>initAndRegister()</code>兜兜转转被客户端<code>connect</code>和服务端<code>bind</code>调用：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115112719.png" alt="image-20211115112719255"></p>
+<p><code>channel</code>的调用参数一般是<code>NioSocketChannel</code>或者<code>NioServerSocketChannel</code></p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115113323.png" alt="image-20211115113323461"></p>
+<p>那么<code>NioSocketChannel</code>是个啥呢？</p>
+<pre><code class="language-java">private static final SelectorProvider DEFAULT_SELECTOR_PROVIDER = SelectorProvider.provider();
+
+
+public NioSocketChannel() {
+    // SelectorProvider实例用于创建JDK的SocketChannel实例
+    this(DEFAULT_SELECTOR_PROVIDER);
+}
+
+
+public NioSocketChannel(SelectorProvider provider) {
+    // newSocket会创建JDK的SocketChannel实例
+    this(newSocket(provider));
+}
+</code></pre>
+<p><code>newSocket</code>会创建一个NIO的<code>SocketChannel</code>实例。</p>
+<pre><code class="language-java">private static SocketChannel newSocket(SelectorProvider provider) {
+    try {
+        return provider.openSocketChannel();
+    } catch (IOException e) {
+        throw new ChannelException(&quot;Failed to open a socket.&quot;, e);
+    }
+}
+</code></pre>
+<p><code>NioSocketChannel</code> 在实例化过程中，会先实例化 JDK 底层的 <code>SocketChannel</code>，<code>NioServerSocketChannel</code> 也一样，会先实例化 <code>ServerSocketChannel</code> 实例。</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211115114208.png" alt="image-20211115114208257" style="zoom:80%;" />
+
+<p><code>NioSocketChannel</code>构造方法还有：</p>
+<pre><code class="language-java">public NioSocketChannel(Channel parent, SocketChannel socket) {
+    // 设置属性，非阻塞
+    super(parent, socket);
+    // 保存channel的配置信息
+    config = new NioSocketChannelConfig(this, socket.socket());
+}
+</code></pre>
+<h2 id="三、future、promise">三、Future、Promise</h2>
+<h3 id="jdk-future">JDK future</h3>
+<p>JDK future例子：</p>
+<pre><code class="language-java">package cn.orzlinux.nettysource;
+
+import java.util.concurrent.*;
+
+public class JDKFuture {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        // 1970年至今的毫秒数
+        long l = System.currentTimeMillis();
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        // 将回调接口交给线程池执行，非阻塞，返回结果占位符future
+        Future&lt;Integer&gt; future = executorService.submit(new Callable&lt;Integer&gt;() {
+            @Override
+            public Integer call() throws Exception {
+                System.out.println(&quot;执行耗时操作。。。&quot;);
+                timeConsumingOperation();
+                return 1;
+            }
+        });
+        // get阻塞直到结果完成
+        System.out.println(&quot;计算结果&quot;+future.get());
+        System.out.println(&quot;主线程运算耗时:&quot; + (System.currentTimeMillis() - l) + &quot; ms&quot;);
+    }
+
+    private static void timeConsumingOperation() {
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+// 结果:
+// 执行耗时操作。。。
+// 计算结果1
+// 主线程运算耗时:3012 ms
+</code></pre>
+<p>对应的netty计算例子：回调式</p>
+<pre><code class="language-java">package cn.orzlinux.nettysource;
+
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.FutureListener;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+
+
+public class NettyFuture {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        // 1970年至今的毫秒数
+        long l = System.currentTimeMillis();
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        EventExecutorGroup group = new DefaultEventExecutorGroup(4);
+        Future&lt;Integer&gt; future = group.submit(new Callable&lt;Integer&gt;() {
+            @Override
+            public Integer call() throws Exception {
+                System.out.println(&quot;执行耗时操作。。。&quot;);
+                timeConsumingOperation();
+                return 1;
+            }
+        });
+        future.addListener(new FutureListener&lt;Object&gt;(){
+
+            @Override
+            public void operationComplete(Future&lt;Object&gt; objectFuture) throws Exception {
+                System.out.println(&quot;计算结果&quot;+objectFuture.get());
+                countDownLatch.countDown();
+            }
+        });
+        System.out.println(&quot;主线程运算耗时:&quot; + (System.currentTimeMillis() - l) + &quot; ms&quot;);
+        countDownLatch.await(); // 不让守护线程退出
+        System.out.println(&quot;程序退出&quot;);
+    }
+
+    private static void timeConsumingOperation() {
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+// 结果:
+// 主线程运算耗时:218 ms
+// 执行耗时操作。。。
+// 计算结果1
+// 程序退出
+</code></pre>
+<p><strong>jdk1.8</strong>提供了回调方式：<code>CompletableFuture</code>。</p>
+<pre><code class="language-java">package cn.orzlinux.nettysource;
+
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.util.concurrent.FutureListener;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+
+public class CompletableFutureDemo {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        // 1970年至今的毫秒数
+        long l = System.currentTimeMillis();
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        EventExecutorGroup group = new DefaultEventExecutorGroup(4);
+        CompletableFuture&lt;Integer&gt; completableFuture = CompletableFuture.supplyAsync(()-&gt;{
+            System.out.println(&quot;执行耗时操作。。。&quot;);
+            timeConsumingOperation();
+            return 1;
+        });
+
+        completableFuture.whenComplete((result,e)-&gt;{
+                System.out.println(&quot;计算结果&quot;+result);
+                countDownLatch.countDown();
+            });
+        System.out.println(&quot;主线程运算耗时:&quot; + (System.currentTimeMillis() - l) + &quot; ms&quot;);
+        countDownLatch.await(); // 不让守护线程退出
+        System.out.println(&quot;程序退出&quot;);
+    }
+
+    private static void timeConsumingOperation() {
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+// 执行耗时操作。。。
+// 主线程运算耗时:285 ms
+// 计算结果1
+// 程序退出
+</code></pre>
+<p>解决回调地狱方式：</p>
+<pre><code class="language-java">// asyncFunc1(opt, (...args1) =&gt; {
+//   asyncFunc2(opt, (...args2) =&gt; {
+//       asyncFunc3(opt, (...args3) =&gt; {
+//            asyncFunc4(opt, (...args4) =&gt; {
+//                // some operation
+//            });
+//        });
+//    });
+//});
+public static void main(String[] args) throws InterruptedException {
+    long l = System.currentTimeMillis();
+    CompletableFuture&lt;Integer&gt; completableFuture = CompletableFuture.supplyAsync(() -&gt; {
+        System.out.println(&quot;在回调中执行耗时操作...&quot;);
+        timeConsumingOperation();
+        return 100;
+    });
+    completableFuture = completableFuture.thenCompose(i -&gt; {
+        return CompletableFuture.supplyAsync(() -&gt; {
+            System.out.println(&quot;在回调的回调中执行耗时操作...&quot;);
+            timeConsumingOperation();
+            return i + 100;
+        });
+    });//&lt;1&gt;
+    completableFuture.whenComplete((result,e)-&gt;{
+        System.out.println(&quot;计算结果:&quot; + result);
+    });
+    System.out.println(&quot;主线程运算耗时:&quot; + (System.currentTimeMillis() - l) + &quot; ms&quot;);
+    new CountDownLatch(1).await();
+}
+</code></pre>
+<h3 id="netty-future">netty Future</h3>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115122329.png" alt="image-20211115122329160"></p>
+<p>java.util.concurrent.Future：</p>
+<pre><code class="language-java">public interface Future&lt;V&gt; {
+    // 取消该任务
+    boolean cancel(boolean mayInterruptIfRunning);
+    // 任务是否已取消
+    boolean isCancelled();
+    // 任务是否已完成
+    boolean isDone();
+    // 阻塞获取任务执行结果
+    V get() throws InterruptedException, ExecutionException;
+    // 带超时参数的获取任务执行结果
+    V get(long timeout, TimeUnit unit)
+        throws InterruptedException, ExecutionException, TimeoutException;
+}
+</code></pre>
+<p>netty中的future接口继承了JDK中的Future接口，添加了一些方法：</p>
+<pre><code class="language-java">public interface Future&lt;V&gt; extends java.util.concurrent.Future&lt;V&gt; {
+    // 是否成功
+    boolean isSuccess();
+    // 是否可取消
+    boolean isCancellable();
+    // 如果任务执行失败，返回异常信息
+    Throwable cause();
+     // 添加 Listener 来进行回调
+    Future&lt;V&gt; addListener(GenericFutureListener&lt;? extends Future&lt;? super V&gt;&gt; var1);
+    Future&lt;V&gt; addListeners(GenericFutureListener&lt;? extends Future&lt;? super V&gt;&gt;... var1);
+    Future&lt;V&gt; removeListener(GenericFutureListener&lt;? extends Future&lt;? super V&gt;&gt; var1);
+    Future&lt;V&gt; removeListeners(GenericFutureListener&lt;? extends Future&lt;? super V&gt;&gt;... var1);
+    // 阻塞等待任务结束，如果任务失败，将“导致失败的异常”重新抛出来
+    Future&lt;V&gt; sync() throws InterruptedException;
+    // 不响应中断的 sync()
+    Future&lt;V&gt; syncUninterruptibly();
+    // 阻塞等待任务结束，和 sync() 功能是一样的，不过如果任务失败，它不会抛出执行过程中的异常
+    Future&lt;V&gt; await() throws InterruptedException;
+    Future&lt;V&gt; awaitUninterruptibly();
+    boolean await(long var1, TimeUnit var3) throws InterruptedException;
+    boolean await(long var1) throws InterruptedException;
+    boolean awaitUninterruptibly(long var1, TimeUnit var3);
+    boolean awaitUninterruptibly(long var1);
+    // 获取执行结果，不阻塞。我们都知道 java.util.concurrent.Future 中的 get() 是阻塞的
+    V getNow();
+
+    boolean cancel(boolean var1);
+}
+</code></pre>
+<p>netty 的<code>Future</code>接口，与 jdk 的<code>Future</code>相比，增加了阻塞等待，和任务回调。</p>
+<blockquote>
+<p>sync 和 await区别：</p>
+<pre><code class="language-java">public Promise&lt;V&gt; sync() throws InterruptedException {
+    this.await();
+    this.rethrowIfFailed();
+    return this;
+}
+</code></pre>
+<p>sync内部调用了 await方法，重新抛出异常。</p>
+</blockquote>
+<p>常用的是其子接口<code>ChannelFuture</code>，和 IO 操作中的<code>Channel</code>关联在一起了。</p>
+<h3 id="netty-promise">netty Promise</h3>
+<p><code>Promise</code>继承自Netty的<code>Future</code>接口。</p>
+<pre><code class="language-java">public interface Promise&lt;V&gt; extends Future&lt;V&gt; {
+    // 标记future为成功，并设置执行结果，通知所有listeners。
+    // 如果失败，抛出异常（失败指该future已经有结果了。）
+    Promise&lt;V&gt; setSuccess(V var1);
+
+    // 同上，只是失败不抛出异常，返回false
+    boolean trySuccess(V var1);
+
+    Promise&lt;V&gt; setFailure(Throwable var1);
+    boolean tryFailure(Throwable var1);
+    
+    // 标记该 future 不可以被取消
+    boolean setUncancellable();
+
+    Promise&lt;V&gt; addListener(GenericFutureListener&lt;? extends Future&lt;? super V&gt;&gt; var1);
+    Promise&lt;V&gt; addListeners(GenericFutureListener&lt;? extends Future&lt;? super V&gt;&gt;... var1);
+    Promise&lt;V&gt; removeListener(GenericFutureListener&lt;? extends Future&lt;? super V&gt;&gt; var1);
+    Promise&lt;V&gt; removeListeners(GenericFutureListener&lt;? extends Future&lt;? super V&gt;&gt;... var1);
+
+    Promise&lt;V&gt; await() throws InterruptedException;
+    Promise&lt;V&gt; awaitUninterruptibly();
+    Promise&lt;V&gt; sync() throws InterruptedException;
+    Promise&lt;V&gt; syncUninterruptibly();
+}
+</code></pre>
+<p><code>Promise</code>实例内部是一个任务，任务执行通常异步，有一个线程池来处理任务。<code>setSuccess</code>或者<code>setFailure</code>会在某个执行任务的线程执行完成后调用，之后调用回调函数。而且，一旦<code>set</code>之后，<code>await</code>或者<code>sync</code>就会返回。</p>
+<p>ChannelPromise接口用的较多。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115135410.png" alt="image-20211115135410519"></p>
+<pre><code class="language-java">public interface ChannelPromise extends ChannelFuture, Promise&lt;Void&gt; {
+
+    @Override
+    Channel channel();
+
+    @Override
+    ChannelPromise setSuccess(Void result);
+
+    ChannelPromise setSuccess();
+
+    boolean trySuccess();
+
+    @Override
+    ChannelPromise setFailure(Throwable cause);
+
+    @Override
+    ChannelPromise addListener(GenericFutureListener&lt;? extends Future&lt;? super Void&gt;&gt; listener);
+
+    @Override
+    ChannelPromise addListeners(GenericFutureListener&lt;? extends Future&lt;? super Void&gt;&gt;... listeners);
+
+    @Override
+    ChannelPromise removeListener(GenericFutureListener&lt;? extends Future&lt;? super Void&gt;&gt; listener);
+
+    @Override
+    ChannelPromise removeListeners(GenericFutureListener&lt;? extends Future&lt;? super Void&gt;&gt;... listeners);
+
+    @Override
+    ChannelPromise sync() throws InterruptedException;
+
+    @Override
+    ChannelPromise syncUninterruptibly();
+
+    @Override
+    ChannelPromise await() throws InterruptedException;
+
+    @Override
+    ChannelPromise awaitUninterruptibly();
+
+    /**
+     * Returns a new {@link ChannelPromise} if {@link #isVoid()} returns {@code true} otherwise itself.
+     */
+    ChannelPromise unvoid();
+}
+</code></pre>
+<p>它综合了 <code>ChannelFuture</code> 和 <code>Promise</code> 中的方法，只不过通过覆写将返回值都变为 <code>ChannelPromise</code> 了而已，<strong>没有增加什么新的功能</strong>。</p>
+<p>接下来看一个比较常用的实现类<code>DefaultPromise</code>。</p>
+<pre><code class="language-java">public class DefaultPromise&lt;V&gt; extends AbstractFuture&lt;V&gt; implements Promise&lt;V&gt; {
+    // 保存执行结果
+    private volatile Object result;
+    // 执行任务的线程池，任务其实没必要知道自己在哪里执行
+    // TODO
+    private final EventExecutor executor;
+    // 回调函数，任务结束后执行
+    private Object listeners;
+    // 等待这个Promise的线程数
+    private short waiters;
+    // 是否正在唤醒等待线程，防止重复执行唤醒
+    private boolean notifyingListeners;
+    // ...
+}
+</code></pre>
+<p>其中，set方法：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115141055.png" alt="image-20211115141055419"></p>
+<p>set方法利用cas设置好值，唤醒阻塞在sync或者await的线程，之后执行回调函数。</p>
+<p>例子使用：</p>
+<pre><code class="language-java">package cn.orzlinux.nettysource;
+
+import io.netty.channel.ChannelPromise;
+import io.netty.util.concurrent.*;
+
+public class NettyPromise {
+    public static void main(String[] args) {
+        // 构造线程池
+        EventExecutor executor = new DefaultEventExecutor();
+        Promise promise = new DefaultPromise(executor);
+        // 给promise添加两个listener
+        promise.addListener(new GenericFutureListener&lt;Future&lt;Integer&gt;&gt;() {
+            @Override
+            public void operationComplete(Future future) throws Exception {
+                if(future.isSuccess()) {
+                    System.out.println(&quot;成功，结果：&quot;+future.get());
+                } else {
+                    System.out.println(&quot;失败，异常：&quot;+future.cause());
+                }
+            }
+        }).addListener((GenericFutureListener&lt;Future&lt;Integer&gt;&gt;) future -&gt; System.out.println(&quot;任务结束。。。&quot;));
+
+        // 提交任务到线程池，执行结束后，设置执行promise的结果
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // 设置promise的结果
+                //任务结束以后，需要调用 promise.setSuccess(result) 作为通知
+                promise.setSuccess(&quot;1234&quot;);
+                // 结果：
+                //成功，结果：1234
+                //任务结束。。。
+
+                // ================================
+                // promise.setFailure(new Throwable(&quot;fail test&quot;));
+                // 输出：
+                // 失败，异常：java.lang.Throwable: fail test
+                // 任务结束。。。
+                // Exception in thread &quot;main&quot; java.lang.Throwable: fail test
+
+            }
+        });
+
+        // main线程阻塞等待执行结果
+        try {
+            promise.sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<h2 id="四、pipeline">四、Pipeline</h2>
+<p>使用<code>Netty</code>时，我们通常就是要写一些<code>handler</code>，组成一个<code>pipeline</code>，用于处理IO事件。</p>
+<p>每个<code>channel</code>内部有一个<code>pipeline</code>，<code>pipeline</code>由多个<code>handler</code>组成，<code>handler</code>之间顺序很重要，IO事件将按照顺序依次经过<code>pipeline</code>上的<code>handler</code>，这样每个 <code>handler</code> 可以专注于做一点点小事，由多个 <code>handler</code> 组合来完成一些复杂的逻辑。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115151721.png" alt="image-20211115151721658"></p>
+<p>这是一个双向链表。</p>
+<p>Netty中，IO事件被分为<code>Inbound</code>事件和<code>Outbound</code>事件。如<code>connect</code>，<code>write</code>，<code>flush</code>属于<code>Outbound</code>事件。 <code>accept</code>、<code>read</code> 这种就属于 <code>Inbound</code> 事件。</p>
+<p>如常用的代码：</p>
+<pre><code class="language-java">1. pipeline.addLast(new StringDecoder());
+2. pipeline.addLast(new StringEncoder());
+3. pipeline.addLast(new BizHandler()); // 处理业务逻辑
+</code></pre>
+<p>按理来说顺序应该为1️⃣ -&gt; 3️⃣ -&gt; 2️⃣。</p>
+<p><strong>原因</strong>：分组的，<code>Inbound</code>和<code>Outbound</code>。也就是read的时候，是<code>inbound</code>，先1，再3。处理完返回的时候，<code>outbound</code>，用的是2。所以虽然这样写，其实是1️⃣ -&gt; 3️⃣ -&gt; 2️⃣的顺序。</p>
+<p>如果再有一个呢？</p>
+<pre><code class="language-java">4. pipeline.addLast(new OutboundHandlerA());
+</code></pre>
+<p>1️⃣ -&gt; 3️⃣ -&gt; 4️⃣ -&gt; 2️⃣。因为out的时候是链表返回来的。</p>
+<blockquote>
+<p>那我们在开发的时候怎么写呢？其实也很简单，从最外层开始写，一步步写到业务处理层，把 Inbound 和 Outbound 混写在一起。比如 encode 和 decode 是属于最外层的处理逻辑，先写它们。假设 decode 以后是字符串，那再进来一层应该可以写进来和出去的日志。再进来一层可以写 字符串 &lt;=&gt; 对象 的相互转换。然后就应该写业务层了。</p>
+</blockquote>
+<p><code>Inbound</code>事件和<code>Outbound</code>事件：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115154826.png" alt="image-20211115154826629"></p>
+<p>如果我们希望定义一个 handler 能同时处理 Inbound 和 Outbound 事件，可以通过继承中间的 <strong>ChannelDuplexHandler</strong> 的方式，比如 <strong>LoggingHandler</strong> 这种既可以用来处理 Inbound 也可以用来处理 Outbound 事件的 handler。</p>
+<p><code>AbstractChannel</code>构造方法：</p>
+<pre><code class="language-java">protected AbstractChannel(Channel parent) {
+    this.parent = parent;
+    // 给每个 channel 分配一个唯一 id
+    id = newId();
+    // 每个 channel 内部需要一个 Unsafe 的实例
+    unsafe = newUnsafe();
+    // 每个 channel 内部都会创建一个 pipeline
+    pipeline = newChannelPipeline();
+}
+</code></pre>
+<p>在JDK源码中，<code>sun.misc.Unsafe</code>类提供了一些底层操作的能力，是设计出来给 JDK 的源码用的，如<code>AQS</code>、<code>ConcurrentHashMap</code>等。</p>
+<pre><code class="language-java">Unsafe unsafe = Unsafe.getUnsafe(); 
+// 编译无问题，运行抛java.lang.SecurityException异常,因为就不是给用户用的
+
+// 上面源码
+public static Unsafe getUnsafe() {
+    Class var0 = Reflection.getCallerClass();
+    if (!VM.isSystemDomainLoader(var0.getClassLoader())) {
+        throw new SecurityException(&quot;Unsafe&quot;);
+    } else {
+        return theUnsafe;
+    }
+}
+</code></pre>
+<p><code>getUnsafe()</code>前面有个验证，抛出<code>security</code>异常，可以用反射绕过异常。</p>
+<pre><code class="language-java">// private static final Unsafe theUnsafe;
+Field field = Unsafe.class.getDeclaredField(&quot;theUnsafe&quot;);
+field.setAccessible(true);
+Unsafe unsafe = (Unsafe) field.get(null);
+</code></pre>
+<p>同样，Netty中的Unsafe也是给Netty源码用的，封装了JDK提供了NIO接口。</p>
+<p>继续pipeline。</p>
+<p>在<code>AbstractChannel</code>中，实例化<code>pipeline</code>。</p>
+<pre><code class="language-java">protected DefaultChannelPipeline newChannelPipeline() {
+    return new DefaultChannelPipeline(this);
+}
+</code></pre>
+<p><code>DefaultChannelPipeline</code>的构造方法如下：</p>
+<pre><code class="language-java">final AbstractChannelHandlerContext head;
+final AbstractChannelHandlerContext tail;
+protected DefaultChannelPipeline(Channel channel) {
+    this.channel = ObjectUtil.checkNotNull(channel, &quot;channel&quot;);
+    succeededFuture = new SucceededChannelFuture(channel, null);
+    voidPromise =  new VoidChannelPromise(channel, true);
+
+    tail = new TailContext(this);
+    head = new HeadContext(this);
+
+    head.next = tail;
+    tail.prev = head;
+}
+</code></pre>
+<p>这里实例化了两个handler。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115163532.png" alt="image-20211115163532127"></p>
+<p><code>pipeline</code> 中的每个元素是 <strong>ChannelHandlerContext</strong> 的实例，而不是 <code>ChannelHandler</code> 的实例，<code>context</code> 包装了一下 <code>handler</code>。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115164840.png" alt="image-20211115164840313"></p>
+<p>handler指定了一个实例，进入bind看一下怎么进入pipeline的。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115170109.png" alt="image-20211115170109527"></p>
+<p>在<code>initAndRegister</code>中：</p>
+<pre><code class="language-java">final ChannelFuture initAndRegister() {
+    Channel channel = null;
+    try {
+        // 构造channel实例，同时会构造pipeline实例
+        // pipeline有head和tail两个handler了。
+        channel = channelFactory.newChannel();
+        // 看下文
+        init(channel);
+    } catch (Throwable t) {
+        。。。
+}
+</code></pre>
+<p>init是一个抽象方法：</p>
+<pre><code class="language-java">// AbstractBootstrap.java
+abstract void init(Channel channel) throws Exception;
+</code></pre>
+<p>实现类有在ServerBootstrap和Bootstrap里面，如ServerBootstrap：</p>
+<pre><code class="language-java">private final ServerBootstrapConfig config = new ServerBootstrapConfig(this);
+
+@Override
+void init(Channel channel) {
+    setChannelOptions(channel, newOptionsArray(), logger);
+    setAttributes(channel, newAttributesArray());
+    // 拿到pipeline实例
+    ChannelPipeline p = channel.pipeline();
+
+    final EventLoopGroup currentChildGroup = childGroup;
+    final ChannelHandler currentChildHandler = childHandler;
+    final Entry&lt;ChannelOption&lt;?&gt;, Object&gt;[] currentChildOptions = newOptionsArray(childOptions);
+    final Entry&lt;AttributeKey&lt;?&gt;, Object&gt;[] currentChildAttrs = newAttributesArray(childAttrs);
+    // 开始往 pipeline 中添加一个 handler，这个 handler 是 ChannelInitializer 的实例
+    p.addLast(new ChannelInitializer&lt;Channel&gt;() {
+        @Override
+        public void initChannel(final Channel ch) {
+            final ChannelPipeline pipeline = ch.pipeline();
+            // 这个方法返回我们最开始指定的 LoggingHandler 实例
+            ChannelHandler handler = config.handler();
+            if (handler != null) {
+                // 添加 LoggingHandler
+                pipeline.addLast(handler);
+            }
+
+            ch.eventLoop().execute(new Runnable() {
+                @Override
+                public void run() {
+                    // 添加一个 handler 到 pipeline 中：ServerBootstrapAcceptor
+                    // 从名字可以看到，这个 handler 的目的是用于接收客户端请求
+                    pipeline.addLast(new ServerBootstrapAcceptor(
+                            ch, currentChildGroup, currentChildHandler, currentChildOptions, currentChildAttrs));
+                }
+            });
+        }
+    });
+}
+</code></pre>
+<p>这里涉及到 pipeline 中的辅助类 <code>ChannelInitializer</code>，我们看到，它本身是一个 <code>handler</code>（<code>Inbound</code> 类型），但是它的作用和普通 <code>handler</code> 有点不一样，它纯碎是用来辅助将其他的 <code>handler</code> 加入到 <code>pipeline</code> 中的。</p>
+<img src="https://gitee.com/hqinglau/img/raw/master/img/20211115172250.png" alt="image-20211115172250686" style="zoom:80%;" />
+
+<p>ChannelInitializer 的 initChannel(channel) 方法被调用的时候，会往 pipeline 中添加我们最开始指定的 <strong>LoggingHandler</strong> 和添加一个 <strong>ServerBootstrapAcceptor</strong>。但是我们现在还不知道这个 initChannel 方法何时会被调用。</p>
+<p>LoggingHandler 这样的 handler现在还不在 pipeline 中，那么什么时候会真正进入到 pipeline 中呢？后文会谈。</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211115172556.png" alt="image-20211115172556114"></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"netty-source-code-analyze.html";
+			document.getElementById("blogaddr-a").innerHTML="netty源码分析一";
+			</script></body></html> 

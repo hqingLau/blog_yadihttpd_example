@@ -1,0 +1,400 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>《高性能MySQL》笔记二：MySQL基准测试、服务器性能剖析
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="referrer" content="no-referrer" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>《高性能MySQL》笔记二：MySQL基准测试、服务器性能剖析</h1><hr>
+<blockquote>
+<p>《高性能MySQL》笔记二：MySQL基准测试、服务器性能剖析</p>
+</blockquote>
+<p>为什么需要基准测试？基准测试是唯一方便有效的，可以学习系统在给定工作负载下会发生什么的方法。与真实压力相比比较简单，要尽可能快地执行测试。</p>
+<h2 id="第二章、基准测试">第二章、基准测试</h2>
+<h3 id="1-基准测试策略">1. 基准测试策略</h3>
+<p>基准测试的策略：整体测试（集成式基准测试）、单独测试（单组件式基准测试）。</p>
+<p><strong>集成式测试</strong>：</p>
+<ul>
+<li>整个应用。</li>
+<li>MySQL并非总是应用瓶颈。</li>
+<li>各部分缓存的影响。</li>
+<li>应用的真实表现。</li>
+</ul>
+<p><strong>只测试MySQL</strong>：</p>
+<ul>
+<li>需要比较不同的schema或查询的性能。</li>
+<li>针对应用具体问题的测试。</li>
+<li>短期基准测试快速周期循环，检测调整的效果。</li>
+</ul>
+<p><strong>测试指标</strong>：</p>
+<ul>
+<li>吞吐量：单位时间内的事务处理数。如TPC-C。常用测试单位每秒事务数TPS。</li>
+<li>响应时间或延迟</li>
+<li>并发性。一个web站点，可能有50000个用户访问，却只有10个并发请求到数据库。</li>
+<li>可扩展性。如给系统增加一倍的资源，就可以获得两倍的吞吐量。</li>
+</ul>
+<h3 id="2-基准测试方法">2. 基准测试方法</h3>
+<p><strong>常见错误</strong>：数据子集、错误数据分布、只做单用户、行为不匹配、反复查询同一个、没有错误检测、忽略了系统预热、使用默认的服务器配置、测试时间太短。</p>
+<p><strong>设计和规划：</strong>提出问题明确目标，决定是采用标准测试还是设计专用测试。</p>
+<p><strong>运行多长时间：</strong>足够长时间，如观察磁盘读和写吞吐量时序图，直到确认系统稳定。</p>
+<p><strong>获取系统性能和状态：</strong>为每一轮测试创建单独目录，保存相关结果和说明。</p>
+<p><strong>获取准确的测试结果。</strong>然后<strong>运行基准测试并分析结果</strong>，绘图也很重要。</p>
+<h3 id="3-基准测试工具">3. 基准测试工具</h3>
+<p>ab：apach http服务器基准测试工具，测试http服务器每秒能够处理多少请求。</p>
+<p>http_load</p>
+<p>JMeter</p>
+<p><strong>单组件测试工具</strong></p>
+<p>mysqlslap：模拟服务器负载，输出计时信息。</p>
+<p>mysql bench suite：单线程，主要测试服务器执行查询的速度。</p>
+<p>super smack</p>
+<p>database test suite</p>
+<p>percona&#39;s TPCC-MySQL Tool：书作者自己写的</p>
+<p>sysbench：多线程系统压测工具，可以根据影响服务器性能的各种因素来评估系统的性能。</p>
+<p><strong>MySQL的BENCHMARK函数</strong>，可以用来测试某些特定操作的执行速度。</p>
+<pre><code class="language-shell">mysql&gt; SET @input := &quot;leiyadi&quot;;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql&gt; SELECT BENCHMARK(1000000,MD5(@input));
++--------------------------------+
+| BENCHMARK(1000000,MD5(@input)) |
++--------------------------------+
+|                              0 |
++--------------------------------+
+1 row in set (0.24 sec)
+
+mysql&gt; SELECT BENCHMARK(1000000,SHA1(@input));
++---------------------------------+
+| BENCHMARK(1000000,SHA1(@input)) |
++---------------------------------+
+|                               0 |
++---------------------------------+
+1 row in set (0.42 sec)
+</code></pre>
+<h2 id="第三章、服务器性能剖析">第三章、服务器性能剖析</h2>
+<p>本章将性能定义为完成一个任务所需要的时间。</p>
+<p>CPU利用率上升了，可能是对资源的利用率上升了，能加快查询速度，也可能是出bug了。</p>
+<p>要降低响应时间，首先就要测量时间花在什么地方。</p>
+<p><strong>性能剖析一般两个步骤</strong>：测量任务所花费时间、对结果进行排序。</p>
+<p><strong>类型</strong>：基于执行时间的分析（什么任务执行时间最长）、基于等待的分析（哪里阻塞最久）。</p>
+<p><strong>一些注意事项</strong>：</p>
+<ul>
+<li><p>占总响应时间比重很小的查询不值得优化；成本大于收益、停止优化。</p>
+</li>
+<li><p>没有显式要优化的也要优化，如执行次数少但每次都特别慢的任务</p>
+</li>
+</ul>
+<p><strong>性能瓶颈的影响因素</strong>：</p>
+<ul>
+<li><p>外部资源，调用外部web服务或搜索引擎</p>
+</li>
+<li><p>应用需要处理大量数据，分析一个超大的xml文件</p>
+</li>
+<li><p>循环中执行昂贵的操作：滥用正则</p>
+</li>
+<li><p>使用低效的算法：暴力搜索算法</p>
+</li>
+</ul>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"High-performance-mysql-2.html";
+			document.getElementById("blogaddr-a").innerHTML="《高性能MySQL》笔记二：MySQL基准测试、服务器性能剖析";
+			</script></body></html> 

@@ -1,0 +1,1077 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>yadiChat-step2-全局聊天室
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="referrer" content="no-referrer" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>yadiChat-step2-全局聊天室</h1><hr>
+<p>效果：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211101112912.png" alt="image-20211101112912540"></p>
+<p>示例程序链接：<a href="https://yadichat.orzlinux.cn/">https://yadiChat.orzlinux.cn</a></p>
+<p>github地址：<a href="https://github.com/hqingLau/YadiChat">https://github.com/hqingLau/YadiChat</a></p>
+<p><strong>前文</strong>：</p>
+<p>一、<a href="https://orzlinux.cn/blog/yadichat1.html">yadiChat-step1-登陆注册</a></p>
+<h2 id="目录">目录</h2>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211101103212.png" alt="image-20211101103212411"></p>
+<h2 id="pomxml">pom.xml</h2>
+<p>加入依赖，netty，序列化，会过期的map包（来管理session）。</p>
+<pre><code class="language-xml">&lt;!--加入netty依赖--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.netty&lt;/groupId&gt;
+    &lt;artifactId&gt;netty-all&lt;/artifactId&gt;
+    &lt;version&gt;4.1.69.Final&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;!--Gson提供了 fromJson () 和 toJson () 两个直接用于解析和生成的方法，前者实现反序列化，后者实现了序列化--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.google.code.gson&lt;/groupId&gt;
+    &lt;artifactId&gt;gson&lt;/artifactId&gt;
+    &lt;version&gt;2.8.8&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;!--会过期的map--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;net.jodah&lt;/groupId&gt;
+    &lt;artifactId&gt;expiringmap&lt;/artifactId&gt;
+    &lt;version&gt;0.5.10&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h2 id="session管理">session管理</h2>
+<p>之前我们将session由spring管理，现在我们改为自己管理。</p>
+<p>UserSession.java</p>
+<pre><code class="language-java">public class UserSession {
+    private UserSession() {}
+    public static void put(String sessionId,User user) {
+        userMap.put(sessionId,user);
+    }
+
+    public static User get(String sessionId) {
+        return userMap.getOrDefault(sessionId,null);
+    }
+
+    private static ExpiringMap&lt;String, User&gt; userMap = ExpiringMap.builder().variableExpiration()
+            .expiration(24*60, TimeUnit.MINUTES).expirationPolicy(ExpirationPolicy.CREATED).build();
+
+    public static void update(String value) {
+        userMap.put(value,userMap.get(value));
+    }
+}
+</code></pre>
+<p>这里面主要就是封装了一个会过期的map，这里设置为24小时过期，用来管理session。这样一段时间后，session过期，就会自动提示登录界面。</p>
+<p>更改登录和注册逻辑，如：</p>
+<p>UserController.java</p>
+<pre><code class="language-java">@PostMapping(&quot;/login&quot;)
+public String login(Model model, HttpServletRequest request, HttpServletResponse response) {
+    String idname = request.getParameter(&quot;idname&quot;);
+    String password = request.getParameter(&quot;password&quot;);
+    User user = userService.login(new User(idname,null,password));
+    if (user==null) {
+        return &quot;redirect:/signin&quot;;
+    }
+    String userUUID = idname;
+    UserSession.put(userUUID,user);
+    Cookie cookie = new Cookie(&quot;user&quot;,userUUID);
+    cookie.setMaxAge(24*60*60); //一天过期
+    // 配置cookie为主站cookie
+    cookie.setDomain(&quot;orzlinux.cn&quot;);
+    response.addCookie(cookie);
+    return &quot;redirect:/home&quot;;
+}
+</code></pre>
+<p>session就是客户端放一个cookie作为sessionid，来服务器之后用这个sessionid查找对应的session。这里设置为主站cookie，这样在后期用到其它子域名的服务时cookie也能读取到，这里简单设置为用户idname。</p>
+<p>接下来更改拦截策略：</p>
+<p>UserInterceptor.java</p>
+<pre><code class="language-java">public class UserInterceptor implements HandlerInterceptor  {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String uri = request.getRequestURI();
+        if(&quot;/&quot;.equals(uri)||&quot;/error&quot;.equals(uri)||&quot;/signin&quot;.equals(uri)||&quot;/login&quot;.equals(uri)||&quot;/signup&quot;.equals(uri)||&quot;/regist&quot;.equals(uri)) {
+            return true;
+        }
+        Cookie cookie = CookieUtils.getCookie(request.getCookies(),&quot;user&quot;);
+        if(cookie!=null) {
+            UserSession.update(cookie.getValue());
+            return true;
+        }
+        response.sendRedirect(&quot;/signin&quot;);
+        return false;
+    }
+}
+</code></pre>
+<p>首先获取用户cookie，取UserSession查找，有就更新一下map，主要为了更新过期时间，没有就转到登录界面。</p>
+<p>这里面需要获取cookie，为了方便使用封装成一个工具类：</p>
+<p>CookieUtils.java</p>
+<pre><code class="language-java">public class CookieUtils {
+    public static Cookie getCookie(javax.servlet.http.Cookie[] cookies, String key) {
+        if(cookies != null) {
+            for (javax.servlet.http.Cookie cookie : cookies) {
+                if (cookie.getName().equals(key)) {
+                    if (UserSession.get(cookie.getValue()) != null) {
+                        return cookie;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+}
+</code></pre>
+<p>就是遍历，比较键值。</p>
+<h2 id="textmsgbean">TextMsgBean</h2>
+<p>接下来要定义信息：</p>
+<pre><code class="language-java">public class TextMsg {
+    private String idname;
+    private String nick_name;
+    private String msg;
+    private Date msgTime;
+    // getter setter constructor
+}
+</code></pre>
+<p>需要存储idname用户确定用户身份，昵称用于显示，消息具体内容，发送消息的时间。</p>
+<h2 id="全局消息数据库">全局消息数据库</h2>
+<pre><code class="language-sql"># 建立全局聊天数据库
+CREATE TABLE global_room_msg
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    id_name VARCHAR(128) NOT NULL ,
+    nick_name VARCHAR(128) not null ,
+    msg VARCHAR(10240) not null,
+    msg_time DATETIME not null ,
+    PRIMARY KEY (id),
+    INDEX id_name(id_name)
+);
+</code></pre>
+<p>同样，数据库配置。</p>
+<h2 id="textmsgdao">TextMsgDao</h2>
+<p>这里用到了两个方法，向数据库插入一条消息，和获取过去的100条消息用于显示。</p>
+<pre><code class="language-java">@Mapper
+public interface TextMsgDao {
+    int insert(TextMsg msg);
+    List&lt;TextMsg&gt; getLast100Msg();
+}
+</code></pre>
+<h2 id="textmsgdaoxml">TextMsgDao.xml</h2>
+<p>对应上面方法的数据库实现。</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+
+&lt;mapper namespace=&quot;cn.orzlinux.step2_basic_communication.dao.TextMsgDao&quot;&gt;
+ &lt;insert id=&quot;insert&quot; parameterType=&quot;TextMsg&quot; &gt;
+        insert into global_room_msg(id_name,nick_name,msg,msg_time) values(#{idname},#{nick_name},#{msg},#{msgTime})
+    &lt;/insert&gt;
+
+    &lt;select id=&quot;getLast100Msg&quot; resultType=&quot;TextMsg&quot;&gt;
+        select
+               id_name idname,
+               nick_name nick_name,
+               msg msg,
+               msg_time msgTime
+        from global_room_msg
+        order by id DESC
+        limit 100
+    &lt;/select&gt;
+&lt;/mapper&gt;
+</code></pre>
+<h2 id="netty-server实现">netty server实现</h2>
+<p>netty内容见前文：<a href="https://orzlinux.cn/blog/netty20211021.html">Netty概述</a></p>
+<pre><code class="language-java">public class WebSocketServer {
+    private static WebSocketServer server;
+
+    private static final int READ_IDLE_TIME_OUT = 0;
+    private static final int WRITE_IDLE_TIME_OUT = 0;
+    private static final int ALL_IDLE_TIME_OUT = 5;
+
+    private WebSocketServer() {}
+
+    // 只能通过getInstance获取单例
+    public static WebSocketServer getInstance() {
+        if(server==null) {
+            server = new WebSocketServer();
+        }
+        return server;
+    }
+
+    public void run(int port) {
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1); //只管接收
+        EventLoopGroup workerGroup = new NioEventLoopGroup(); //默认cpu核数*2
+        try {
+            // 创建服务端的启动对象，配置参数
+            ServerBootstrap bootstrap = new ServerBootstrap();
+            bootstrap.group(bossGroup,workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .childHandler(new ChannelInitializer&lt;SocketChannel&gt;() {
+                        @Override
+                        protected void initChannel(SocketChannel socketChannel) throws Exception {
+                            ChannelPipeline pipeline = socketChannel.pipeline();
+                            // netty的解码器和编码器
+                            pipeline.addLast(new HttpServerCodec());
+                            // 以块方式写，用于大数据分区传输
+                            pipeline.addLast(new ChunkedWriteHandler());
+                            // http在传输过程中分段，这里聚合多个段
+                            pipeline.addLast(new HttpObjectAggregator(32*1024));
+                            // wesocket数据压缩
+                            pipeline.addLast(new WebSocketServerCompressionHandler());
+
+                            //WebSocketServerProtocolHandler将http协议升级为ws协议，保持长连接
+                            pipeline.addLast(new WebSocketServerProtocolHandler(&quot;/ws&quot;,null,true,10*1024));
+
+                            // 当连接60s没有收到消息，就会触发idlestateevent事件,ChannelRead()方法未被调用
+                            // 则触发一次MyTextWebSocketFrameHandler 的userEventTrigger()方法
+                            // 心跳机制: 主要是用来检测远端是否存活，如果不存活或活跃则对空闲Socket连接进行处理避免资源的浪费
+                            pipeline.addLast(new IdleStateHandler(READ_IDLE_TIME_OUT,WRITE_IDLE_TIME_OUT,ALL_IDLE_TIME_OUT, TimeUnit.SECONDS));
+
+                            //自定义的handler ，处理业务逻辑
+                            pipeline.addLast(new MyTextWebSocketFrameHandler());
+                        }
+                    });
+            ChannelFuture channelFuture = bootstrap.bind(port).sync();
+            channelFuture.channel().closeFuture().sync();
+
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            SessionGroup.getInstance().shutdownGracefully();
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        }
+    }
+}
+</code></pre>
+<p>这里面用到了一个自定义handler：MyTextWebSocketFrameHandler。还有websocket协议长链接的处理。</p>
+<h2 id="socketsession">SocketSession</h2>
+<p>建立<code>channel</code>之后，需要获取对应的用户。这里主要用了一个<code>AttributeKey</code>将<code>channel</code>和<code>user</code>绑定。</p>
+<pre><code class="language-java">/**
+ * 对应用户服务端会话管理
+ */
+public class SocketSession {
+    public static final AttributeKey&lt;SocketSession&gt; SESSION_KEY = AttributeKey.valueOf(&quot;SESSION_KEY&quot;);
+    private Channel channel;
+    private User user;
+
+    public String getUserCookieId() {
+        return userCookieId;
+    }
+
+    public void setUserCookieId(String userCookieId) {
+        this.userCookieId = userCookieId;
+    }
+
+    private String userCookieId;
+    private String group;
+    // session中存储的属性值
+    private Map&lt;String,Object&gt; map = new HashMap&lt;&gt;();
+
+    public SocketSession(Channel channel) {
+        this.channel = channel;
+        // channel和session绑定
+        channel.attr(SocketSession.SESSION_KEY).set(this);
+    }
+
+    // 返回ctx对应的SocketSession，ctx.channel-&gt;找session
+    public static SocketSession getSession(ChannelHandlerContext ctx) {
+        return ctx.channel().attr(SocketSession.SESSION_KEY).get();
+    }
+}
+</code></pre>
+<h2 id="mytextwebsocketframehandler">MyTextWebSocketFrameHandler</h2>
+<p>要将消息插入数据库，需要对应service，这里并不能直接Autowire，可以用一个自定义的<code>SpringUtil</code>工具类实现：</p>
+<pre><code class="language-java">@ChannelHandler.Sharable
+public class MyTextWebSocketFrameHandler extends SimpleChannelInboundHandler&lt;TextWebSocketFrame&gt; {
+    private static TextMsgService textMsgService;
+
+    static {
+        textMsgService = SpringUtil.getBean(TextMsgService.class);
+    }
+    // ……
+}
+</code></pre>
+<p>SpringUtil：</p>
+<pre><code class="language-java">@Component
+public class SpringUtil implements ApplicationContextAware {
+    private static ApplicationContext ac;
+
+    @Override
+    public void setApplicationContext(ApplicationContext arg0) throws BeansException {
+        ac = arg0;
+    }
+
+    public static ApplicationContext getApplicationContext() {
+        return ac;
+    }
+
+    /**
+     * 通过class获取Bean
+     */
+    public static &lt;T&gt; T getBean(Class&lt;T&gt; clazz){
+        return getApplicationContext().getBean(clazz);
+    }
+
+
+    /**
+     * 如果BeanFactory包含所给名称匹配的bean返回true
+     * @param name
+     * @return boolean
+     */
+    public static boolean containsBean(String name) {
+        return ac.containsBean(name);
+    }
+
+    /**
+     * 判断注册的bean是singleton还是prototype。
+     * 如果与给定名字相应的bean定义没有被找到，将会抛出一个异常（NoSuchBeanDefinitionException）
+     * @param name
+     * @return boolean
+     */
+    public static boolean isSingleton(String name) {
+        return ac.isSingleton(name);
+    }
+
+    /**
+     * @param name
+     * @return Class 注册对象的类型
+     */
+    public static Class&lt;?&gt; getType(String name) {
+        return ac.getType(name);
+    }
+
+}
+</code></pre>
+<p>ws协议事件触发：</p>
+<pre><code class="language-java">@Override
+public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+    // 握手成功，升级为websocket协议
+    if(evt== WebSocketServerProtocolHandler.ServerHandshakeStateEvent.HANDSHAKE_COMPLETE) {
+        new SocketSession(ctx.channel());
+    } else if (evt instanceof IdleStateEvent) {
+        // TODO
+    } else {
+        super.userEventTriggered(ctx,evt);
+    }
+
+}
+</code></pre>
+<p><code>websocket</code>连接成功，就新建一个session记录这个连接。这样，在数据到来的时候，直接从<code>context</code>的<code>channel</code>中获取<code>session</code>，读取对应<code>channel</code>的用户数据。</p>
+<p>其中：</p>
+<pre><code class="language-java">public &lt;T&gt; T fromJson(@Nullable String json, reflect.Type typeOfT)
+</code></pre>
+<p>在将<code>json</code>读取为<code>hashmap</code>时，由于泛型无法直接获取<code>class</code>，需要用<code>TypeToken</code>做一个中介。</p>
+<pre><code class="language-java">@Override
+protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
+    SocketSession session = SocketSession.getSession(ctx);
+    TypeToken&lt;HashMap&lt;String,String&gt;&gt; typeToken = new TypeToken&lt;HashMap&lt;String,String&gt;&gt;(){};
+    Gson gson = new Gson();
+    // 对于泛型无法直接获取class
+    Map&lt;String,String&gt; map = gson.fromJson(msg.text(),typeToken.getType());
+    User user = null;
+    switch (map.get(&quot;type&quot;)) {
+        case &quot;msg&quot;:
+            Map&lt;String,String&gt; result = new HashMap&lt;&gt;();
+            user = session.getUser();
+            result.put(&quot;type&quot;,&quot;msg&quot;);
+            result.put(&quot;msg&quot;,map.get(&quot;msg&quot;));
+            result.put(&quot;sendUserCookieId&quot;,session.getUserCookieId());
+            result.put(&quot;sendUserNickname&quot;,user.getNickName());
+            TextMsg textMsg = new TextMsg(user.getIdName(),user.getNickName(),map.get(&quot;msg&quot;),new Date());
+            // 消息插入数据库
+            textMsgService.insertMsg(textMsg);
+            SessionGroup.getInstance().sendToOthers(result,session);
+            break;
+        case &quot;init&quot;:
+            //String room = map.getOrDefault(&quot;room&quot;,null);
+            String room = &quot;群聊&quot;;
+            session.setGroup(room);
+            String userCookieId = map.getOrDefault(&quot;user&quot;,null);
+            user = UserSession.get(userCookieId);
+            if(user==null) {
+                return;
+            }
+            session.setUserCookieId(userCookieId);
+            session.setUser(user);
+            SessionGroup.getInstance().addSession(session);
+            break;
+    }
+}
+</code></pre>
+<p><code>init</code>情况为初始进入聊天室，需要确定用户身份，<code>session</code>的组，用于消息转发时给不同的组。在发送消息时<code>msg</code>，解析用户消息之后，也需要将消息转发给不同的组，这里用一个封装类<code>SessionGroup</code>完成此事。</p>
+<h2 id="sessiongroup">SessionGroup</h2>
+<p>详见注释：</p>
+<pre><code class="language-java">public class SessionGroup {
+    private static SessionGroup instance;
+
+    // 组名到组的映射
+    private ConcurrentHashMap&lt;String, ChannelGroup&gt; groupMap = new ConcurrentHashMap&lt;&gt;();
+
+    private SessionGroup() {}
+    // 单例模式
+    public static SessionGroup getInstance() {
+        if(instance==null) {
+            instance = new SessionGroup();
+        }
+        return instance;
+    }
+    
+    // 发送给对应的channel组。
+    public void sendToOthers(Map&lt;String, String&gt; result, SocketSession session) {
+        ChannelGroup group = groupMap.get(session.getGroup());
+        if(null == group) {
+            return;
+        }
+        Gson gson = new Gson();
+        String json = gson.toJson(result);
+        ChannelGroupFuture future = group.writeAndFlush(new TextWebSocketFrame(json));
+        future.addListener(f-&gt;{
+            System.out.println(&quot;完成发送：&quot;+json);
+        });
+    }
+    
+    // 将session加入对应的group组名对应的channel组
+    public void addSession(SocketSession session) {
+        String groupName = session.getGroup();
+        if(StringUtils.isNullOrEmpty(groupName)) {
+            return;
+        }
+        ChannelGroup group = groupMap.get(groupName);
+        if(null==group) {
+            group = new DefaultChannelGroup(ImmediateEventExecutor.INSTANCE);
+            groupMap.put(groupName,group);
+        }
+        group.add(session.getChannel());
+    }
+
+    /**
+     * 关闭连接
+     * @param session
+     * @param echo
+     */
+    public void closeSession(SocketSession session,String echo) {
+        ChannelFuture sendFuture = session.getChannel().writeAndFlush(new TextWebSocketFrame(echo));
+        sendFuture.addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                System.out.println(&quot;连接关闭：&quot;+echo);
+                channelFuture.channel().close();
+            }
+        });
+    }
+
+    /**
+     * 发送消息
+     */
+    public void sendMsg(ChannelHandlerContext ctx,String msg) {
+        ChannelFuture sendFuture = ctx.writeAndFlush(new TextWebSocketFrame(msg));
+        sendFuture.addListener(f-&gt;{
+            System.out.println(&quot;对所有发送完成：&quot;+msg);
+        });
+    }
+
+    public void shutdownGracefully() {
+        Iterator&lt;ChannelGroup&gt; groupIterator = groupMap.values().iterator();
+        while(groupIterator.hasNext()) {
+            groupIterator.next().close();
+        }
+    }
+}
+</code></pre>
+<h2 id="textmsgcontroller">TextMsgController</h2>
+<p>Controller只需加入一个获取数据库前100条的url就可以：</p>
+<pre><code class="language-java">@Controller
+public class TextMsgController {
+    @Autowired
+    TextMsgService service;
+
+    @ResponseBody
+    @RequestMapping(value = &quot;/textMsg/getLast100Msg&quot;,produces = {&quot;application/json;charset=UTF-8&quot;})
+    public List&lt;TextMsg&gt; getLast100Msg() {
+        return service.getLast100Msg();
+    }
+}
+</code></pre>
+<p>还有进入全局聊天室的controller:</p>
+<pre><code class="language-java">@RequestMapping(&quot;/room&quot;)
+public String room() {
+    return &quot;room&quot;;
+}
+</code></pre>
+<h2 id="roomhtml">room.html</h2>
+<p>前端界面需要给定之前提到的用户数据发给后端，完成交互，代码如下：</p>
+<pre><code class="language-html">&lt;!DOCTYPE HTML&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;/&gt;
+    &lt;title&gt;全局聊天室&lt;/title&gt;
+    &lt;!-- 引入 Bootstrap --&gt;
+    &lt;link href=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;&gt;
+    &lt;script src=&quot;https://cdn.bootcss.com/jquery/3.4.1/jquery.js&quot;&gt;&lt;/script&gt;
+    &lt;style type=&quot;text/css&quot;&gt;
+        body{ padding-bottom:80px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .fixed{
+            max-width: 800px;
+            margin: 0 auto;
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+            height: 50px;
+            /*background-color: #000;*/
+            background-color: white;
+            z-index: 9999;
+        }
+        .msg {
+            margin-left: 30px;
+            margin-right: 30px;
+            margin-top: 8px;
+            max-width: 500px;
+        }
+        .nickname {
+            background: #31708f;
+            color: white;
+            border-radius: 10px;
+            padding: 8px;
+        }
+        ul {
+            overflow: auto;
+            height: auto;
+            margin: 0 auto;
+        }
+
+        li {
+            float: left;
+            width: 800px;
+            margin: 0 auto;
+        }
+
+        .haha {
+            background: #00bfff1c;
+            border-radius: 5px;
+            padding: 10px;
+            width: fit-content;
+            margin-top: 5px;
+        }
+
+        span {
+            word-break: break-all;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;page-header text-center text-primary&quot;&gt;
+    &lt;h1&gt;聊天室&lt;/h1&gt;
+&lt;/div&gt;
+
+&lt;br /&gt;&lt;br /&gt;
+&lt;!--&lt;div id=&quot;message&quot;&gt;&lt;/div&gt;--&gt;
+&lt;ul class=&quot;list-group&quot; id=&quot;message&quot;&gt;
+    &lt;li class=&quot;list-group-item&quot;&gt;&lt;span class=&quot;nickname&quot;&gt;系统信息&lt;/span&gt;&lt;div class=&quot;msg&quot;&gt; 欢迎入群&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;clear:both&quot;&gt;&lt;/div&gt;
+&lt;br /&gt;&lt;br /&gt;
+
+
+&lt;div class=&quot;fixed&quot;&gt;
+    &lt;button class=&quot;btn btn-primary&quot; style=&quot;float: right;margin-right: 10px&quot; type=&quot;button&quot; onclick=&quot;send()&quot;&gt;发送&lt;/button&gt;
+    &lt;div style=&quot;overflow: hidden; padding-right: 10px&quot;&gt;
+    &lt;textarea style=&quot;margin-left:10px;width: 100%; resize: none&quot;
+           id=&quot;text&quot;
+           name=&quot;send&quot;
+           placeholder=&quot;输入发送消息&quot;
+           rows=&quot;1&quot;
+           maxlength=&quot;1000&quot;
+           minlength=&quot;1&quot;
+           class=&quot;form-control&quot;&gt;&lt;/textarea&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;clear&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+    var webSocket;
+    var loadPreMsg = false;
+    var wsConnect = false; //避免重复连接
+    var url = &quot;ws://ws-yadichat.orzlinux.cn/ws&quot;;
+    // var url = &quot;ws://localhost:10240/ws&quot;;
+    if (window.WebSocket) {
+        webSocket = new WebSocket(url);
+    } else {
+        alert(&quot;抱歉，您的浏览器不支持WebSocket协议!&quot;);
+    }
+
+    function setWebSocket() {
+        //连通之后的回调事件
+        webSocket.onopen = function() {
+            console.log(&quot;已经连通了websocket&quot;);
+            wsConnect = true;
+            enter();
+        }
+        //连接发生错误的回调方法
+        webSocket.onerror = function(event){
+            console.log(&quot;出错了&quot;);
+            wsConnect = false;
+            reconnect(url);
+//              setMessageInnerHTML(&quot;连接失败&quot;);
+        };
+
+        //连接关闭的回调方法
+        webSocket.onclose = function(){
+            console.log(&quot;连接已关闭...&quot;);
+            wsConnect = false;
+            reconnect(url);
+        }
+
+        //接收到消息的回调方法
+        webSocket.onmessage = function(event){
+            var data = JSON.parse(event.data)
+            var msg = data.msg;
+            var nick = data.sendUserNickname;
+            var userId = data.sendUserCookieId;
+            switch(data.type){
+                case &#39;init&#39;:
+                    console.log(&quot;init&quot;);
+                    break;
+                case &#39;msg&#39;:
+                    console.log(&quot;msg&quot;);
+                    setMessageInnerHTML(nick, msg,userId);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    setWebSocket();
+    function reconnect(url) {
+        if(wsConnect) return;
+        //没连接上会一直重连，设置延迟避免请求过多
+        webSocket = new WebSocket(url);
+        wsConnect = true;
+        setWebSocket();
+        console.log(&quot;正在重连，当前时间&quot; + new Date());
+    }
+
+
+    function enter(){
+        var map = new Map();
+        map.set(&quot;type&quot;,&quot;init&quot;);
+        map.set(&quot;user&quot;,getCookie(&quot;user&quot;));
+        var message = Map2Json(map);
+        webSocket.send(message);
+    //    获取最近100条消息
+        if(!loadPreMsg) {
+            loadPreMsg = true;
+
+            $.ajax({
+                url: &#39;/textMsg/getLast100Msg&#39;,
+                success: function (json) {
+                    $.each(json, function (i, item) {
+                        //循环获取数据
+                        var nick = item.nick_name;
+                        var msg = item.msg;
+                        var userId = item.idname;
+
+                        if (userId != getCookie(&quot;user&quot;)) {
+                            // 别人
+                            $(&quot;#message&quot;).last().append(&#39;&lt;li class=&quot;list-group-item&quot;&gt;&lt;span class=&quot;nickname&quot;&gt;&#39; + nick +
+                                &#39;&lt;/span&gt;&lt;div class=&quot;msg&quot;&gt;&lt;div class=&quot;haha&quot;&gt;&lt;span&gt;&#39; + msg + &#39;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;&#39;);
+                        } else {
+                            // 自己
+                            $(&quot;#message&quot;).last().append(&#39;&lt;li class=&quot;list-group-item&quot;&gt;\n&#39; +
+                                &#39;        &lt;div style=&quot;float: right&quot;&gt;\n&#39; +
+                                &#39;            &lt;span class=&quot;nickname&quot; style=&quot;background: forestgreen;&quot;&gt;&#39; + nick + &#39;&lt;/span&gt;\n&#39; +
+                                &#39;        &lt;/div&gt;\n&#39; +
+                                &#39;        &lt;br /&gt;\n&#39; +
+                                &#39;        &lt;div class=&quot;msg&quot; style=&quot;float: right&quot;&gt;&lt;div class=&quot;haha&quot;&gt;&lt;span&gt; &#39; + msg + &#39;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;&#39;);
+                        }
+
+                    });
+                    window.scrollTo(0, 99999999);
+
+                }
+            });
+        }
+    }
+
+    function send() {
+        var msg = document.getElementById(&#39;text&#39;).value;
+        console.log(&quot;1:&quot;+msg);
+        if (msg != null &amp;&amp; msg !== &quot;&quot;){
+            var map = new Map();
+            map.set(&quot;type&quot;,&quot;msg&quot;);
+            map.set(&quot;user&quot;,getCookie(&quot;user&quot;));
+            map.set(&quot;msg&quot;,msg);
+            var map2json=Map2Json(map);
+            if (map2json.length &lt; 8000){
+                console.log(&quot;4:&quot;+map2json);
+                webSocket.send(map2json);
+                document.getElementById(&#39;text&#39;).value=&#39;&#39;;
+            }else {
+                console.log(&quot;文本太长了，少写一点吧😭&quot;);
+            }
+        }
+    }
+
+    function getCookie(cookie_name) {
+        var allcookies = document.cookie;
+        //索引长度，开始索引的位置
+        var cookie_pos = allcookies.indexOf(cookie_name);
+
+        // 如果找到了索引，就代表cookie存在,否则不存在
+        if (cookie_pos != -1) {
+            // 把cookie_pos放在值的开始，只要给值加1即可
+            //计算取cookie值得开始索引，加的1为“=”
+            cookie_pos = cookie_pos + cookie_name.length + 1;
+            //计算取cookie值得结束索引
+            var cookie_end = allcookies.indexOf(&quot;;&quot;, cookie_pos);
+
+            if (cookie_end == -1) {
+                cookie_end = allcookies.length;
+
+            }
+            //得到想要的cookie的值
+            var value = unescape(allcookies.substring(cookie_pos, cookie_end));
+        }
+        return value;
+    }
+
+    //将消息显示在网页上
+    function setMessageInnerHTML(nick,msg,userId) {
+        if(userId!=getCookie(&quot;user&quot;)){
+            // 别人
+            $(&quot;#message&quot;).last().append(&#39;&lt;li class=&quot;list-group-item&quot;&gt;&lt;span class=&quot;nickname&quot;&gt;&#39; +nick+
+                &#39;&lt;/span&gt;&lt;div class=&quot;msg&quot;&gt;&lt;div class=&quot;haha&quot;&gt;&lt;span&gt;&#39;+msg+ &#39;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;&#39;);
+        }else {
+            // 自己
+            $(&quot;#message&quot;).last().append(&#39;&lt;li class=&quot;list-group-item&quot;&gt;\n&#39; +
+                &#39;        &lt;div style=&quot;float: right&quot;&gt;\n&#39; +
+                &#39;            &lt;span class=&quot;nickname&quot; style=&quot;background: forestgreen;&quot;&gt;&#39; + nick +&#39;&lt;/span&gt;\n&#39; +
+                &#39;        &lt;/div&gt;\n&#39; +
+                &#39;        &lt;br /&gt;\n&#39; +
+                &#39;        &lt;div class=&quot;msg&quot; style=&quot;float: right&quot;&gt;&lt;div class=&quot;haha&quot;&gt;&lt;span&gt; &#39;+msg+ &#39;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;&#39;);
+        }
+        window.scrollTo(0,99999999);
+
+
+    }
+
+    function Map2Json(map) {
+        var str = &quot;{&quot;;
+        map.forEach(function (value, key) {
+            str += &#39;&quot;&#39;+key+&#39;&quot;&#39;+&#39;:&#39;+ &#39;&quot;&#39;+value+&#39;&quot;,&#39;;
+        })
+        str = str.substring(0,str.length-1)
+        str +=&quot;}&quot;;
+        return str;
+    }
+&lt;/script&gt;
+&lt;!--!&amp;#45;&amp;#45; jQuery文件。务必在bootstrap.min.js 之前引入 --&gt;
+&lt;script src=&quot;https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js&quot;/&gt;
+&lt;!-- 最新的 Bootstrap 核心 JavaScript 文件 --&gt;
+&lt;script src=&quot;https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js&quot;/&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"yadichat2.html";
+			document.getElementById("blogaddr-a").innerHTML="yadiChat-step2-全局聊天室";
+			</script></body></html> 

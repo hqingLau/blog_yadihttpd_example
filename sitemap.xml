@@ -6,6 +6,60 @@
 	</url>
 
 		<url>
+			<loc>https://orzlinux.cn/blog/skjavabase.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/netty-source-code-analyze2.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/netty-source-code-analyze.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/High-performance-mysql-2.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/High-performance-mysql-1.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/tcp-story.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/yadichat-introduce.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/random-img.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
+			<loc>https://orzlinux.cn/blog/yadichat2.html</loc>
+			<priority>1.00</priority>
+		</url>
+		
+
+		<url>
 			<loc>https://orzlinux.cn/blog/how-does-a-relational-database-work.html</loc>
 			<priority>1.00</priority>
 		</url>

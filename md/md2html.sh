@@ -9,7 +9,7 @@ if [[ $# -eq 1 && $1 == "--all" ]]; then
 fi
 eval `awk '{printf("dimap[%s]=%s;",$1,$2)}' filename2name.txt`
 echo > tmp.mdfile
-echo > ../index.html
+echo > ../index2.html
 category=$(awk '{$1="";$2="";gsub(/^[ \t]+/,"");gsub(/[ \t]+/,"\n");print $0}' filename2name.txt | sed '/^[ \t]*$/d' | sort | uniq)
 echo $category
 # echo > ../blogCategory.html
@@ -76,18 +76,21 @@ for filename in $(ls -t);do
 done
 
 echo "</urlset>" >> ../sitemap.xml
-cat fakeTitleStart.html > ../index.html
-echo "博客列表" >> ../index.html
-cat fakeblog1.html >> ../index.html
-#echo "<h2>博客列表</h2><hr>" >> ../index.html
+cat fakeTitleStart.html > ../index2.html
+echo "主页" >> ../index2.html
+cat fakeblog1.html >> ../index2.html
+#echo "<h2>博客列表</h2><hr>" >> ../index2.html
 marked -o tmpindex.html < tmp.mdfile
-cat tmpindex.html >> ../index.html
-cat fakeblog2.html >> ../index.html
+cat tmpindex.html >> ../index2.html
+cat fakeblog2.html >> ../index2.html
 echo "
-	</body></html> " >> ../index.html
+	</body></html> " >> ../index2.html
 
-chown pi:pi ../index.html
+chown pi:pi ../index2.html
 echo "index built done"
+
+rm ../index.html
+mv ../index2.html ../index.html
 
 ######### 具体文件分类 ########
 OLDIFS=$IFS
@@ -126,7 +129,7 @@ buttonType="<!DOCTYPE html><html lang=\"zh\"><head><style>
 echo $buttonType > ../blogCategory.html
 echo "分类列表" >> ../blogCategory.html
 cat fakeblog1.html >> ../blogCategory.html
-#echo "<h2>博客列表</h2><hr>" >> ../index.html
+#echo "<h2>博客列表</h2><hr>" >> ../index2.html
 marked -o tmpindex2.html < ../blogCategory.tmp2
 cat tmpindex2.html >> ../blogCategory.html
 cat tmpindex.html >> ../blogCategory.html
@@ -144,7 +147,7 @@ for c in $category; do
 	echo $buttonType > ../blog/category_${secure_c}.html
 	echo "分类列表" >> ../blog/category_${secure_c}.html
 	cat fakeblog1.html >> ../blog/category_${secure_c}.html
-	#echo "<h2>博客列表</h2><hr>" >> ../index.html
+	#echo "<h2>博客列表</h2><hr>" >> ../index2.html
 	# echo category_${secure_i}.tmp 
 	marked -o tmpindex3.html < category_${secure_c}.tmp
 	cat tmpindex2.html >> ../blog/category_${secure_c}.html

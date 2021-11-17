@@ -1,0 +1,506 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>一些java基础知识
+- hqinglau的博客 - Orz linux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="sogou_site_verification" content="wEcD18BWjC">
+<meta name="referrer" content="no-referrer" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="hqinglau的博客，分享Linux，操作系统，编程语言的日志。">
+<meta name="keywords" content="Linux,C/C++,个人博客,编程,program,计算机,操作系统">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
+<link href="/css/my.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/hqinglau/CDN/css/prism.css" rel="stylesheet" />
+<style>
+  .layui-side {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 240px;
+    margin-left: 10px;
+    margin-right: 10px;
+    bottom: 0;
+  }
+
+  .layui-main {
+    margin-top: 40px;
+    bottom: 0;
+  }
+
+  .header {
+    height: 40px;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .fix-header {
+    position: fixed;
+    top: 0
+  }
+
+  @media screen and (max-device-width:730px) {
+    #mySidenav {
+      display: none;
+    }
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #eee;
+    font-size: 0;
+  }
+</style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var isWeixin = ua.indexOf('micromessenger') != -1;
+    if (isWeixin) {
+      document.getElementsByTagName('html')[0].innerHTML = "<div style='text-align:right; margin:20px;'>请点击右上角浏览器打开</div><img src='/img/log.jpg' style='display:block;margin:30vh auto;height:20%'></div>";
+    }
+  </script>
+  <script type="text/javascript">
+    function openNav() {
+      document.getElementById("mySidenav").style.display = "block";
+
+      var windowWidth = document.body.clientWidth;
+      if (windowWidth > 700) {
+        document.getElementById("mymain").style.marginLeft = "260px";
+        document.getElementById("topheader").style.left = "260px";
+      }
+      else {
+        document.getElementById("mymain").style.marginLeft = "0";
+      }
+      document.getElementById("sidebarbtn").onclick = function () {
+        closeNav();
+      }
+
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.display = "none";
+      document.getElementById("mymain").style.marginLeft = "0";
+      document.getElementById("topheader").style.left = "0";
+      document.getElementById("sidebarbtn").onclick = function () {
+        openNav();
+      }
+
+    }
+  </script>
+
+  <div>
+    <div class="layui-side" id="mySidenav">
+      <div class="aside_content" id="aside_content">
+        <div class="card-content">
+          <div class="card-info-avatar is-center">
+            <a href="/">
+              <img class="avatar-img" src="https://gitee.com/hqinglau/img/raw/master/logo.jpg" alt="avatar">
+            </a>
+            <div class="author-info__name">hqinglau的网络日志</div>
+            <div class="author-info__description">
+              <p>记录Linux, 编程, 操作系统...</p>
+            </div>
+          </div>
+          </br>
+        </div>
+        <div class="line dk hidden-folded"></div>
+
+
+
+        </br>
+        <div style="padding-left:50px;">
+
+          <a href="https://orzlinux.cn"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+            <span class="fa-stack">
+              <i class="fa   fa-lg fa-home fa-stack-1x"></i>
+            </span>
+            Home
+          </a>
+          </br>
+          <a href="https://github.com/hqinglau"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg fa-github fa-stack-1x"></i>
+            </span>
+            github
+          </a>
+          </br>
+
+          <a href="/blog/yadihttpd.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-motorcycle fa-stack-1x"></i>
+            </span>
+            yadihttpd
+          </a>
+          </br>
+          <a href="/uploadBlog.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-upload fa-stack-1x"></i>
+            </span>
+            Upload
+          </a>
+          </br>
+          <a href="/blogCategory.html"
+            style="text-decoration:none; color:black;cursor:pointer; font-size:16px; padding-top:5px">
+
+            <span class="fa-stack">
+              <i class="fa  fa-lg  fa-list fa-stack-1x"></i>
+            </span>
+            Category
+          </a>
+          </br>
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="layui-main" id="mymain">
+      <div class="header fix-header" id="topheader" style="display:none;">
+        <span id="sidebarbtn" style="margin:10px; color: #ccc;font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+        </span>
+        <span style="font-size:20px;cursor:pointer;"><a href="https://orzlinux.cn"
+            style="text-decoration:none; color:#999; font-size:18px;cursor:pointer;"> hqinglau的博客</a> </span>
+      </div>
+
+
+
+
+      <script type="text/javascript">
+        var lastW = 0;
+        var resizeTimer = null;
+        //定义变量获取屏幕视口宽度
+        function mywinresize() {
+
+          var windowWidth = document.body.clientWidth;
+          if (Math.abs(lastW - windowWidth) < 50) {
+            return windowWidth;
+          }
+          console.log(windowWidth);
+          if (windowWidth > 700) {
+            openNav();
+          }
+          else {
+            closeNav();
+          }
+          return windowWidth;
+        }
+        lastW = mywinresize();
+        document.getElementById("topheader").style.display = "block";
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            lastW = mywinresize();
+          }, 500);
+        });
+      </script>
+
+
+
+
+
+      <article id="page">
+        <div class="article-container">
+          <div>
+		  <style type="text/css"> img{display:block;margin:0 auto;}</style>
+<h1>一些java基础知识</h1><hr>
+<h2 id="写时拷贝技术（copy-on-write）">写时拷贝技术（Copy-on-Write）</h2>
+<p>是计算机优化的一种策略，如果多个调用者同时要获取相同的资源（如内存或者磁盘上的数据存储），<strong>它们会获取相同的指针指向同一份资源，直到有一个调用者要修改资源</strong>，系统才会真的复制一份副本给调用者，而其它调用者仍然用最初的资源。</p>
+<blockquote>
+<p>如 Linux 的<code>fork()</code>和<code>exec()</code>函数。如果将父进程数据全部拷贝到子进程，子进程执行<code>exec()</code>后数据清空，前面的复制就无效了，所以有了COW。在网上看到还有个细节问题就是，fork之后内核会通过将子进程放在队列的前面，以让子进程先执行，以免父进程执行导致写时复制，而后子进程执行exec系统调用，因无意义的复制而造成效率的下降。</p>
+<p><code>fork</code>之后，kernel 把所有的内存页权限设为只读，然后父进程地址空间指向父进程。当其中一个进程要修改内存时，触发异常。</p>
+</blockquote>
+<p><strong>Java 的 COW：</strong></p>
+<p>java 中也有两个容器使用了 COW 机制，<code>CopyOnWriteArrayList</code>和<code>CopyOnWriteArraySet</code>。</p>
+<p>以<code>CopyOnWriteArrayList</code>为例，源码部分如下：</p>
+<pre><code class="language-java">public class CopyOnWriteArrayList&lt;E&gt;
+    implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable {
+    
+    /** The lock protecting all mutators */
+    final transient ReentrantLock lock = new ReentrantLock();
+
+    /** The array, accessed only via getArray/setArray. */
+    private transient volatile Object[] array;
+
+    final Object[] getArray() {
+        return array;
+    }
+
+
+    final void setArray(Object[] a) {
+        array = a;
+    }
+    。。。
+}
+</code></pre>
+<p>可见，其底部使用一个对象数组，只能通过<code>getArray/setArray</code>访问。</p>
+<p>读是直接返回<code>array</code>，其它修改操作呢？如<code>add</code>操作：</p>
+<pre><code class="language-java">// 整个过程由可重入锁保护
+public boolean add(E e) {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        // 获取原来的数组
+        Object[] elements = getArray();
+        int len = elements.length;
+        // 拷贝出新数组
+        Object[] newElements = Arrays.copyOf(elements, len + 1);
+        // 新数组add一项
+        newElements[len] = e;
+        // 将原数组引用指向新数组
+        setArray(newElements);
+        return true;
+    } finally {
+        lock.unlock();
+    }
+}
+</code></pre>
+<p>适合频繁读偶尔写的操作，写的时候需要获取锁和对数组进行复制处理，存在性能问题。</p>
+<h2 id="异常处理">异常处理</h2>
+<p>如登录逻辑：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211117143152.png" alt="image-20211117143145195"></p>
+<p>优雅的处理是约定 code 和 message ，如 0 表示成功，1 代表第一次登录，跳转重置页面，-1 表示登录失败， message 描述返回信息。后端统一异常处理。</p>
+<p>程序中的错误大致可以分为三大类：</p>
+<ul>
+<li><strong>系统错误</strong>。这类错误是程序运行环境的问题，一般我们都无法避免，对于这类错误，有些我们是可以处理的，比如请求网络异常，这个我们可以重试几次，而有些是我们无法处理的，比如内存耗尽 OOM 了、栈溢出等等，这种我们就只能停止运行，甚至退出整个程序。</li>
+<li><strong>程序错误</strong>。这类错误一般都是我们程序的 bug，比如空指针，文件未创建，逻辑计算错误，对于这种错误，我们必须要记录下来，而且最好是触发监控系统告警。</li>
+<li><strong>用户错误</strong>。比如用户输入非法参数，重复请求，一般这类的错误属于用户应用层错误，对于这类错误，我们只需要提示用户即可，没有必要记录日志，但是我们可以做一些必要的统计，比如某个用户频繁输入非法参数，不断进行错误请求，我们可以将这些用户纳入黑名单等，这样有利于我们改善系统和侦测是否有恶意的用户请求。</li>
+</ul>
+<p>例如异常分类：</p>
+<ul>
+<li><code>BusinessException</code>：业务异常,继承 <code>RuntimeException</code></li>
+<li><code>NotFountException</code>：业务异常,继承 <code>RuntimeException</code></li>
+<li><code>ParamValidateException</code>：业务异常，继承 <code>RuntimeException</code></li>
+<li><code>SystemException</code>：系统异常，继承 <code>Exception</code></li>
+</ul>
+<p>1、2、3 不需要显示处理，4 一定需要处理。然后再配合两个枚举：</p>
+<ul>
+<li><code>BusinessErrorCodeEnum</code></li>
+<li><code>SystemErrorCodeEnum</code></li>
+</ul>
+<p>监控系统会实时将系统的 Error 、Exception 告知相关的开发人员，这样我们就能及时发现系统这个的错误，及时响应，缩小影响范围。</p>
+<h2 id="实现一个lru">实现一个LRU</h2>
+<p>LRU: Least Recently Use。就是淘汰掉最先访问的数据。</p>
+<p>LinkedHashMap：有序，key和value允许空，key重复会覆盖，非线程安全。它既使用HashMap操作数据结构，又使用LinkedList维护插入元素的先后顺序。</p>
+<pre><code class="language-java">public class LinkedHashMap&lt;K,V&gt;
+    extends HashMap&lt;K,V&gt;
+    implements Map&lt;K,V&gt;
+{
+    。。。
+}
+</code></pre>
+<p><code>LinkedHashMap</code>的基本数据结构是<code>Entry</code>：</p>
+<pre><code class="language-java">// LinkedHashMap##Entry
+static class Entry&lt;K,V&gt; extends HashMap.Node&lt;K,V&gt; {
+    Entry&lt;K,V&gt; before, after; // 维护Entry插入的先后顺序
+    Entry(int hash, K key, V value, Node&lt;K,V&gt; next) {
+        super(hash, key, value, next);
+    }
+}
+
+// HashMap##Node
+static class Node&lt;K,V&gt; implements Map.Entry&lt;K,V&gt; {
+    final int hash;
+    final K key;
+    V value;
+    Node&lt;K,V&gt; next; //指定table位置连接Entry的顺序
+    ...
+}
+</code></pre>
+<p>初始化：</p>
+<pre><code class="language-java">LinkedHashMap&lt;String,String&gt; map = new LinkedHashMap&lt;&gt;();
+map.put(&quot;123&quot;,&quot;value123&quot;);
+map.put(&quot;456&quot;,&quot;value456&quot;);
+</code></pre>
+<p>在构造函数中：</p>
+<pre><code class="language-java">// The iteration ordering method for this linked hash map: true
+// for access-order,false for insertion-order.
+// final boolean accessOrder;
+public LinkedHashMap() {
+    super();
+    accessOrder = false;
+}
+</code></pre>
+<p>这里<code>accessOrder</code>选择是按插入排序还是按访问排序。</p>
+<p>示意图：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211117152115.png" alt="image-20211117152115523"></p>
+<p><code>LinkedHashMap</code>使用示例：</p>
+<p><img src="https://gitee.com/hqinglau/img/raw/master/img/20211117153331.png" alt="image-20211117153331347"></p>
+<p>结果(最右边是最先插入或者刚访问过的)：</p>
+<pre><code class="language-shell">原始顺序为：
+1 2 3 4 
+访问 2 之后的顺序为：
+1 3 4 2 
+访问 3 之后的顺序为：
+1 4 2 3 
+</code></pre>
+<p><strong>LRU实现</strong>：在<code>LinkedHashMap</code>基础上设置容量，超过删除；保证线程安全。可以选择继承它重写方法。</p>
+<p>先不考虑线程安全，直接继承。</p>
+<pre><code class="language-java">public class LRU extends LinkedHashMap {
+    int capacity;
+
+    public LRU(int capacity) {
+        // 按访问顺序排序
+        super(capacity,0.75f,true);
+        this.capacity = capacity;
+    }
+
+    // 只需重写是否超过，在调整顺序的时候会执行删除操作
+    //void afterNodeInsertion(boolean evict) { // possibly remove eldest
+    //    LinkedHashMap.Entry&lt;K,V&gt; first;
+    //    if (evict &amp;&amp; (first = head) != null &amp;&amp; removeEldestEntry(first)) {
+    //        K key = first.key;
+    //        removeNode(hash(key), key, null, false, true);
+    //    }
+    //}
+    @Override
+    protected boolean removeEldestEntry(Map.Entry eldest) {
+        System.out.println(eldest.getKey() + &quot;=&quot; + eldest.getValue());
+        return size()&gt;capacity;
+    }
+
+    @Override
+    public Object get(Object key) {
+        return super.get(key);
+    }
+
+    @Override
+    public Object put(Object key, Object value) {
+        return super.put(key, value);
+    }
+}
+</code></pre>
+<p>考虑线程安全，就不能直接继承了，可以将<code>LinkedHashMap</code>作为一个内部实例。</p>
+<pre><code class="language-java">public class LRU&lt;K,V&gt;{
+    int capacity;
+    LinkedHashMap&lt;K,V&gt; map;
+    public LRU(int capacity) {
+        // 按访问顺序排序
+        map = new LinkedHashMap&lt;&gt;(capacity,0.75f,true);
+        this.capacity = capacity;
+    }
+
+    public Object get(K key) {
+        return map.get(key);
+    }
+
+    public void put(K key, V value) {
+        synchronized(this) {
+            map.put(key,value);
+            if(map.size()&gt;capacity) {
+                Iterator&lt;K&gt; iterator = map.keySet().iterator();
+                map.remove(iterator.next());
+            }
+        }
+    }
+}
+</code></pre>
+<h2 id="参考">参考</h2>
+<p><a href="https://www.cmsblogs.com/category/1411518540095295488">死磕 Java 基础</a></p>
+<p><a href="https://www.cnblogs.com/xrq730/p/5052323.html">图解集合6：LinkedHashMap</a></p>
+</div>
+
+
+</div>
+<br>
+<div id="banquan-yadi" style="display:none">
+	<blockquote style="line-height:1.2;padding-bottom:10px;">
+		<p>本文地址:
+			<a href="https://orzlinux.cn" id="blogaddr-a" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau的博客</a>
+		</p>
+		<p>作者:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>
+		</p>
+		<p>博客地址:
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				https://orzlinux.cn
+			</a>
+		</p>
+
+		<p>版权说明: 如无注明，本文皆由
+			<a href="https://orzlinux.cn" style="text-decoration:none; color:black;cursor:pointer;">
+				hqinglau
+			</a>原创，转载请保留文章出处
+		</p>
+	</blockquote>
+</div>
+</article>
+</div>
+<div id="footer-wrap">
+	<div class="copyright">Powered by <a style="color:#4c4948;text-decoration:none;" href="https://github.com/hqinglau/yadihttpd">yadihttpd</a>
+		|
+			<a style="color:#4c4948;text-decoration:none;" href="https://orzlinux.cn/sitemap.xml">sitemap</a>
+
+		| 
+		<a href="https://www.cnzz.com/stat/website.php?web_id=1280379355" style="color:#4c4948;text-decoration:none;" target="_blank" title="站长统计">网站统计</a>
+		</div>
+	<div class="copyright">Copyright © 2021 hqinglau</div>
+	<div style="width:300px;margin:0 auto; padding:5px 0;">
+		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41022102001049"
+			style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+				src="https://orzlinux.cn/img/beian.png" style="float:left;">
+			<p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">豫公网安备
+				41022102001049号</p>
+		</a>
+	</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/hqinglau/CDN/js/prism.js"></script>
+
+<!-- 看板娘 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1280379355'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280379355' type='text/javascript'%3E%3C/script%3E"));</script>
+<script>
+	(function(){
+	var el = document.createElement("script");
+	el.src = "https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?b49908f94659486112caf80ce9c79f8438025d2d666f8d5952ffe1da06a881cb30632485602430134f60bc55ca391050b680e2741bf7233a8f1da9902314a3fa";
+	el.id = "ttzz";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(el, s);
+	})(window)
+</script>
+<script>
+	(function(){
+	var src = "https://s.ssl.qhres2.com/ssl/ab77b6ea7f3fbf79.js";
+	document.write('<script src="' + src + '" id="sozz"><\/script>');
+	})();
+</script>
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https'){
+	   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+	  }
+	  else{
+	  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	  }
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+				<script type="text/javascript">
+				document.getElementById("banquan-yadi").style.display ="";
+			document.getElementById("blogaddr-a").href ="https://orzlinux.cn/blog/"+"skjavabase.html";
+			document.getElementById("blogaddr-a").innerHTML="一些java基础知识";
+			</script></body></html> 

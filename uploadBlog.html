@@ -417,10 +417,24 @@ function closeNav() {
             xhr.send(form); //开始上传，发送form数据
             document.getElementById('fileup').innerHTML="文件上传中...";
 
-			setTimeout(function(){
-				        relocate();
-						    },5000);
-        }
+            xhr.onreadystatechange = function() {
+              if (xhr.readyState==4 && xhr.status==200)
+              {
+                setTimeout(function(){
+                relocate();
+                        },10000);
+              }
+            }
+
+            xhr.onerror = function() {
+              
+            }
+			// setTimeout(function(){
+        // relocate();
+			// 			    },5000);
+      //   }
+      }
+
 		function relocate()
 		{
 			window.location.href=filePurename;
